@@ -1,6 +1,6 @@
 class Net {
     
-    static login() {
+     login() {
         
     }
 
