@@ -1,7 +1,7 @@
 class Net {
     
-     login() {
-        
+    login() {
+       console.log('sfdfsdsfd') 
     }
 
 }
