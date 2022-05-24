@@ -11,6 +11,7 @@ class Net {
             }
         })
         const data = await response.json()
+        ui.login()
         console.log(data)
     }
 }
