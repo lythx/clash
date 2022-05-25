@@ -62,11 +62,11 @@ app.post('/addlogin', (req, res) => {
         res.send(JSON.stringify({ status: 'TOO MANY LOGGED IN' }))
         return
     }
-    if (players[0] === req.body.login) {
+    if (players[0] === req.body.name) {
         res.send(JSON.stringify({ status: 'NAME TAKEN' }))
         return
     }
-    players.push(req.body.login)
+    players.push(req.body.name)
     res.send(JSON.stringify({
         status: 'OK',
         player: players.length

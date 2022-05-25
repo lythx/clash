@@ -1,9 +1,8 @@
 /**
  * Logowanie na serwerze
  */
-const login = async () => {
-    const login = document.getElementById('txt').value
-    const body = JSON.stringify({ login })
+const login = async (name) => {
+    const body = JSON.stringify({ name })
     const response = await fetch('/addlogin', {
         method: 'POST',
         body,

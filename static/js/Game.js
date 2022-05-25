@@ -18,6 +18,7 @@ const initialize = () => {
     scene.add(new THREE.AxesHelper(1000))
     requestAnimationFrame(() => render())
     generateBoard()
+    //zmiana proporcji sceny przy zmianie wielkości okna przeglądarki
     window.onresize = () => {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
@@ -39,7 +40,7 @@ const generateBoard = () => {
     const w = 14
     for (let i = 0; i < h; i++) {
         for (let j = 0; j < w; j++) {
-            const color = (i + j) % 2 === 0 ? 0x12ff23 : 0xff0000
+            const color = (i + j) % 2 === 0 ? 0x12ff23 : 0xaaffaa
             const tile = new Tile(`t${i}${j}`, size, color)
             tile.position.x = (j * size) - (size * (w / 2) - size / 2);
             tile.position.z = (i * size) - (size * (h / 2) - size / 2) - 80;
