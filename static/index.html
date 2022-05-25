@@ -8,13 +8,7 @@
     <title>Document</title>
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/loading.css">
-    <script src="js/Main.js"></script>
-    <script src="libs/three97.js"></script>
-    <script src="libs/tween.umd.js"></script>
-    <script src="js/Game.js"></script>
-    <script src="js/Net.js"></script>
-    <script src="js/Tile.js"></script>
-    <script src="js/Ui.js"></script>
+    <script src="js/Main.js" type="module"></script>
 </head>
 
 <body>
@@ -25,9 +19,9 @@
     <div id="cover">
         <div id="loginwrap">
             <h1>LOGOWANIE</h1>
-            <input id='txt'>
-            <div id="login" onclick='net.login()'>LOGUJ</div>
-            <div id="reset" onclick='net.reset()'>RESET</div>
+            <input id='name'>
+            <div id="login">LOGUJ</div>
+            <div id="reset">RESET</div>
         </div>
     </div>
     <div id="root"></div>

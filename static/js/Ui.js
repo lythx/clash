@@ -1,16 +1,48 @@
-class Ui{
+import * as NET from './Net.js'
 
-    loading
+const loading = (() => {
+    let l = document.createElement('div')
+    l.classList.add('lds-ring')
+    l.innerHTML = `<div></div><div></div><div></div><div></div>`
+    return l
+})()
 
-    constructor(){
-        this.loading = document.createElement('div')
-        this.loading.classList.add('lds-ring')
-        this.loading.innerHTML = `<div></div><div></div><div></div><div></div>`
+/**
+ * Dodaje listenery na logowanie i resetowanie
+ */
+const initialize = () => { 
+    document.getElementById('login').onclick = () => {
+        const data = await NET.login()
+        const name = document.getElementById('name')
+        if(data.status === 'OK') {
+            if(data.player === 1){
+                displayStatus(name)
+                waitForOpponent()
+            }
+        }
     }
-
-    login(player) {
-        document.getElementById('loginwrap').remove()
-        let cover = document.getElementById('cover')
-        cover.appendChild(this.loading)
-    }
+    document.getElementById('reset').onclick = () => NET.reset()
 }
+
+/**
+ * Ustawia tekst wyświetlany w lewym górnym rogu ui
+ */
+ const displayStatus = (str) => {
+    document.getElementById('lefttop').innerHTML = str
+}
+
+/**
+ * Wyświetla ekran ładowania podczas czekania na zalogowanie sie przeciwnika
+ */
+const waitForOpponent = (player) => {
+    document.getElementById('loginwrap').remove()
+    let cover = document.getElementById('cover')
+    cover.appendChild(loading)
+}
+
+export {
+    initialize
+}
+
+
+ 

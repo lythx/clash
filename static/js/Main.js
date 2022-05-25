@@ -1,10 +1,7 @@
-let game
-let net 
-let ui 
+import * as GAME from './Game.js'
+import * as UI from './Ui.js'
 
 window.onload = () => {
-    game = new Game()
-    game.generateBoard()
-    net = new Net()
-    ui = new Ui()
+    GAME.initialize()
+    UI.initialize()
 }
