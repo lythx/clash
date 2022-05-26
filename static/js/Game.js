@@ -4,7 +4,8 @@ class Game {
     static camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
     static renderer = new THREE.WebGLRenderer();
     static tiles = new THREE.Object3D();
-    static loader = new THREE.JSONLoader();
+    static clock = new THREE.Clock();
+    static models = []
 
     /**
      * Generuje scene i plansze
@@ -23,11 +24,18 @@ class Game {
             this.camera.aspect = window.innerWidth / window.innerHeight;
             this.camera.updateProjectionMatrix();
             this.renderer.setSize(window.innerWidth, window.innerHeight);
+
         }
     }
 
     static render = () => {
         requestAnimationFrame(this.render);
+        const delta = this.clock.getDelta();
+        const lgt = this.models.length
+        for (let i = 0; i < lgt; i++) {
+            return
+            this.models[i].mixer.update(delta)
+        }
         this.renderer.render(this.scene, this.camera);
     }
 
@@ -52,21 +60,8 @@ class Game {
 
     static start = () => {
         STATE.gaming = true
-        const material = new THREE.MeshBasicMaterial(
-            {
-                map: new THREE.TextureLoader().load("../models/billgates/billywork.png"), // dowolny plik png, jpg
-                morphTargets: true // ta własność odpowiada za możliwość animowania materiału modelu
-            });
-        this.loader.load('../models/billgates/tris.js', (geometry) => {
-            const mesh = new THREE.Mesh(geometry, material)
-            mesh.name = "name";
-            mesh.scale.set(0.4, 0.4, 0.4); // ustaw skalę modelu
-            this.scene.add(mesh);
-
-            // tutaj animacje z punktu 9
-
-        });
-
+        const billGates = new BillGates("../models/billgates/billywork.png", '../models/billgates/tris.js', 'bilgats')
+        this.scene.add(billGates)
+        this.models.push(billGates)
     }
-
 }

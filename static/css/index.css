@@ -92,7 +92,7 @@ input:focus {
   width: 250px;
   height: 45px;
   border: 1px solid var(--green);
-  border-radius: 214343234%;
+  border-radius: 40px;
   display: flex;
   background-color: var(--green);
   justify-content: center;
@@ -107,7 +107,7 @@ input:focus {
   width: 250px;
   height: 45px;
   border: 1px solid var(--green);
-  border-radius: 214343234%;
+  border-radius: 40px;
   display: flex;
   background-color: var(--green);
   justify-content: center;
