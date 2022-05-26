@@ -21,12 +21,14 @@ class Ui {
         document.getElementById('loginwrap').remove()
         const cover = document.getElementById('cover')
         cover.appendChild(this.loading)
+        document.getElementById("lefttop").innerHTML = `oczekiwanie na 2 gracza`
         //tu trzeba jeszcze jakiś napis wyświetlić typu 'oczekiwanie na przeciwnika'
     }
 
     static start = () => {
         const cover = document.getElementById('cover')
         cover.remove()
+        document.getElementById("lefttop").innerHTML = `gra rozpoczęta`
     }
 
 }
