@@ -16,6 +16,10 @@ class Ui {
         document.getElementById('lefttop').innerHTML = str
     }
 
+    static timer = (str) => {
+        document.getElementById('righttop').innerHTML = str
+    }
+
     /**
      * Wyświetla ekran ładowania podczas czekania na zalogowanie sie przeciwnika
      */

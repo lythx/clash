@@ -32,6 +32,8 @@ const getStatus = (player) => {
                 Game.start()
                 Ui.start()
             }
+            //console.log(data.time);
+            Ui.timer(data.time)
         }
         //tu robic zmiany w game i ui zależnie od statusu
     }, 500)

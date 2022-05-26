@@ -5,10 +5,6 @@ const PORT = 3000
 app.use(express.static('static'))
 app.use(express.json())
 
-const players = ['janiarz']
-let gameRunning = false
-let status = 'waiting'
-
 class Timer {
     moveTime
     stop = true
@@ -16,7 +12,7 @@ class Timer {
         if (!this.stop)
             return
         this.stop = false
-        this.moveTime = 30
+        this.moveTime = 150
         let lastDate = Date.now()
         const render = () => {
             if (this.stop)
@@ -35,17 +31,19 @@ class Timer {
     }
 
     resetTimer = () => {
-        this.moveTime = 30
-    }
-
-    stopTimer = () => {
+        this.moveTime = 150
         this.stop = true
     }
 
-    getMoveTime = () => {
+    getTime = () => {
         return this.moveTime
     }
 }
+
+const timer = new Timer();
+const players = ['janiarz']
+let gameRunning = false
+let status = 'waiting'
 
 app.post('/addlogin', (req, res) => {
     if (players.length > 1) {
@@ -58,6 +56,7 @@ app.post('/addlogin', (req, res) => {
     }
     players.push(req.body.name)
     if (players.length == 2) {
+        timer.startTimer()
         gameRunning = true
         status = 'start'
     }
@@ -69,6 +68,7 @@ app.post('/addlogin', (req, res) => {
 
 app.post('/reset', (req, res) => {
     players.length = 0
+    timer.resetTimer()
     gameRunning = false
     res.send({ status: 'OK' })
 })
@@ -79,7 +79,7 @@ app.post('/status', (req, res) => {
         res.send(JSON.stringify({ status: 'waiting' }))
     }
     else {
-        res.send(JSON.stringify({ status: 'running' }))
+        res.send(JSON.stringify({ status: 'running', time: timer.getTime() }))
     }
 })
 
