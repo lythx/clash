@@ -5,6 +5,11 @@ const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
 const renderer = new THREE.WebGLRenderer();
 const tiles = new THREE.Object3D();
+const loader = new THREE.JSONLoader();
+
+const status = {
+    gaming: false,
+}
 
 /**
  * Generuje scene i plansze
@@ -50,6 +55,22 @@ const generateBoard = () => {
     scene.add(tiles)
 }
 
+const start = () => {
+    status.gaming = true
+    loader.load('models/model.json', (geometry) => {
+        meshModel = new THREE.Mesh(geometry, modelMaterial)
+        meshModel.name = "name";
+        meshModel.scale.set(100, 100, 100); // ustaw skalę modelu
+        scene.add(meshModel);
+
+        // tutaj animacje z punktu 9
+
+    });
+
+}
+
 export {
-    initialize
+    initialize,
+    start,
+    status
 }

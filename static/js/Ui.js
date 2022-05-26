@@ -22,7 +22,13 @@ const awaitGameStart = (player) => {
     //tu trzeba jeszcze jakiś napis wyświetlić typu 'oczekiwanie na przeciwnika'
 }
 
+const start = () => {
+    let cover = document.getElementById('cover')
+    cover.remove()
+}
+
 export {
     status,
-    awaitGameStart
+    awaitGameStart,
+    start
 }

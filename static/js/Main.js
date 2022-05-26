@@ -25,6 +25,12 @@ window.onload = () => {
 const getStatus = (player) => {
     setInterval(async () => {
         const data = await NET.status(player)
+        if (data.status === 'running') {
+            if (!GAME.status.gaming) {
+                GAME.start()
+                UI.start()
+            }
+        }
         //tu robic zmiany w game i ui zależnie od statusu
     }, 500)
 }
