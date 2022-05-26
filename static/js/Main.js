@@ -7,7 +7,7 @@ window.onload = () => {
         const data = await Net.login(name)
         if (data.status === 'OK') {
             Ui.status(name)
-            Ui.awaitStart()
+            Ui.awaitStart(name)
             getStatus(data.player)
         }
     }

@@ -1,5 +1,7 @@
 class Ui {
 
+    playerName
+
     static loading = (() => {
         const l = document.createElement('div')
         l.classList.add('lds-ring')
@@ -17,15 +19,16 @@ class Ui {
     /**
      * Wyświetla ekran ładowania podczas czekania na zalogowanie sie przeciwnika
      */
-    static awaitStart = () => {
+    static awaitStart = (player) => {
+        this.playerName = player
         document.getElementById('loginwrap').remove()
         const cover = document.getElementById('cover')
         cover.appendChild(this.loading)
-        document.getElementById("lefttop").innerHTML = `oczekiwanie na 2 gracza`
+        this.status(`Witaj ${this.playerName}, oczekiwanie na drugiego gracza`)
         //tu trzeba jeszcze jakiś napis wyświetlić typu 'oczekiwanie na przeciwnika'
     }
 
-    static start = () => {
+    static start = (player) => {
         const cover = document.getElementById('cover')
         cover.remove()
         document.getElementById("lefttop").innerHTML = `gra rozpoczęta`
