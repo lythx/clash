@@ -126,4 +126,37 @@ input:focus {
   height: 150px;
   background-color: white;
   display: none;
+
+}
+
+#model1 {
+  margin: 20px;
+  width: 100px;
+  height: 110px;
+  border: 1px solid black;
+  float: left;
+}
+
+#model2 {
+  margin: 20px;
+  width: 100px;
+  height: 110px;
+  border: 1px solid black;
+  float: left;
+}
+
+#model3 {
+  margin: 20px;
+  width: 100px;
+  height: 110px;
+  border: 1px solid black;
+  float: left;
+}
+
+#model4 {
+  margin: 20px;
+  width: 100px;
+  height: 110px;
+  border: 1px solid black;
+  float: left;
 }

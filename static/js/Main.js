@@ -10,6 +10,12 @@ window.onload = () => {
             Ui.awaitStart(name)
             getStatus(data.player)
         }
+        else if (data.status === 'NAME TAKEN') {
+            Ui.status('Już jest taki gracz')
+        }
+        else if (data.status === 'TOO MANY LOGGED IN') {
+            Ui.status('Maksymalna liczba graczy')
+        }
     }
     //listener przycisku reset
     document.getElementById('reset').onclick = () => Net.reset()
