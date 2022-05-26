@@ -24,7 +24,6 @@ class Game {
             this.camera.aspect = window.innerWidth / window.innerHeight;
             this.camera.updateProjectionMatrix();
             this.renderer.setSize(window.innerWidth, window.innerHeight);
-
         }
     }
 
@@ -32,9 +31,9 @@ class Game {
         requestAnimationFrame(this.render);
         const delta = this.clock.getDelta();
         const lgt = this.models.length
-        for (let i = 0; i < lgt; i++) {
+        TWEEN.update()
+        for (let i = 0; i < lgt; i++)
             this.models[i].mixer.update(delta)
-        }
         this.renderer.render(this.scene, this.camera);
     }
 
@@ -63,6 +62,8 @@ class Game {
         await billGates.load()
         this.scene.add(billGates.mesh)
         this.models.push(billGates)
+        await billGates.rotate(270)
         billGates.run()
+
     }
 }

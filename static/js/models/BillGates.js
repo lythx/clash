@@ -22,7 +22,15 @@ class BillGates extends Model {
         clip.play()
     }
 
-    rotate(degrees) {
-        this.mesh.rotation.y = degrees * (Math.PI / 180);
+    async rotate(degrees) {
+        const rad = degrees * (Math.PI / 180);
+        console.log(this.mesh.rotation)
+        return new Promise((resolve) => {
+            new TWEEN.Tween(this.mesh.rotation)
+                .to({ y: rad }, 500)
+                .onComplete(() => { resolve() })
+                .start()
+        })
+
     }
 }
