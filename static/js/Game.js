@@ -33,7 +33,6 @@ class Game {
         const delta = this.clock.getDelta();
         const lgt = this.models.length
         for (let i = 0; i < lgt; i++) {
-            return
             this.models[i].mixer.update(delta)
         }
         this.renderer.render(this.scene, this.camera);
@@ -48,7 +47,7 @@ class Game {
         const w = 14
         for (let i = 0; i < h; i++) {
             for (let j = 0; j < w; j++) {
-                const color = (i + j) % 2 === 0 ? 0x12ff23 : 0xaaffaa
+                const color = (i + j) % 2 === 0 ? 0x12ff23 : 0xaafafa
                 const tile = new Tile(`t${i}${j}`, size, color)
                 tile.position.x = (j * size) - (size * (w / 2) - size / 2);
                 tile.position.z = (i * size) - (size * (h / 2) - size / 2) - 80;
@@ -58,10 +57,12 @@ class Game {
         this.scene.add(this.tiles)
     }
 
-    static start = () => {
+    static start = async () => {
         STATE.gaming = true
-        const billGates = new BillGates("../models/billgates/billywork.png", '../models/billgates/tris.js', 'bilgats')
-        this.scene.add(billGates)
+        const billGates = new BillGates('bilgats')
+        await billGates.load()
+        this.scene.add(billGates.mesh)
         this.models.push(billGates)
+        billGates.run()
     }
 }
