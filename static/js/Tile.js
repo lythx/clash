@@ -1,5 +1,3 @@
-import * as THREE from '../libs/three.js'
-
 class Tile extends THREE.Mesh {
 
     color
@@ -16,5 +14,3 @@ class Tile extends THREE.Mesh {
     }
 
 }
-
-export default Tile

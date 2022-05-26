@@ -1,34 +1,32 @@
-const loading = (() => {
-    let l = document.createElement('div')
-    l.classList.add('lds-ring')
-    l.innerHTML = `<div></div><div></div><div></div><div></div>`
-    return l
-})()
+class Ui {
 
-/**
- * Ustawia tekst wyświetlany w lewym górnym rogu ui
- */
-const status = (str) => {
-    document.getElementById('lefttop').innerHTML = str
-}
+    static loading = (() => {
+        const l = document.createElement('div')
+        l.classList.add('lds-ring')
+        l.innerHTML = `<div></div><div></div><div></div><div></div>`
+        return l
+    })()
 
-/**
- * Wyświetla ekran ładowania podczas czekania na zalogowanie sie przeciwnika
- */
-const awaitGameStart = (player) => {
-    document.getElementById('loginwrap').remove()
-    let cover = document.getElementById('cover')
-    cover.appendChild(loading)
-    //tu trzeba jeszcze jakiś napis wyświetlić typu 'oczekiwanie na przeciwnika'
-}
+    /**
+     * Ustawia tekst wyświetlany w lewym górnym rogu ui
+     */
+    static status = (str) => {
+        document.getElementById('lefttop').innerHTML = str
+    }
 
-const start = () => {
-    let cover = document.getElementById('cover')
-    cover.remove()
-}
+    /**
+     * Wyświetla ekran ładowania podczas czekania na zalogowanie sie przeciwnika
+     */
+    static awaitStart = () => {
+        document.getElementById('loginwrap').remove()
+        const cover = document.getElementById('cover')
+        cover.appendChild(this.loading)
+        //tu trzeba jeszcze jakiś napis wyświetlić typu 'oczekiwanie na przeciwnika'
+    }
 
-export {
-    status,
-    awaitGameStart,
-    start
+    static start = () => {
+        const cover = document.getElementById('cover')
+        cover.remove()
+    }
+
 }

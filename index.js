@@ -5,7 +5,7 @@ const PORT = 3000
 app.use(express.static('static'))
 app.use(express.json())
 
-const players = []
+const players = ['janiarz']
 let gameRunning = false
 let status = 'waiting'
 

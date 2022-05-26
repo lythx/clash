@@ -1,22 +1,18 @@
-import * as GAME from './Game.js'
-import * as UI from './Ui.js'
-import * as NET from './Net.js'
-
 window.onload = () => {
     //generowanie sceny i planszy
-    GAME.initialize()
+    Game.initialize()
     //listener przycisku login
     document.getElementById('login').onclick = async () => {
         const name = document.getElementById('name').value
-        const data = await NET.login(name)
+        const data = await Net.login(name)
         if (data.status === 'OK') {
-            UI.status(name)
-            UI.awaitGameStart()
+            Ui.status(name)
+            Ui.awaitStart()
             getStatus(data.player)
         }
     }
     //listener przycisku reset
-    document.getElementById('reset').onclick = () => NET.reset()
+    document.getElementById('reset').onclick = () => Net.reset()
 }
 
 /**
@@ -24,11 +20,11 @@ window.onload = () => {
  */
 const getStatus = (player) => {
     setInterval(async () => {
-        const data = await NET.status(player)
+        const data = await Net.status(player)
         if (data.status === 'running') {
-            if (!GAME.status.gaming) {
-                GAME.start()
-                UI.start()
+            if (!STATE.gaming) {
+                Game.start()
+                Ui.start()
             }
         }
         //tu robic zmiany w game i ui zależnie od statusu
