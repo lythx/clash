@@ -31,7 +31,9 @@ class Ui {
     static start = (player) => {
         const cover = document.getElementById('cover')
         cover.remove()
-        document.getElementById("lefttop").innerHTML = `gra rozpoczęta`
+        this.status(`Witaj ${this.playerName}, gra rozpoczęta`)
+        let bottom = document.getElementById('bottom')
+        bottom.style.display = "initial"
     }
 
 }
