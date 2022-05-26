@@ -10,8 +10,7 @@ const login = async (name) => {
             'Content-Type': 'application/json'
         }
     })
-    const data = await response.json()
-    return data
+    return await response.json()
 }
 
 /**
@@ -26,7 +25,23 @@ const reset = async () => {
     })
 }
 
+/**
+ * Fetchuje status z serwera
+ */
+const status = async (player) => {
+    const body = JSON.stringify({ player })
+    const response = await fetch('/status', {
+        method: 'POST',
+        body,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    return await response.json()
+}
+
 export {
     login,
-    reset
+    reset,
+    status
 }

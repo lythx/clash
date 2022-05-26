@@ -1,5 +1,3 @@
-import * as NET from './Net.js'
-
 const loading = (() => {
     let l = document.createElement('div')
     l.classList.add('lds-ring')
@@ -8,32 +6,16 @@ const loading = (() => {
 })()
 
 /**
- * Dodaje listenery na logowanie i resetowanie
- */
-const initialize = () => {
-    document.getElementById('login').onclick = async () => {
-        const name = document.getElementById('name').value
-        const data = await NET.login(name)
-        if (data.status === 'OK') {
-            displayStatus(name)
-            waitForOpponent()
-            //tu fetchować czy drugi gracz sie zalogował na setintervalu
-        }
-    }
-    document.getElementById('reset').onclick = () => NET.reset()
-}
-
-/**
  * Ustawia tekst wyświetlany w lewym górnym rogu ui
  */
-const displayStatus = (str) => {
+const status = (str) => {
     document.getElementById('lefttop').innerHTML = str
 }
 
 /**
  * Wyświetla ekran ładowania podczas czekania na zalogowanie sie przeciwnika
  */
-const waitForOpponent = (player) => {
+const awaitGameStart = (player) => {
     document.getElementById('loginwrap').remove()
     let cover = document.getElementById('cover')
     cover.appendChild(loading)
@@ -41,5 +23,6 @@ const waitForOpponent = (player) => {
 }
 
 export {
-    initialize
+    status,
+    awaitGameStart
 }
