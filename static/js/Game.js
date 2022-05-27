@@ -1,3 +1,5 @@
+'use strict'
+
 class Game {
 
     static scene = new THREE.Scene();
@@ -6,6 +8,7 @@ class Game {
     static tiles = new THREE.Object3D();
     static clock = new THREE.Clock();
     static models = []
+    static player
 
     /**
      * Generuje scene i plansze
@@ -30,10 +33,12 @@ class Game {
     static render = () => {
         requestAnimationFrame(this.render);
         const delta = this.clock.getDelta();
-        const lgt = this.models.length
+        const lgt = Model.models.length
         TWEEN.update()
-        for (let i = 0; i < lgt; i++)
-            this.models[i].animate(delta)
+        for (let i = 0; i < lgt; i++) {
+            Model.models[i].animate(delta)
+            Model.models[i].target()
+        }
         this.renderer.render(this.scene, this.camera);
     }
 
@@ -56,13 +61,17 @@ class Game {
         this.scene.add(this.tiles)
     }
 
-    static start = async () => {
+    static start = async (player) => {
+        this.player = player
         STATE.gaming = true
-        const billGates = new BillGates('bilgats')
+        const billGates = new BillGates(this.player, 'bilgats')
         await billGates.load()
+        const bg = new BillGates(1, 'bilats')
+        await bg.load()
+        billGates.setPosition(50, -100)
+        bg.setPosition(50, 50)
         this.scene.add(billGates)
-        this.models.push(billGates)
-        billGates.run()
-        await billGates.go({ x: 100, y: 20, z: 100 })
+        this.scene.add(bg)
+        billGates.target()
     }
 }

@@ -1,3 +1,5 @@
+'use strict'
+
 window.onload = () => {
     //generowanie sceny i planszy
     Game.initialize()
@@ -29,7 +31,7 @@ const getStatus = (player) => {
         const data = await Net.status(player)
         if (data.status === 'running') {
             if (!STATE.gaming) {
-                Game.start()
+                Game.start(player)
                 Ui.start()
             }
             //console.log(data.time);

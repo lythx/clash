@@ -1,9 +1,13 @@
+'use strict'
+
 class BillGates extends Model {
 
     name
+    x
+    z
 
-    constructor(name) {
-        super()
+    constructor(player, name) {
+        super(player)
         this.name = name
     }
 
@@ -16,21 +20,17 @@ class BillGates extends Model {
         this.children[1].rotation.y = 90 * (Math.PI / 180)
         this.children[1].position.y = 20
         this.children[1].scale.set(0.4, 0.4, 0.4)
+        Model.models.push(this)
     }
 
-    run() {
-        const lgt = this.mixers.length
-        for (let i = 0; i < lgt; i++) {
-            const clip = this.mixers[i].clipAction("run").setLoop(THREE.LoopRepeat)
-            clip.play()
-        }
+    setPosition(x, z) {
+        this.x = x
+        this.z = z
+        this.children[0].position.x = x
+        this.children[0].position.z = z
+        this.children[1].position.x = x
+        this.children[1].position.z = z
     }
 
-    attack() {
-        const lgt = this.mixers.length
-        for (let i = 0; i < lgt; i++) {
-            const clip = this.mixers[i].clipAction("attack").setLoop(THREE.LoopOnce)
-            clip.play()
-        }
-    }
+
 }

@@ -1,3 +1,5 @@
+'use strict'
+
 class Tile extends THREE.Mesh {
 
     color
