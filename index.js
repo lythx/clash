@@ -18,7 +18,6 @@ class Timer {
             if (this.stop)
                 return
             if (this.moveTime === -1) {
-                handleTimeEnd()
                 return
             }
             setImmediate(render)
