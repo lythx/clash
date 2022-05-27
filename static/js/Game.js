@@ -33,7 +33,7 @@ class Game {
         const lgt = this.models.length
         TWEEN.update()
         for (let i = 0; i < lgt; i++)
-            this.models[i].mixer.update(delta)
+            this.models[i].animate(delta)
         this.renderer.render(this.scene, this.camera);
     }
 
@@ -60,9 +60,9 @@ class Game {
         STATE.gaming = true
         const billGates = new BillGates('bilgats')
         await billGates.load()
-        this.scene.add(billGates.mesh)
+        this.scene.add(billGates)
         this.models.push(billGates)
         billGates.run()
-        await billGates.go({ x: 10, y: 20, z: 100 })
+        await billGates.go({ x: 100, y: 20, z: 100 })
     }
 }
