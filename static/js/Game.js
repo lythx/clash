@@ -64,12 +64,14 @@ class Game {
     static start = async (player) => {
         this.player = player
         STATE.gaming = true
-        const billGates = new BillGates(this.player, 'bilgats')
+        const billGates = new BillGates(2, 'bilgats')
         await billGates.load()
         const bg = new BillGates(1, 'bilats')
         await bg.load()
-        billGates.setPosition(50, -100)
-        bg.setPosition(50, 50)
+        billGates.position.x = -40
+        billGates.position.z = 40
+        bg.position.x = -20
+        bg.position.z = -20
         this.scene.add(billGates)
         this.scene.add(bg)
         billGates.target()
