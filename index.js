@@ -67,7 +67,7 @@ app.post('/addlogin', (req, res) => {
 })
 
 app.post('/reset', (req, res) => {
-    players.length = 0
+    players.length = 1
     timer.resetTimer()
     gameRunning = false
     res.send({ status: 'OK' })

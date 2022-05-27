@@ -62,8 +62,8 @@ class Game {
         await billGates.load()
         this.scene.add(billGates.mesh)
         this.models.push(billGates)
-        await billGates.rotate(270)
+        await billGates.rotate(30)
         billGates.run()
-
+        await billGates.go({ x: 100, y: 20, z: 100 })
     }
 }

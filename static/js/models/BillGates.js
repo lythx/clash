@@ -23,14 +23,31 @@ class BillGates extends Model {
     }
 
     async rotate(degrees) {
-        const rad = degrees * (Math.PI / 180);
-        console.log(this.mesh.rotation)
+        const rad = this.rotation.y + degrees * (Math.PI / 180);
         return new Promise((resolve) => {
             new TWEEN.Tween(this.mesh.rotation)
-                .to({ y: rad }, 500)
+                .to({ y: rad }, degrees * 75)
                 .onComplete(() => { resolve() })
                 .start()
         })
 
+    }
+
+    async go(location) {
+        const distance = Math.sqrt(((location.x - this.mesh.position.x) * (location.x - this.mesh.position.x) +
+            (location.z - this.mesh.position.z) * (location.z - this.mesh.position.z)))
+        // const rad = this.rotation.y + degrees * (Math.PI / 180);
+        // await new Promise((resolve) => {
+        //     new TWEEN.Tween(this.mesh.rotation)
+        //         .to({ y: rad }, degrees * 75)
+        //         .onComplete(() => { resolve() })
+        //         .start()
+        // })
+        return new Promise((resolve) => {
+            new TWEEN.Tween(this.mesh.position)
+                .to(location, distance * 75)
+                .onComplete(() => { resolve() })
+                .start()
+        })
     }
 }
