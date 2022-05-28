@@ -8,6 +8,13 @@ class BillGates extends Model {
     weaponMixer
     ready = false
     attackRange = 4
+    tauntClip
+    tauntWeaponClip
+    runClip
+    runWeaponClip
+    attackClip
+    attackWeaponClip
+
 
     constructor(player, name) {
         super()
@@ -16,14 +23,24 @@ class BillGates extends Model {
     }
 
     /**
-     * Ładuje modele i tekstury, ustawia bazowe atruybuty modelu, dodaje go do arrayu modeli
+     * Ładuje modele i tekstury, ustawia bazowe atrybuty modelu, dodaje go do arrayu modeli
      */
     async load() {
-        this.modelMixer = new THREE.AnimationMixer(await this._load('../models/billgates/tris.js', "../models/billgates/map.png"))
-        this.weaponMixer = new THREE.AnimationMixer(await this._load('../models/billgates/weapon.js', "../models/billgates/weapon.png"))
+        const obj = await this._load('BillGates')
+        const model = obj.model
+        const weapon = obj.weapon
+        this.add(model, weapon)
+        this.modelMixer = new THREE.AnimationMixer(model)
+        this.weaponMixer = new THREE.AnimationMixer(weapon)
         this.rotation.y = this.player === 1 ? 270 * (Math.PI / 180) : 90 * (Math.PI / 180)
         this.position.y = 13
         this.scale.set(0.4, 0.4, 0.4)
+        this.runClip = this.modelMixer.clipAction("run").setLoop(THREE.LoopRepeat)
+        this.runWeaponClip = this.weaponMixer.clipAction("run").setLoop(THREE.LoopRepeat)
+        this.attackClip = this.modelMixer.clipAction("attack").setLoop(THREE.LoopRepeat)
+        this.attackWeaponClip = this.weaponMixer.clipAction("attack").setLoop(THREE.LoopRepeat)
+        this.tauntClip = this.modelMixer.clipAction("taunt").setLoop(THREE.LoopRepeat)
+        this.tauntWeaponClip = this.weaponMixer.clipAction("taunt").setLoop(THREE.LoopRepeat)
     }
 
     /**
@@ -44,6 +61,7 @@ class BillGates extends Model {
     }
 
     async place(timestamp) {
+        this.tauntAnimation()
         for (const c of this.children) {
             c.material.color.setHex(0xffffff)
         }
@@ -117,29 +135,35 @@ class BillGates extends Model {
      * Animacja taunta (odpalana zaraz po postawieniu)
      */
     tauntAnimation() {
-        const modelClip = this.modelMixer.clipAction("taunt").setLoop(THREE.LoopRepeat) //Animacje modelu i broni muszą być wywołane osobno
-        const weaponClip = this.weaponMixer.clipAction("taunt").setLoop(THREE.LoopRepeat) //THREE.LoopRepeat sprawia że animacja wykonuje się w nieskończoność
-        modelClip.play()
-        weaponClip.play()
+        this.attackClip.stop()
+        this.attackWeaponClip.stop()
+        this.runClip.stop()
+        this.runWeaponClip.stop()
+        this.tauntClip.play()
+        this.tauntWeaponClip.play()
     }
 
     /**
      * Animacja biegu
      */
     runAnimation() {
-        const modelClip = this.modelMixer.clipAction("run").setLoop(THREE.LoopRepeat)
-        const weaponClip = this.weaponMixer.clipAction("run").setLoop(THREE.LoopRepeat)
-        modelClip.play()
-        weaponClip.play()
+        this.tauntClip.stop()
+        this.tauntWeaponClip.stop()
+        this.attackClip.stop()
+        this.attackWeaponClip.stop()
+        this.runClip.play()
+        this.runWeaponClip.play()
     }
 
     /**
      * Animacja ataku
      */
     attackAnimation() {
-        const modelClip = this.modelMixer.clipAction("attack").setLoop(THREE.LoopRepeat)
-        const weaponClip = this.weaponMixer.clipAction("attack").setLoop(THREE.LoopRepeat)
-        modelClip.play()
-        weaponClip.play()
+        this.tauntClip.stop()
+        this.tauntWeaponClip.stop()
+        this.runClip.stop()
+        this.runWeaponClip.stop()
+        this.attackClip.play()
+        this.attackWeaponClip.play()
     }
 }
