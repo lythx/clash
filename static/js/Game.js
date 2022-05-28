@@ -72,6 +72,9 @@ class Game {
         this.setupListeners()
     }
 
+    /**
+     * Stawia fightera przeciwnika po odebraniu informacji z socketa 
+     */
     static async opponentFighter(data) {
         const fighterClass = this.fighterClasses.find(a => a.name === data.className)
         const fighter = new fighterClass(this.player === 1 ? 2 : 1, data.name)
@@ -85,45 +88,48 @@ class Game {
 
     static setupListeners() {
         window.onkeydown = async (e) => {
+            //jeśli kliknięty klawisz to od 1 do 4
             if (e.key.match(/[1-4]/)) {
-                if (this.selected) {
+                if (this.selected) { //usunięcie poprzedniego wyboru ze sceny 
                     this.scene.remove(this.selected)
                     this.selected = null
                 }
-                const fighter = new this.fighterClasses[e.key](this.player, `p${this.player}t${Date.now()}`)
+                //tu trzeba bedzie zmienić bo jak bedziemy mieć rotacje to e.key nie bedzie dzialal ale to pozniej
+                const fighter = new this.fighterClasses[e.key](this.player, `p${this.player}t${Date.now()}`) //nazwa to p[numer gracza]t[unixowe milisekundy]
                 await fighter.load()
-                fighter.select()
+                fighter.select() //podświetlenie na zielono
                 this.scene.add(fighter)
-                this.selected = fighter
+                this.selected = fighter //ustawinie klasowej zmiennej na nowo utworzony model
             }
         }
         window.onmousemove = (e) => {
-            if (!this.selected)
+            if (!this.selected) //jeśli żaden model nie jest wybrany nic sie bue dzuehe
                 return
-            const intersects = this.raycaster.get(e, this.tiles.children)
-            if (intersects.length === 0) {
-                this.selected.position.x = 5000
+            const intersects = this.raycaster.get(e, this.tiles.children) //raycaster na plansze
+            if (intersects.length === 0) { //jeśli kursor nie jest na planszy to model sie nie wyswietla
+                this.selected.position.x = 5000 //możliwe da sie to lepiej zrobic niż dawać pozycje na taką żeby był giga daleko XD
                 this.selected.position.z = 5000
             }
-            else {
+            else { //jeśli kursor jest na planszy to model wyświetla sie nad wskazywanym przez kursor polem planszy
                 const pos = intersects[0].object.position
                 this.selected.position.x = pos.x
                 this.selected.position.z = pos.z
             }
         }
         window.onclick = (e) => {
-            if (!this.selected)
+            if (!this.selected) //jeśli żaden model nie jest wybrany nic sie bue dzuehe
                 return
-            const intersects = this.raycaster.get(e, this.tiles.children)
-            if (intersects.length === 0) {
+            const intersects = this.raycaster.get(e, this.tiles.children) //raycaster na plansze
+            if (intersects.length === 0) { //jeśli kursor nie jest na planszy to wybrany model sie resetuje
                 this.scene.remove(this.selected)
                 this.selected = null
             }
-            else {
+            else { //jeśli kursor jest na planszy to stawiamy model (pozycja jest już dobrze ustalona przez window.onmouemove)
                 const pos = intersects[0].object.position
                 const timestamp = Date.now() + 2000
                 Model.models.push(this.selected)
                 this.selected.place(timestamp)
+                //wysłanie informacji o modelu do przeciwnika
                 Net.newFighter(this.selected.name, this.selected.constructor.name, pos.x, pos.z, timestamp)
                 this.selected = null
             }

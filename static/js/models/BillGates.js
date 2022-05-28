@@ -60,6 +60,12 @@ class BillGates extends Model {
         }
     }
 
+    /**
+     * Odpala animacje taunta i czeka do timestampa w którym model ma zacząć się ruszać
+     * Timestamp jest ważny, bo gdyby stawiać modele od razu to postawił by się później u przeciwnika 
+     * niż u gracza stawiającego i gra by sie zdesynchronizowala i ogólnie wszystko by chuj strzelił
+     * Dzięki timestampowi modele stawiają się w takim samym (prawie) momencie dla obu graczy
+     */
     async place(timestamp) {
         this.tauntAnimation()
         for (const c of this.children) {
