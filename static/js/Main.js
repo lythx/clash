@@ -3,21 +3,12 @@
 window.onload = () => {
     //generowanie sceny i planszy
     Game.initialize()
+    //ustawienie listenerów socketa
+    Net.initialize()
     //listener przycisku login
     document.getElementById('login').onclick = async () => {
         const name = document.getElementById('name').value
-        const data = await Net.login(name)
-        if (data.status === 'OK') {
-            Ui.status(name)
-            Ui.awaitStart(name)
-            getStatus(data.player)
-        }
-        else if (data.status === 'NAME TAKEN') {
-            Ui.status('Już jest taki gracz')
-        }
-        else if (data.status === 'TOO MANY LOGGED IN') {
-            Ui.status('Maksymalna liczba graczy')
-        }
+        await Net.login(name)
     }
     //listener przycisku reset
     document.getElementById('reset').onclick = () => Net.reset()

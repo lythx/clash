@@ -2,49 +2,56 @@
 
 class Net {
 
+    static socket = new WebSocket('ws://localhost:3000')
+    static player
+
+    /**
+     * Ustawia listenery socketa
+     */
+    static initialize() {
+        this.socket.addEventListener('message', (message) => {
+            const data = JSON.parse(message.data.toString())
+            switch (data.event) {
+                case 'login':
+                    if (data.body.status === 'OK') {
+                        this.player = data.body.player
+                        Ui.status(data.body.name)
+                        Ui.awaitStart(data.body.name)
+                    }
+                    else if (data.body.status === 'NAME TAKEN') {
+                        Ui.status('Już jest taki gracz')
+                    }
+                    else if (data.body.status === 'TOO MANY PLAYERS') {
+                        Ui.status('Maksymalna liczba graczy')
+                    }
+                    break
+                case 'start':
+                    Game.start(this.player)
+                    Ui.start()
+                    break
+                case 'fighter':
+                    if (data.body.player !== Number(Game.player))
+                        Game.opponentFighter(data.body)
+            }
+        })
+    }
+
     /**
      * Logowanie na serwerze
      */
     static login = async (name) => {
-        const body = JSON.stringify({ name })
-        const response = await fetch('/addlogin', {
-            method: 'POST',
-            body,
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        return await response.json()
+        const body = { name }
+        this.socket.send(JSON.stringify({ event: 'login', body }))
     }
 
     /**
      * Resetuje gre na serwerze
      */
     static reset = async () => {
-        await fetch('/reset', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
+        this.socket.send(JSON.stringify({ event: 'reset' }))
     }
 
-    /**
-     * Fetchuje status z serwera
-     */
-    static status = async (player) => {
-        const body = JSON.stringify({ player })
-        const response = await fetch('/status', {
-            method: 'POST',
-            body,
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        return await response.json()
-    }
-
-    static newFighter(className, x, z, timestamp) {
-        console.log(className, x, z, timestamp)
+    static newFighter(player, name, className, x, z, timestamp) {
+        this.socket.send(JSON.stringify({ event: 'fighter', body: { player, name, className, x, z, timestamp } }))
     }
 }

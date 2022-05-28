@@ -88,6 +88,10 @@ class Game {
         // this.scene.add(bg)
     }
 
+    static opponentFighter(data) {
+        console.log(data)
+    }
+
     static setupListeners() {
         window.onkeydown = async (e) => {
             if (e.key.match(/[1-4]/)) {
@@ -95,7 +99,7 @@ class Game {
                     this.scene.remove(this.selected)
                     this.selected = null
                 }
-                const fighter = new this.fighterClasses[e.key]
+                const fighter = new this.fighterClasses[e.key](this.player, `p${this.player}t${Date.now()}`)
                 await fighter.load()
                 fighter.select()
                 this.scene.add(fighter)
@@ -129,7 +133,7 @@ class Game {
                 const timestamp = Date.now() + 2000
                 this.selected.place(pos.x, pos.z, timestamp)
                 this.fighters.push(this.selected)
-                Net.newFighter(this.selected.constructor.name, pos.x, pos.z, timestamp)
+                Net.newFighter(this.player, this.selected.name, this.selected.constructor.name, pos.x, pos.z, timestamp)
                 this.selected = null
             }
         }

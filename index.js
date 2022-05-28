@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 const PORT = 3000
+const WebSocket = require('ws')
 
 app.use(express.static('static'))
 app.use(express.json())
@@ -40,49 +41,87 @@ class Timer {
 }
 
 const timer = new Timer();
-const players = ['janiarz']
+const players = []
 let gameRunning = false
-let status = 'waiting'
+let p1socket
+let p2socket
+let sendToP1 = () => { }
+let sendToP2 = () => { }
 
-app.post('/addlogin', (req, res) => {
-    if (players.length > 1) {
-        res.send(JSON.stringify({ status: 'TOO MANY LOGGED IN' }))
-        return
-    }
-    if (players[0] === req.body.name) {
-        res.send(JSON.stringify({ status: 'NAME TAKEN' }))
-        return
-    }
-    players.push(req.body.name)
-    if (players.length == 2) {
-        timer.startTimer()
-        gameRunning = true
-        status = 'start'
-    }
-    res.send(JSON.stringify({
-        status: 'OK',
-        player: players.length
-    }))
-})
-
-app.post('/reset', (req, res) => {
-    players.length = 1
-    timer.resetTimer()
-    gameRunning = false
-    res.send({ status: 'OK' })
-})
-
-app.post('/status', (req, res) => {
-    const player = req.body.player
-    if (!gameRunning) {
-        res.send(JSON.stringify({ status: 'waiting' }))
-    }
-    else {
-        res.send(JSON.stringify({ status: 'running', time: timer.getTime() }))
-    }
-})
-
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`server start on port ${PORT}`)
 })
 
+const handleP1Message = (message) => {
+    console.log(message.toString())
+}
+
+const handleP2Message = (message) => {
+    console.log(message.toString())
+}
+
+const wss = new WebSocket.Server({ server });
+
+wss.on('connection', (socket) => {
+    socket.on('message', (message) => {
+        const data = JSON.parse(message.toString())
+        if (data.event === 'login') {
+            if (players.length === 0) {
+                socket.on('message', (message) => { handleP1Message(message) })
+                sendToP1 = (message) => { socket.send(message) }
+                players.push(data.body.name)
+                socket.send(JSON.stringify({
+                    event: 'login', body: {
+                        status: 'OK',
+                        player: players.length,
+                        name: data.body.name
+                    }
+                }))
+            }
+            else if (players.length === 1) {
+                if (players[0] === data.body.name) {
+                    socket.send(JSON.stringify({
+                        event: 'login', body: {
+                            status: 'NAME TAKEN'
+                        }
+                    }))
+                    return
+                }
+                socket.on('message', (message) => { handleP2Message(message) })
+                sendToP2 = (message) => { socket.send(message) }
+                players.push(data.body.name)
+                socket.send(JSON.stringify({
+                    event: 'login', body: {
+                        status: 'OK',
+                        player: players.length,
+                        name: data.body.name
+                    }
+                }))
+                socket.send(JSON.stringify({ event: 'start' }))
+                sendToP1(JSON.stringify({ event: 'start' }))
+            }
+            else {
+                socket.send(JSON.stringify({
+                    event: 'login', body: {
+                        status: 'TOO MANY PLAYERS'
+                    }
+                }))
+            }
+        }
+        else if (data.event === 'reset') {
+            timer.resetTimer()
+            players.length = 0
+            gameRunning = false
+            if (p1socket) {
+                p1socket.terminate()
+                sendToP1 = null
+                p1socket = null
+            }
+            if (p2socket) {
+                p2socket.terminate()
+                sendToP2 = null
+                p2socket = null
+            }
+        }
+    })
+})
