@@ -12,6 +12,7 @@ class Net {
         this.socket.addEventListener('message', (message) => {
             const data = JSON.parse(message.data.toString())
             switch (data.event) {
+                //odpowiedź na logowanie
                 case 'login':
                     if (data.body.status === 'OK') {
                         this.player = data.body.player
@@ -25,10 +26,12 @@ class Net {
                         Ui.status('Maksymalna liczba graczy')
                     }
                     break
+                //wysyłane po zalogowaniu sie drugiego gracza do obu graczy
                 case 'start':
                     Game.start(this.player)
                     Ui.start()
                     break
+                //wysyłane do przeciwnika kiedy gracz postawi fightera
                 case 'fighter':
                     Game.opponentFighter(data.body)
             }
@@ -50,6 +53,9 @@ class Net {
         this.socket.send(JSON.stringify({ event: 'reset' }))
     }
 
+    /**
+     * Wysyła informacje o nowym fighterze na serwer
+     */
     static newFighter(name, className, x, z, timestamp) {
         this.socket.send(JSON.stringify({ event: 'fighter', body: { name, className, x, z, timestamp } }))
     }

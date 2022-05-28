@@ -34,6 +34,9 @@ class Ui {
         //tu trzeba jeszcze jakiś napis wyświetlić typu 'oczekiwanie na przeciwnika'
     }
 
+    /**
+     * Zmiania status i tworzy dolny pasek UI
+     */
     static start = (player) => {
         const cover = document.getElementById('cover')
         cover.remove()

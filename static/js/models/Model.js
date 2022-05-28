@@ -6,6 +6,8 @@ class Model extends THREE.Group {
     static loader = new THREE.JSONLoader();
     textureLoader = new THREE.TextureLoader()
     tween
+    //geometry każdego modelu jest ładowane od razu żeby nie trzeba było go ładować potem
+    //material nie może być tak ładowany bo wtedy kolory sie psują
     static materials = (() => {
         const arr = []
         const data = [{
@@ -27,16 +29,21 @@ class Model extends THREE.Group {
         return arr
     })()
 
+    /**
+     * Tworzy mesh danego modelu
+     */
     async _load(name) {
         const obj = Model.materials.find(a => a.name === name)
+        //model
         let modelMaterial
-        await new Promise((resolve) => {
+        await new Promise((resolve) => { //ładowanie tekstur jest asynchroniczne wiec trzeba dać Promise
             modelMaterial = new THREE.MeshBasicMaterial(
                 {
                     map: this.textureLoader.load(obj.modelMap, () => { resolve() }),
                     morphTargets: true //to jest potrzebne do animacji
                 });
         })
+        //broń
         let weaponMaterial
         await new Promise((resolve) => {
             weaponMaterial = new THREE.MeshBasicMaterial(
