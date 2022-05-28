@@ -26,27 +26,12 @@ class Model extends THREE.Group {
     }
 
     /**
-     * Zaznacza model przed postawieniem go
-     */
-    select() {
-        for (const c of this.children) {
-            c.material.color.setHex(0x00ff00)
-        }
-    }
-
-    place() {
-        for (const c of this.children) {
-            c.material.color.setHex(0xffffff)
-        }
-    }
-
-    /**
      * Obraca model w kierunku podanej lokacji
      */
     async _rotate(location) {
         //kąt obrotu
         let targetAngle = Math.atan2(location.z - this.position.z, -(location.x - this.position.x)) + (2 * Math.PI)
-        if (targetAngle > 2 * Math.PI) //układ współrzędnych jest tu jakoś dziwnie ustawiony, więc trzeba tak zrobić
+        if (targetAngle >= 2 * Math.PI) //układ współrzędnych jest tu jakoś dziwnie ustawiony, więc trzeba tak zrobić
             targetAngle -= 2 * Math.PI
         this.rotation.y = targetAngle
     }

@@ -40,6 +40,7 @@ class Ui {
         this.status(`Witaj ${this.playerName}, gra rozpoczęta`)
         let bottom = document.getElementById('bottom')
         bottom.style.display = "initial"
+        document.getElementById('model1').innerHTML = '1 - Billgats'
     }
 
 }

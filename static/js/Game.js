@@ -8,7 +8,6 @@ class Game {
     static tiles = new THREE.Object3D();
     static clock = new THREE.Clock();
     static raycaster = new Raycaster()
-    static fighters = []
     static player
     static fighterClasses = ['none', BillGates]
     static selected = null
@@ -75,12 +74,13 @@ class Game {
 
     static async opponentFighter(data) {
         const fighterClass = this.fighterClasses.find(a => a.name === data.className)
-        const fighter = new fighterClass(this.player, data.name)
+        const fighter = new fighterClass(this.player === 1 ? 2 : 1, data.name)
         await fighter.load()
         fighter.position.x = data.x
         fighter.position.z = data.z
-        fighter.place(data.x, data.z, data.timestamp)
+        fighter.place(data.timestamp)
         this.scene.add(fighter)
+        Model.models.push(fighter)
     }
 
     static setupListeners() {
@@ -122,8 +122,8 @@ class Game {
             else {
                 const pos = intersects[0].object.position
                 const timestamp = Date.now() + 2000
-                this.selected.place(pos.x, pos.z, timestamp)
-                this.fighters.push(this.selected)
+                Model.models.push(this.selected)
+                this.selected.place(timestamp)
                 Net.newFighter(this.selected.name, this.selected.constructor.name, pos.x, pos.z, timestamp)
                 this.selected = null
             }

@@ -6,6 +6,7 @@ class BillGates extends Model {
     player
     modelMixer
     weaponMixer
+    ready = false
     attackRange = 4
 
     constructor(player, name) {
@@ -20,10 +21,9 @@ class BillGates extends Model {
     async load() {
         this.modelMixer = new THREE.AnimationMixer(await this._load('../models/billgates/tris.js', "../models/billgates/map.png"))
         this.weaponMixer = new THREE.AnimationMixer(await this._load('../models/billgates/weapon.js', "../models/billgates/weapon.png"))
-        this.rotation.y = 90 * (Math.PI / 180)
+        this.rotation.y = this.player === 1 ? 270 * (Math.PI / 180) : 90 * (Math.PI / 180)
         this.position.y = 13
         this.scale.set(0.4, 0.4, 0.4)
-        Model.models.push(this)
     }
 
     /**
@@ -32,6 +32,32 @@ class BillGates extends Model {
     animate(delta) {
         this.modelMixer.update(delta)
         this.weaponMixer.update(delta)
+    }
+
+    /**
+     * Zaznacza model przed postawieniem go
+     */
+    select() {
+        for (const c of this.children) {
+            c.material.color.setHex(0x00ff00)
+        }
+    }
+
+    async place(timestamp) {
+        for (const c of this.children) {
+            c.material.color.setHex(0xffffff)
+        }
+        await new Promise((resolve) => {
+            const poll = () => {
+                if (Date.now() > timestamp) {
+                    resolve()
+                    return
+                }
+                requestAnimationFrame(poll)
+            }
+            requestAnimationFrame(poll)
+        })
+        this.ready = true
     }
 
     /**
@@ -55,6 +81,8 @@ class BillGates extends Model {
      * Ustala następny cel modelu zależnie od położenia przeciwników
      */
     async target() {
+        if (!this.ready)
+            return
         const models = Model.models.filter(a => a.player !== this.player) //Celem może być tylko przeciwnik
         let enemies = []
         //Sprawdzenie czy jakiś przeciwnik jest w zasięgu ataku
@@ -86,11 +114,21 @@ class BillGates extends Model {
     }
 
     /**
+     * Animacja taunta (odpalana zaraz po postawieniu)
+     */
+    tauntAnimation() {
+        const modelClip = this.modelMixer.clipAction("taunt").setLoop(THREE.LoopRepeat) //Animacje modelu i broni muszą być wywołane osobno
+        const weaponClip = this.weaponMixer.clipAction("taunt").setLoop(THREE.LoopRepeat) //THREE.LoopRepeat sprawia że animacja wykonuje się w nieskończoność
+        modelClip.play()
+        weaponClip.play()
+    }
+
+    /**
      * Animacja biegu
      */
     runAnimation() {
-        const modelClip = this.modelMixer.clipAction("run").setLoop(THREE.LoopRepeat) //Animacje modelu i broni muszą być wywołane osobno
-        const weaponClip = this.weaponMixer.clipAction("run").setLoop(THREE.LoopRepeat) //THREE.LoopRepeat sprawia że animacja wykonuje się w nieskończoność
+        const modelClip = this.modelMixer.clipAction("run").setLoop(THREE.LoopRepeat)
+        const weaponClip = this.weaponMixer.clipAction("run").setLoop(THREE.LoopRepeat)
         modelClip.play()
         weaponClip.play()
     }
