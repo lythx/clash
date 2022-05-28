@@ -117,7 +117,7 @@ class Game {
             }
         }
         window.onclick = (e) => {
-            if (!this.selected) //jeśli żaden model nie jest wybrany nic sie bue dzuehe
+            if (!this.selected) //jeśli żaden model nie jest wybrany nic sie nie dzieje
                 return
             const intersects = this.raycaster.get(e, this.tiles.children) //raycaster na plansze
             if (intersects.length === 0) { //jeśli kursor nie jest na planszy to wybrany model sie resetuje

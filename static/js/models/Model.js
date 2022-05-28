@@ -10,18 +10,20 @@ class Model extends THREE.Group {
     //material nie może być tak ładowany bo wtedy kolory sie psują
     static materials = (() => {
         const arr = []
-        const data = [{
+        const data = [{ //data bedzie brana potem z bazy danych z serwera
             name: 'BillGates', model: '../mats/billgates/tris.js', modelMap: "../mats/billgates/map.png", weapon: "../mats/billgates/weapon.js", weaponMap: "../mats/billgates/weapon.png"
         }]
-        for (const e of data) { //data bedzie brana potem z bazy danych
+        for (const e of data) {
             const obj = {}
             obj.name = e.name
-            obj.modelMap = e.modelMap
-            this.loader.load(e.model, (geometry) => {
+            //model
+            obj.modelMap = e.modelMap //zapisywanie patha do tekstury
+            this.loader.load(e.model, (geometry) => { //ładowanie geometrii
                 obj.modelGeometry = geometry
             });
-            obj.weaponMap = e.weaponMap
-            this.loader.load(e.weapon, (geometry) => {
+            //broń
+            obj.weaponMap = e.weaponMap //zapisywanie patha do tekstury
+            this.loader.load(e.weapon, (geometry) => { //ładowanie geometrii
                 obj.weaponGeometry = geometry
             });
             arr.push(obj)
