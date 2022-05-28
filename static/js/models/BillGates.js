@@ -108,30 +108,35 @@ class BillGates extends Model {
         if (!this.ready)
             return
         const models = Model.models.filter(a => a.player !== this.player) //Celem może być tylko przeciwnik
-        let enemies = []
+        let enemy = null
+        let minDistance = null
         //Sprawdzenie czy jakiś przeciwnik jest w zasięgu ataku
         for (const m of models) {
             //wzór na sprawdzenie zasięgu (x2-x1)^2 + (y2-y1)^2 < r^2 (zasięg jest okręgiem)
             const distance = Math.sqrt((m.position.x - this.position.x) * (m.position.x - this.position.x)
                 + (m.position.z - this.position.z) * (m.position.z - this.position.z))
-            if (distance < this.attackRange * this.attackRange)
-                enemies.push({ model: m, distance }) //jeśli przeciwnik jest w zasięgu ataku to dodaje go do arrayu
+            //jeśli przeciwnik jest w zasięgu ataku to dodaje go do arrayu 
+            //jeśli znaleziono już jakiegoś przeciwnika ale dystans do nowego przeciwnika jest krótszy to nadpisuje przeciwnika
+            if (distance < this.attackRange * this.attackRange && (minDistance > distance || minDistance === null)) {
+                enemy = m
+                minDistance = distance
+            }
         }
-        if (enemies.length > 0) { //jeśli jakiś przeciwnik jest w zasięgu ataku 
-            enemies.sort((a, b) => a.distance - b.distance) //sortuje array przeciwników aby znaleźć najbliższego
-            this.attack(enemies[0].model) //atakuje go
+        if (enemy !== null) { //jeśli jakiś przeciwnik jest w zasięgu ataku 
+            this.attack(enemy) //atakuje go
             return
         }
         //Sprawdzenie czy jakiś przeciwnik jest w zasięgu widzenia (jeśli żaden nie był w zasięgu ataku)
         for (const m of models) {
             const distance = Math.sqrt((m.position.x - this.position.x) * (m.position.x - this.position.x)
                 + (m.position.z - this.position.z) * (m.position.z - this.position.z))
-            if (distance < 10000)
-                enemies.push({ model: m, distance })
+            if (distance < 10000 && (minDistance > distance || minDistance === null)) {
+                enemy = m
+                minDistance = distance
+            }
         }
-        if (enemies.length > 0) { //jeśli jakiś przeciwnik jest w zasięgu widzenia 
-            enemies.sort((a, b) => a.distance - b.distance)
-            this.go({ x: enemies[0].model.position.x, z: enemies[0].model.position.z }) //idzie w jego kierunku
+        if (enemy !== null) { //jeśli jakiś przeciwnik jest w zasięgu widzenia 
+            this.go({ x: enemy.position.x, z: enemy.position.z }) //idzie w jego kierunku
             return
         }
         //TODO: Jeśli nie ma przeciwników w zasięgu widzenia to powinien iść na bazę
