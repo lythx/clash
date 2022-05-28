@@ -61,19 +61,23 @@ class Game {
         this.scene.add(this.tiles)
     }
 
+    /**
+     * Rozpoczyna grę 
+     */
     static start = async (player) => {
+        console.log(player)
         this.player = player
         STATE.gaming = true
         const billGates = new BillGates(2, 'bilgats')
         await billGates.load()
         const bg = new BillGates(1, 'bilats')
         await bg.load()
-        billGates.position.x = -40
-        billGates.position.z = 40
-        bg.position.x = -20
-        bg.position.z = -20
+        billGates.position.x = 0
+        billGates.position.z = 0
+        bg.position.x = 0
+        bg.position.z = 20
         this.scene.add(billGates)
         this.scene.add(bg)
-        billGates.target()
+        console.log(billGates)
     }
 }

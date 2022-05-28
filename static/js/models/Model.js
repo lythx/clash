@@ -4,13 +4,18 @@ class Model extends THREE.Group {
 
     static models = []
     loader = new THREE.JSONLoader();
+    tween
 
+    /**
+     * Ładuje i dodaje do grupy teksturę i model, zwraca mesh
+     */
     async _load(model, texture) {
         const material = new THREE.MeshBasicMaterial(
             {
                 map: new THREE.TextureLoader().load(texture),
                 morphTargets: true
             });
+        //loader.load() jest asynchroniczny więc trzeba użyć promisy
         const mesh = await new Promise((resolve) => {
             this.loader.load(model, (geometry) => {
                 resolve(new THREE.Mesh(geometry, material))
@@ -20,18 +25,26 @@ class Model extends THREE.Group {
         return mesh
     }
 
-    async go(location) {
-        let targetAngle = Math.atan2(location.z, -location.x) + (2 * Math.PI)
+    async _rotate(location) {
+        //kąt obrotu
+        let targetAngle = Math.atan2(location.z - this.position.z, -(location.x - this.position.x)) + (2 * Math.PI)
         if (targetAngle > 2 * Math.PI)
             targetAngle -= 2 * Math.PI
-        this.rotateY(targetAngle)
+        this.rotation.y = targetAngle
+    }
+
+    /**
+     * Obraca i przesuwa model w danym kierunku
+     */
+    async _go(location) {
+        this._rotate(location)
+        //długość drogi (potrzebna do szybkości animacji)
         const distance = Math.sqrt(((location.x - this.position.x) * (location.x - this.position.x) +
             (location.z - this.position.z) * (location.z - this.position.z)))
-        return new Promise((resolve) => {
-            new TWEEN.Tween(this.position)
-                .to(location, distance * 75)
-                .onComplete(() => { resolve() })
-                .start()
-        })
+        this.tween?.stop() //zatrzymanie poprzednich animacji
+        //animacja
+        this.tween = new TWEEN.Tween(this.position)
+            .to(location, distance * 75)
+            .start()
     }
 }
