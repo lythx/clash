@@ -25,16 +25,19 @@ class Model extends THREE.Group {
         return mesh
     }
 
+    /**
+     * Obraca model w kierunku podanej lokacji
+     */
     async _rotate(location) {
         //kąt obrotu
         let targetAngle = Math.atan2(location.z - this.position.z, -(location.x - this.position.x)) + (2 * Math.PI)
-        if (targetAngle > 2 * Math.PI)
+        if (targetAngle > 2 * Math.PI) //układ współrzędnych jest tu jakoś dziwnie ustawiony, więc trzeba tak zrobić
             targetAngle -= 2 * Math.PI
         this.rotation.y = targetAngle
     }
 
     /**
-     * Obraca i przesuwa model w danym kierunku
+     * Obraca i przesuwa model do danej lokacji
      */
     async _go(location) {
         this._rotate(location)
@@ -42,8 +45,7 @@ class Model extends THREE.Group {
         const distance = Math.sqrt(((location.x - this.position.x) * (location.x - this.position.x) +
             (location.z - this.position.z) * (location.z - this.position.z)))
         this.tween?.stop() //zatrzymanie poprzednich animacji
-        //animacja
-        this.tween = new TWEEN.Tween(this.position)
+        this.tween = new TWEEN.Tween(this.position) //animacja
             .to(location, distance * 75)
             .start()
     }

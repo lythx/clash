@@ -55,7 +55,6 @@ class BillGates extends Model {
      * Ustala następny cel modelu zależnie od położenia przeciwników
      */
     async target() {
-        console.log('???')
         const models = Model.models.filter(a => a.player !== this.player) //Celem może być tylko przeciwnik
         let enemies = []
         //Sprawdzenie czy jakiś przeciwnik jest w zasięgu ataku
@@ -63,7 +62,6 @@ class BillGates extends Model {
             //wzór na sprawdzenie zasięgu (x2-x1)^2 + (y2-y1)^2 < r^2 (zasięg jest okręgiem)
             const distance = Math.sqrt((m.position.x - this.position.x) * (m.position.x - this.position.x)
                 + (m.position.z - this.position.z) * (m.position.z - this.position.z))
-            console.log(distance)
             if (distance < this.attackRange * this.attackRange)
                 enemies.push({ model: m, distance }) //jeśli przeciwnik jest w zasięgu ataku to dodaje go do arrayu
         }
