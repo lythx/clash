@@ -43,21 +43,27 @@ class Timer {
 const timer = new Timer();
 const players = []
 let gameRunning = false
-let p1socket
-let p2socket
-let sendToP1 = () => { }
-let sendToP2 = () => { }
+let p1Socket
+let p2Socket
 
 const server = app.listen(PORT, () => {
     console.log(`server start on port ${PORT}`)
 })
 
-const handleP1Message = (message) => {
-    console.log(message.toString())
+const handleMessage = (message, player) => {
+    const data = JSON.parse(message.toString())
+    switch (data.event) {
+        case 'fighter':
+            sendMessage(player === 1 ? 2 : 1, JSON.stringify(data))
+            break
+    }
 }
 
-const handleP2Message = (message) => {
-    console.log(message.toString())
+const sendMessage = (player, message) => {
+    if (player === 1)
+        p1Socket.send(message)
+    else
+        p2Socket.send(message)
 }
 
 const wss = new WebSocket.Server({ server });
@@ -67,8 +73,8 @@ wss.on('connection', (socket) => {
         const data = JSON.parse(message.toString())
         if (data.event === 'login') {
             if (players.length === 0) {
-                socket.on('message', (message) => { handleP1Message(message) })
-                sendToP1 = (message) => { socket.send(message) }
+                socket.on('message', (message) => { handleMessage(message, 1) })
+                p1Socket = socket
                 players.push(data.body.name)
                 socket.send(JSON.stringify({
                     event: 'login', body: {
@@ -87,8 +93,8 @@ wss.on('connection', (socket) => {
                     }))
                     return
                 }
-                socket.on('message', (message) => { handleP2Message(message) })
-                sendToP2 = (message) => { socket.send(message) }
+                socket.on('message', (message) => { handleMessage(message, 2) })
+                p2Socket = socket
                 players.push(data.body.name)
                 socket.send(JSON.stringify({
                     event: 'login', body: {
@@ -98,7 +104,7 @@ wss.on('connection', (socket) => {
                     }
                 }))
                 socket.send(JSON.stringify({ event: 'start' }))
-                sendToP1(JSON.stringify({ event: 'start' }))
+                sendMessage(1, JSON.stringify({ event: 'start' }))
             }
             else {
                 socket.send(JSON.stringify({
@@ -112,15 +118,13 @@ wss.on('connection', (socket) => {
             timer.resetTimer()
             players.length = 0
             gameRunning = false
-            if (p1socket) {
-                p1socket.terminate()
-                sendToP1 = null
-                p1socket = null
+            if (p1Socket) {
+                p1Socket.terminate()
+                p1Socket = null
             }
-            if (p2socket) {
-                p2socket.terminate()
-                sendToP2 = null
-                p2socket = null
+            if (p2Socket) {
+                p2Socket.terminate()
+                p2Socket = null
             }
         }
     })

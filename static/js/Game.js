@@ -71,25 +71,16 @@ class Game {
         this.player = player
         STATE.gaming = true
         this.setupListeners()
-        // let bg
-        // if (this.player == 1)
-        //     bg = new BillGates(this.player, 'bilgats')
-        // else
-        //     bg = new BillGates(this.player, 'bilats')
-        // await bg.load()
-        // if (this.player == 1) {
-        //     bg.position.x = 30
-        //     bg.position.z = 60
-        // }
-        // else {
-        //     bg.position.x = -45
-        //     bg.position.z = -90
-        // }
-        // this.scene.add(bg)
     }
 
-    static opponentFighter(data) {
-        console.log(data)
+    static async opponentFighter(data) {
+        const fighterClass = this.fighterClasses.find(a => a.name === data.className)
+        const fighter = new fighterClass(this.player, data.name)
+        await fighter.load()
+        fighter.position.x = data.x
+        fighter.position.z = data.z
+        fighter.place(data.x, data.z, data.timestamp)
+        this.scene.add(fighter)
     }
 
     static setupListeners() {
@@ -133,7 +124,7 @@ class Game {
                 const timestamp = Date.now() + 2000
                 this.selected.place(pos.x, pos.z, timestamp)
                 this.fighters.push(this.selected)
-                Net.newFighter(this.player, this.selected.name, this.selected.constructor.name, pos.x, pos.z, timestamp)
+                Net.newFighter(this.selected.name, this.selected.constructor.name, pos.x, pos.z, timestamp)
                 this.selected = null
             }
         }

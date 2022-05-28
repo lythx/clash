@@ -30,8 +30,7 @@ class Net {
                     Ui.start()
                     break
                 case 'fighter':
-                    if (data.body.player !== Number(Game.player))
-                        Game.opponentFighter(data.body)
+                    Game.opponentFighter(data.body)
             }
         })
     }
@@ -51,7 +50,7 @@ class Net {
         this.socket.send(JSON.stringify({ event: 'reset' }))
     }
 
-    static newFighter(player, name, className, x, z, timestamp) {
-        this.socket.send(JSON.stringify({ event: 'fighter', body: { player, name, className, x, z, timestamp } }))
+    static newFighter(name, className, x, z, timestamp) {
+        this.socket.send(JSON.stringify({ event: 'fighter', body: { name, className, x, z, timestamp } }))
     }
 }
