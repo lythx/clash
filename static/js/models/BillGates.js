@@ -21,7 +21,7 @@ class BillGates extends Model {
         this.modelMixer = new THREE.AnimationMixer(await this._load('../models/billgates/tris.js', "../models/billgates/map.png"))
         this.weaponMixer = new THREE.AnimationMixer(await this._load('../models/billgates/weapon.js', "../models/billgates/weapon.png"))
         this.rotation.y = 90 * (Math.PI / 180)
-        this.position.y = 20
+        this.position.y = 13
         this.scale.set(0.4, 0.4, 0.4)
         Model.models.push(this)
     }

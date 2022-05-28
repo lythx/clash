@@ -44,4 +44,7 @@ class Net {
         return await response.json()
     }
 
+    static newFighter(className, x, z, timestamp) {
+        console.log(className, x, z, timestamp)
+    }
 }

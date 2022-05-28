@@ -7,8 +7,11 @@ class Game {
     static renderer = new THREE.WebGLRenderer();
     static tiles = new THREE.Object3D();
     static clock = new THREE.Clock();
-    static models = []
+    static raycaster = new Raycaster()
+    static fighters = []
     static player
+    static fighterClasses = ['none', BillGates]
+    static selected = null
 
     /**
      * Generuje scene i plansze
@@ -67,15 +70,68 @@ class Game {
     static start = async (player) => {
         this.player = player
         STATE.gaming = true
-        const billGates = new BillGates(2, 'bilgats')
-        await billGates.load()
-        const bg = new BillGates(1, 'bilats')
-        await bg.load()
-        billGates.position.x = -100
-        billGates.position.z = -50
-        bg.position.x = 30
-        bg.position.z = 60
-        this.scene.add(billGates)
-        this.scene.add(bg)
+        this.setupListeners()
+        // let bg
+        // if (this.player == 1)
+        //     bg = new BillGates(this.player, 'bilgats')
+        // else
+        //     bg = new BillGates(this.player, 'bilats')
+        // await bg.load()
+        // if (this.player == 1) {
+        //     bg.position.x = 30
+        //     bg.position.z = 60
+        // }
+        // else {
+        //     bg.position.x = -45
+        //     bg.position.z = -90
+        // }
+        // this.scene.add(bg)
+    }
+
+    static setupListeners() {
+        window.onkeydown = async (e) => {
+            if (e.key.match(/[1-4]/)) {
+                if (this.selected) {
+                    this.scene.remove(this.selected)
+                    this.selected = null
+                }
+                const fighter = new this.fighterClasses[e.key]
+                await fighter.load()
+                fighter.select()
+                this.scene.add(fighter)
+                this.selected = fighter
+            }
+        }
+        window.onmousemove = (e) => {
+            if (!this.selected)
+                return
+            const intersects = this.raycaster.get(e, this.tiles.children)
+            if (intersects.length === 0) {
+                this.selected.position.x = 5000
+                this.selected.position.z = 5000
+            }
+            else {
+                const pos = intersects[0].object.position
+                this.selected.position.x = pos.x
+                this.selected.position.z = pos.z
+            }
+        }
+        window.onclick = (e) => {
+            if (!this.selected)
+                return
+            const intersects = this.raycaster.get(e, this.tiles.children)
+            if (intersects.length === 0) {
+                this.scene.remove(this.selected)
+                this.selected = null
+            }
+            else {
+                const pos = intersects[0].object.position
+                const timestamp = Date.now() + 2000
+                this.selected.place(pos.x, pos.z, timestamp)
+                this.fighters.push(this.selected)
+                Net.newFighter(this.selected.constructor.name, pos.x, pos.z, timestamp)
+                this.selected = null
+            }
+        }
     }
 }

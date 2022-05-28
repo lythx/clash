@@ -13,7 +13,7 @@ class Model extends THREE.Group {
         const material = new THREE.MeshBasicMaterial(
             {
                 map: new THREE.TextureLoader().load(texture),
-                morphTargets: true
+                morphTargets: true //to jest potrzebne do animacji
             });
         //loader.load() jest asynchroniczny więc trzeba użyć promisy
         const mesh = await new Promise((resolve) => {
@@ -23,6 +23,21 @@ class Model extends THREE.Group {
         })
         this.add(mesh)
         return mesh
+    }
+
+    /**
+     * Zaznacza model przed postawieniem go
+     */
+    select() {
+        for (const c of this.children) {
+            c.material.color.setHex(0x00ff00)
+        }
+    }
+
+    place() {
+        for (const c of this.children) {
+            c.material.color.setHex(0xffffff)
+        }
     }
 
     /**
