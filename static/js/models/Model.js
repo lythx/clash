@@ -6,6 +6,34 @@ class Model extends THREE.Group {
     static loader = new THREE.JSONLoader();
     textureLoader = new THREE.TextureLoader()
     tween
+    static p1Targets = [
+        [   //wejście na most
+            { x: -100, z: 130 }, //lewy most
+            { x: 15, z: 15 }, //środkowy most
+            { x: 130, z: -100 } //prawy most
+        ],
+        [   //wyjście z mostu 
+            { x: -130, z: 100 }, //lewy most
+            { x: -15, z: -15 }, //środkowy most
+            { x: 100, z: -130 } //prawy most
+        ],
+        [{ x: -125, z: -125 }] //baza
+    ]
+    static p2Targets = [
+        [   //wejście na most
+            { x: -130, z: 100 }, //lewy most
+            { x: -15, z: -15 }, //środkowy most
+            { x: 100, z: -130 } //prawy most
+        ],
+        [   //wyjście z mostu 
+            { x: -95, z: 130 }, //lewy most
+            { x: 15, z: 15 }, //środkowy most
+            { x: 130, z: -100 } //prawy most
+        ],
+        [{ x: 125, z: 125 }] //baza
+    ]
+    static milestones = [31, -29]
+
     //geometry każdego modelu jest ładowane od razu żeby nie trzeba było go ładować potem
     //material nie może być tak ładowany bo wtedy kolory sie psują
     static materials = (() => {

@@ -23,7 +23,6 @@ class Game {
         this.camera.lookAt(0, -110, 0)
         this.scene.add(new THREE.AxesHelper(1000))
         requestAnimationFrame(() => this.render())
-        //this.generateBoard()
         const board = new Board()
         this.tiles = board.tiles
         this.scene.add(this.tiles)
@@ -45,25 +44,6 @@ class Game {
             Model.models[i].target()
         }
         this.renderer.render(this.scene, this.camera);
-    }
-
-    /**
-     * Generuje plansze
-     */
-    static generateBoard = () => {
-        const size = 10;
-        const h = 26
-        const w = 14
-        for (let i = 0; i < h; i++) {
-            for (let j = 0; j < w; j++) {
-                const color = (i + j) % 2 === 0 ? 0x12ff23 : 0xaafafa
-                const tile = new Tile(`t${i}${j}`, size, color)
-                tile.position.x = (j * size) - (size * (w / 2) - size / 2);
-                tile.position.z = (i * size) - (size * (h / 2) - size / 2) - 80;
-                this.tiles.add(tile)
-            }
-        }
-        this.scene.add(this.tiles)
     }
 
     /**

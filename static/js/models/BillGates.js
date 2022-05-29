@@ -8,18 +8,23 @@ class BillGates extends Model {
     weaponMixer
     ready = false
     attackRange = 4
+    sightRange = 80
     tauntClip
     tauntWeaponClip
     runClip
     runWeaponClip
     attackClip
     attackWeaponClip
-
+    targets
+    currentTarget = 0
+    milestones
 
     constructor(player, name) {
         super()
         this.name = name
         this.player = player
+        this.targets = player === 1 ? Model.p1Targets : Model.p2Targets
+        this.milestones = player === 1 ? Model.milestones : Model.milestones.map(a => -a)
     }
 
     /**
@@ -33,7 +38,7 @@ class BillGates extends Model {
         this.modelMixer = new THREE.AnimationMixer(model)
         this.weaponMixer = new THREE.AnimationMixer(weapon)
         this.rotation.y = this.player === 1 ? 270 * (Math.PI / 180) : 90 * (Math.PI / 180)
-        this.position.y = 13
+        this.position.y = 15
         this.scale.set(0.4, 0.4, 0.4)
         this.runClip = this.modelMixer.clipAction("run").setLoop(THREE.LoopRepeat)
         this.runWeaponClip = this.weaponMixer.clipAction("run").setLoop(THREE.LoopRepeat)
@@ -122,8 +127,12 @@ class BillGates extends Model {
     async target() {
         if (!this.ready)
             return
+        if (this.player === 1 && this.position.x + this.position.z < this.milestones[this.currentTarget])
+            this.currentTarget++
+        else if (this.player === 2 && this.position.x + this.position.z > this.milestones[this.currentTarget])
+            this.currentTarget++
         const models = Model.models.filter(a => a.player !== this.player) //Celem może być tylko przeciwnik
-        let enemy = null
+        let target = null
         let minDistance = null
         //Sprawdzenie czy jakiś przeciwnik jest w zasięgu ataku
         for (const m of models) {
@@ -133,28 +142,49 @@ class BillGates extends Model {
             //jeśli przeciwnik jest w zasięgu ataku to dodaje go do arrayu 
             //jeśli znaleziono już jakiegoś przeciwnika ale dystans do nowego przeciwnika jest krótszy to nadpisuje przeciwnika
             if (distance < this.attackRange * this.attackRange && (minDistance > distance || minDistance === null)) {
-                enemy = m
+                target = m
                 minDistance = distance
             }
         }
-        if (enemy !== null) { //jeśli jakiś przeciwnik jest w zasięgu ataku 
-            this.attack(enemy) //atakuje go
+        if (target !== null) { //jeśli jakiś przeciwnik jest w zasięgu ataku 
+            this.attack(target) //atakuje go
             return
         }
         //Sprawdzenie czy jakiś przeciwnik jest w zasięgu widzenia (jeśli żaden nie był w zasięgu ataku)
         for (const m of models) {
             const distance = Math.sqrt((m.position.x - this.position.x) * (m.position.x - this.position.x)
                 + (m.position.z - this.position.z) * (m.position.z - this.position.z))
-            if (distance < 10000 && (minDistance > distance || minDistance === null)) {
-                enemy = m
+            if (distance < this.sightRange && (minDistance > distance || minDistance === null)) {
+                target = m
                 minDistance = distance
             }
         }
-        if (enemy !== null) { //jeśli jakiś przeciwnik jest w zasięgu widzenia 
-            this.go({ x: enemy.position.x, z: enemy.position.z }) //idzie w jego kierunku
+        if (target !== null) { //jeśli jakiś przeciwnik jest w zasięgu widzenia 
+            this.go({ x: target.position.x, z: target.position.z }) //idzie w jego kierunku
+            return
+        }
+        for (const m of models) {
+            const distance = Math.sqrt((m.position.x - this.position.x) * (m.position.x - this.position.x)
+                + (m.position.z - this.position.z) * (m.position.z - this.position.z))
+            if (distance < this.sightRange && (minDistance > distance || minDistance === null)) {
+                target = m
+                minDistance = distance
+            }
+        }
+        if (target !== null) { //jeśli jakiś przeciwnik jest w zasięgu widzenia 
+            this.go({ x: target.position.x, z: target.position.z }) //idzie w jego kierunku
             return
         }
         //TODO: Jeśli nie ma przeciwników w zasięgu widzenia to powinien iść na bazę
+        for (const t of this.targets[this.currentTarget]) {
+            const distance = Math.sqrt((t.x - this.position.x) * (t.x - this.position.x)
+                + (t.z - this.position.z) * (t.z - this.position.z))
+            if (minDistance > distance || minDistance === null) {
+                target = t
+                minDistance = distance
+            }
+        }
+        this.go(target)
     }
 
     /**
