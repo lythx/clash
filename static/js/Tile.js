@@ -2,90 +2,84 @@
 
 class Tile extends THREE.Mesh {
 
-    color
+    height = 5
 
     constructor(name, size, player, style) {
         super()
         this.player = player
         this.style = style
         this.name = name
-        this.geometry = new THREE.BoxGeometry(size, 5, size);
-        this.material = this.getMaterial()
+        this.loadStyle()
+        this.material = new THREE.MeshBasicMaterial({
+            color: this.color
+        })
+        this.geometry = new THREE.BoxGeometry(size, this.height, size);
+        this.position.y += this.height / 2
         this.mesh = new THREE.Mesh(this.geometry, this.material)
     }
 
-    getMaterial() {
+    loadStyle() {
         switch (this.style) {
             case 'corner':
-                return new THREE.MeshBasicMaterial({
-                    color: 0x549854
-                });
+                this.height = 9
+                this.color = 0x555555
+                break
             case 'baseborder1':
-                return new THREE.MeshBasicMaterial({
-                    color: 0xf00000
-                });
+                this.height += 9
+                this.color = 0x455073
+                break
             case 'baseborder2':
-                return new THREE.MeshBasicMaterial({
-                    color: 0xff0f50
-                });
+                this.height += 9
+                this.color = 0x00154f
+                break
             case 'base1':
-                return new THREE.MeshBasicMaterial({
-                    color: 0xfff000
-                });
+                this.color = 0x999999
+                break
             case 'base2':
-                return new THREE.MeshBasicMaterial({
-                    color: 0xffff00
-                });
+                this.color = 0x999999
+                break
             case 'border1':
-                return new THREE.MeshBasicMaterial({
-                    color: 0xabcdef
-                });
+                this.height += 8
+                this.color = 0x555555
+                break
             case 'border2':
-                return new THREE.MeshBasicMaterial({
-                    color: 0x000000
-                });
+                this.height += 8
+                this.color = 0x555555
+                break
             case 'bottomborder1':
-                return new THREE.MeshBasicMaterial({
-                    color: 0x00cccc
-                });
+                this.height += 8
+                this.color = 0x455073
+                break
             case 'bottomborder2':
-                return new THREE.MeshBasicMaterial({
-                    color: 0xffffff
-                });
+                this.height += 8
+                this.color = 0x00154f
+                break
             case 'road1':
-                return new THREE.MeshBasicMaterial({
-                    color: 0x00000f
-                });
+                this.color = 0x444444
+                break
             case 'road2':
-                return new THREE.MeshBasicMaterial({
-                    color: 0x0000ff
-                });
+                this.color = 0x444444
+                break
             case 'ground1':
-                return new THREE.MeshBasicMaterial({
-                    color: 0x000fff
-                });
+                this.color = 0x210070
+                break
             case 'ground2':
-                return new THREE.MeshBasicMaterial({
-                    color: 0x00ffff
-                });
+                this.color = 0x0e387a
+                break
             case 'brigdeborder':
-                return new THREE.MeshBasicMaterial({
-                    color: 0xff00ff
-                });
+                this.height += 6
+                this.color = 0x4b3d8f
+                break
             case 'bridge':
-                return new THREE.MeshBasicMaterial({
-                    color: 0xfd8300
-                });
+                this.color = 0x37a677
+                break
             case 'riverborder':
-                return new THREE.MeshBasicMaterial({
-                    color: 0x00034f
-                });
+                this.height += 3
+                this.color = 0x00034f
+                break
             case 'river':
-                return new THREE.MeshBasicMaterial({
-                    color: 0xf0f023
-                });
+                this.height -= 2
+                this.color = 0x00cccc
         }
-
     }
-
 }
