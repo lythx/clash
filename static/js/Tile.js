@@ -16,6 +16,10 @@ class Tile extends THREE.Mesh {
 
     getMaterial() {
         switch (this.style) {
+            case 'corner':
+                return new THREE.MeshBasicMaterial({
+                    color: 0x549854
+                });
             case 'baseborder1':
                 return new THREE.MeshBasicMaterial({
                     color: 0xf00000

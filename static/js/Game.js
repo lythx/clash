@@ -3,7 +3,7 @@
 class Game {
 
     static scene = new THREE.Scene();
-    static camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 10000);
+    static camera = new THREE.PerspectiveCamera(58, window.innerWidth / window.innerHeight, 0.1, 10000);
     static renderer = new THREE.WebGLRenderer();
     static tiles
     static clock = new THREE.Clock();
@@ -19,8 +19,9 @@ class Game {
         this.renderer.setClearColor(0x333333);
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         document.getElementById("root").append(this.renderer.domElement);
-        this.camera.position.set(200, 260, 200)
-        this.camera.lookAt(this.scene.position)
+        this.camera.position.set(205, 200, 205)
+        this.camera.lookAt(0, -110, 0)
+        this.scene.add(new THREE.AxesHelper(1000))
         requestAnimationFrame(() => this.render())
         //this.generateBoard()
         const board = new Board()
@@ -70,6 +71,10 @@ class Game {
      */
     static start = async (player) => {
         this.player = player
+        if (player == 2) {
+            this.camera.position.set(-205, 200, -205)
+            this.camera.lookAt(0, -110, 0)
+        }
         STATE.gaming = true
         this.setupListeners()
     }
@@ -78,14 +83,13 @@ class Game {
      * Stawia fightera przeciwnika po odebraniu informacji z socketa 
      */
     static async opponentFighter(data) {
-        const fighterClass = this.fighterClasses.find(a => a.name === data.className)
-        const fighter = new fighterClass(this.player === 1 ? 2 : 1, data.name)
+        const FighterClass = this.fighterClasses.find(a => a.name === data.className)
+        const fighter = new FighterClass(this.player === 1 ? 2 : 1, data.name)
         await fighter.load()
         fighter.position.x = data.x
         fighter.position.z = data.z
         fighter.place(data.timestamp)
         this.scene.add(fighter)
-        Model.models.push(fighter)
     }
 
     static setupListeners() {
@@ -102,6 +106,16 @@ class Game {
                 fighter.select() //podświetlenie na zielono
                 this.scene.add(fighter)
                 this.selected = fighter //ustawinie klasowej zmiennej na nowo utworzony model
+                const intersects = this.raycaster.get(e, this.tiles.children) //raycaster na plansze
+                if (intersects.length === 0) { //jeśli kursor nie jest na planszy to model sie nie wyswietla
+                    this.selected.position.x = 5000 //możliwe da sie to lepiej zrobic niż dawać pozycje na taką żeby był giga daleko XD
+                    this.selected.position.z = 5000
+                }
+                else { //jeśli kursor jest na planszy to model wyświetla sie nad wskazywanym przez kursor polem planszy
+                    const pos = intersects[0].object.position
+                    this.selected.position.x = pos.x
+                    this.selected.position.z = pos.z
+                }
             }
         }
         window.onmousemove = (e) => {
@@ -128,8 +142,7 @@ class Game {
             }
             else { //jeśli kursor jest na planszy to stawiamy model (pozycja jest już dobrze ustalona przez window.onmouemove)
                 const pos = intersects[0].object.position
-                const timestamp = Date.now() + 2000
-                Model.models.push(this.selected)
+                const timestamp = Date.now() + 1000
                 this.selected.place(timestamp)
                 //wysłanie informacji o modelu do przeciwnika
                 Net.newFighter(this.selected.name, this.selected.constructor.name, pos.x, pos.z, timestamp)

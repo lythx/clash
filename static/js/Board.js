@@ -12,8 +12,12 @@ class Board {
             for (let j = 0; j < count; j++) {
                 let tile
                 const a = Math.abs(i - j)
+                //rogi planszy
+                if ((i === count - 1 && j === 0 || j === count - 1 && i === 0)) {
+                    tile = new Tile(`${i}${j}`, size, 'none', 'corner')
+                }
                 //border przy bazie gracza 1
-                if ((i === 4 || j === 4) && i + j < 15 && i + j > 7) {
+                else if ((i === 4 || j === 4) && i + j < 15 && i + j > 7) {
                     tile = new Tile(`${i}${j}`, size, 'none', 'baseborder1')
                 }
                 //border przy bazie gracza 2
@@ -115,8 +119,8 @@ class Board {
                         tile = new Tile(`${i}${j}`, size, 'p2', 'ground2')
                     }
                 }
-                tile.position.x = (j * size) - (count * (size / 2) - count / 2) - size * 6;
-                tile.position.z = (i * size) - (count * (size / 2) - count / 2) - size * 6;
+                tile.position.x = (j * size) - (size * (count / 2) - size / 2);
+                tile.position.z = (i * size) - (size * (count / 2) - size / 2);
                 this.tiles.add(tile)
             }
         }
