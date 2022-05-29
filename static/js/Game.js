@@ -3,9 +3,9 @@
 class Game {
 
     static scene = new THREE.Scene();
-    static camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
+    static camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 10000);
     static renderer = new THREE.WebGLRenderer();
-    static tiles = new THREE.Object3D();
+    static tiles
     static clock = new THREE.Clock();
     static raycaster = new Raycaster()
     static player
@@ -19,11 +19,13 @@ class Game {
         this.renderer.setClearColor(0x333333);
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         document.getElementById("root").append(this.renderer.domElement);
-        this.camera.position.set(0, 70, 120)
+        this.camera.position.set(200, 260, 200)
         this.camera.lookAt(this.scene.position)
-        this.scene.add(new THREE.AxesHelper(1000))
         requestAnimationFrame(() => this.render())
-        this.generateBoard()
+        //this.generateBoard()
+        const board = new Board()
+        this.tiles = board.tiles
+        this.scene.add(this.tiles)
         //zmiana proporcji sceny przy zmianie wielkości okna przeglądarki
         window.onresize = () => {
             this.camera.aspect = window.innerWidth / window.innerHeight;
