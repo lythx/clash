@@ -34,13 +34,12 @@ class Model extends THREE.Group {
     ]
     static milestones = [31, -29]
 
+    static materials
+
     //geometry każdego modelu jest ładowane od razu żeby nie trzeba było go ładować potem
     //material nie może być tak ładowany bo wtedy kolory sie psują
-    static materials = (() => {
+    static loadMaterials(data) {
         const arr = []
-        const data = [{ //data bedzie brana potem z bazy danych z serwera
-            name: 'BillGates', model: 'mats/billgates/tris.js', modelMap: "mats/billgates/map.png", weapon: "mats/billgates/weapon.js", weaponMap: "mats/billgates/weapon.png"
-        }]
         for (const e of data) {
             const obj = {}
             obj.name = e.name
@@ -56,8 +55,8 @@ class Model extends THREE.Group {
             });
             arr.push(obj)
         }
-        return arr
-    })()
+        this.materials = arr
+    }
 
     /**
      * Tworzy mesh danego modelu

@@ -2,17 +2,21 @@
 
 class Net {
 
-    static socket = new WebSocket('ws://localhost:3000')
+    static socket
     static player
 
     /**
      * Ustawia listenery socketa
      */
     static initialize() {
+        this.socket = new WebSocket('ws://localhost:3000')
         this.socket.addEventListener('message', (message) => {
             const data = JSON.parse(message.data.toString())
             switch (data.event) {
                 //odpowiedź na logowanie
+                case 'database':
+                    Model.loadMaterials(data.body)
+                    break
                 case 'login':
                     if (data.body.status === 'OK') {
                         this.player = data.body.player
