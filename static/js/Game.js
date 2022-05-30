@@ -119,7 +119,6 @@ class Game {
             }
             //jeśli kursor jest na polu gracza to model wyświetla sie nad wskazywanym przez kursor polem na zielono
             else if (this.player === 1 ? intersects[0].object.player === 'p1' : intersects[0].object.player === 'p2') {
-                console.log(intersects[0].object.player, this.player, this.player === 1 ? 'p1' : 'p2')
                 const pos = intersects[0].object.position
                 this.selected.position.x = pos.x
                 this.selected.position.z = pos.z

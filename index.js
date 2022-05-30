@@ -95,8 +95,7 @@ const wss = new WebSocket.Server({ server });
 
 wss.on('connection', (socket) => {
     coll1.find({}, function (err, docs) {
-        //console.log(socket);
-        socket.send(JSON.stringify({ //odpowiedź na udane logowanie pierwszego gracza
+        socket.send(JSON.stringify({ //wysłanie graczowi modeli i danych postaci po połączeniu
             event: 'database',
             body: docs
         }));

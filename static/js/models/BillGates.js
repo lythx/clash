@@ -120,7 +120,7 @@ class BillGates extends Model {
     /**
      * Startuje animację ataku i zatrzymuje TWEENA do ruszania modelu //TODO: Usuwa hp przeciwnika przy ataku i podświetla go na czerwono na chwile
      */
-    attack(model) {
+    attackEnemy(model) {
         this.tween?.stop()
         this._rotate(model.position)
         this.attackAnimation()
@@ -160,7 +160,7 @@ class BillGates extends Model {
             }
         }
         if (target !== null) { //jeśli jakiś przeciwnik jest w zasięgu ataku 
-            this.attack(target) //atakuje go
+            this.attackEnemy(target) //atakuje go
             return
         }
         //Sprawdzenie czy jakiś przeciwnik jest w zasięgu widzenia (jeśli żaden nie był w zasięgu ataku)

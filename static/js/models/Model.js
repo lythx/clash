@@ -86,7 +86,7 @@ class Model extends THREE.Group {
         })
         const model = new THREE.Mesh(obj.modelGeometry, modelMaterial)
         const weapon = new THREE.Mesh(obj.weaponGeometry, weaponMaterial)
-        return { model, weapon }
+        return { model, weapon, attack: obj.attack, hp: obj.hp, cost: obj.cost }
     }
 
     /**
