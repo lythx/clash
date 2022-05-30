@@ -1,10 +1,10 @@
 'use strict'
 
 window.onload = () => {
+    Net.initialize()
     //generowanie sceny i planszy
     Game.initialize()
     //ustawienie listenerów socketa
-    Net.initialize()
     //listener przycisku login
     document.getElementById('login').onclick = async () => {
         const name = document.getElementById('name').value

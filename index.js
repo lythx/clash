@@ -94,6 +94,13 @@ const sendMessage = (player, message) => {
 const wss = new WebSocket.Server({ server });
 
 wss.on('connection', (socket) => {
+    coll1.find({}, function (err, docs) {
+        //console.log(socket);
+        socket.send(JSON.stringify({ //odpowiedź na udane logowanie pierwszego gracza
+            event: 'database',
+            body: docs
+        }));
+    });
     socket.on('message', (message) => {
         const data = JSON.parse(message.toString())
         //logowanie
