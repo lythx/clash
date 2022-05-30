@@ -3,5 +3,4 @@
 class Building extends Model {
 
 
-
 }
