@@ -152,18 +152,8 @@ class BillGates extends Model {
         }
         //Sprawdzenie czy jakiś przeciwnik jest w zasięgu widzenia (jeśli żaden nie był w zasięgu ataku)
         for (const m of models) {
-            const distance = Math.sqrt((m.position.x - this.position.x) * (m.position.x - this.position.x)
-                + (m.position.z - this.position.z) * (m.position.z - this.position.z))
-            if (distance < this.sightRange && (minDistance > distance || minDistance === null)) {
-                target = m
-                minDistance = distance
-            }
-        }
-        if (target !== null) { //jeśli jakiś przeciwnik jest w zasięgu widzenia 
-            this.go({ x: target.position.x, z: target.position.z }) //idzie w jego kierunku
-            return
-        }
-        for (const m of models) {
+            if (Math.abs(this.currentTarget + m.currentTarget) !== 2)
+                continue
             const distance = Math.sqrt((m.position.x - this.position.x) * (m.position.x - this.position.x)
                 + (m.position.z - this.position.z) * (m.position.z - this.position.z))
             if (distance < this.sightRange && (minDistance > distance || minDistance === null)) {
