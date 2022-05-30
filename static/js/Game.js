@@ -83,18 +83,28 @@ class Game {
                 //tu trzeba bedzie zmienić bo jak bedziemy mieć rotacje to e.key nie bedzie dzialal ale to pozniej
                 const fighter = new this.fighterClasses[e.key](this.player, `p${this.player}t${Date.now()}`) //nazwa to p[numer gracza]t[unixowe milisekundy]
                 await fighter.load()
-                fighter.select() //podświetlenie na zielono
-                this.scene.add(fighter)
                 this.selected = fighter //ustawinie klasowej zmiennej na nowo utworzony model
+                this.scene.add(fighter)
                 const intersects = this.raycaster.get(e, this.tiles.children) //raycaster na plansze
-                if (intersects.length === 0) { //jeśli kursor nie jest na planszy to model sie nie wyswietla
+                //jeśli kursor nie jest na planszy lub jest na terenie na którym nie mogą chodzić modele to model sie nie wyswietla
+                if (intersects.length === 0 || intersects[0].object.player === 'none') {
                     this.selected.position.x = 5000 //możliwe da sie to lepiej zrobic niż dawać pozycje na taką żeby był giga daleko XD
                     this.selected.position.z = 5000
                 }
-                else { //jeśli kursor jest na planszy to model wyświetla sie nad wskazywanym przez kursor polem planszy
+                //jeśli kursor jest na polu gracza to model wyświetla sie nad wskazywanym przez kursor polem na zielono
+                else if (this.player === 1 ? intersects[0].object.player === 'p1' : intersects[0].object.player === 'p2') {
                     const pos = intersects[0].object.position
                     this.selected.position.x = pos.x
                     this.selected.position.z = pos.z
+                    this.selected.setCanPlace(true)
+                }
+                //jeśli kursor jest na polu przeciwnika lub terenie neutralnym to model wyświetla sie nad wskazywanym przez kursor polem na czerwono
+                else if (this.player === 1 ? intersects[0].object.player === 'p2' : intersects[0].object.player === 'p1'
+                    || intersects[0].object.player === 'neutral') {
+                    const pos = intersects[0].object.position
+                    this.selected.position.x = pos.x
+                    this.selected.position.z = pos.z
+                    this.selected.setCanPlace(false)
                 }
             }
         }
@@ -102,25 +112,39 @@ class Game {
             if (!this.selected) //jeśli żaden model nie jest wybrany nic sie bue dzuehe
                 return
             const intersects = this.raycaster.get(e, this.tiles.children) //raycaster na plansze
-            if (intersects.length === 0) { //jeśli kursor nie jest na planszy to model sie nie wyswietla
+            //jeśli kursor nie jest na planszy lub jest na terenie na którym nie mogą chodzić modele to model sie nie wyswietla
+            if (intersects.length === 0 || intersects[0].object.player === 'none') {
                 this.selected.position.x = 5000 //możliwe da sie to lepiej zrobic niż dawać pozycje na taką żeby był giga daleko XD
                 this.selected.position.z = 5000
             }
-            else { //jeśli kursor jest na planszy to model wyświetla sie nad wskazywanym przez kursor polem planszy
+            //jeśli kursor jest na polu gracza to model wyświetla sie nad wskazywanym przez kursor polem na zielono
+            else if (this.player === 1 ? intersects[0].object.player === 'p1' : intersects[0].object.player === 'p2') {
+                console.log(intersects[0].object.player, this.player, this.player === 1 ? 'p1' : 'p2')
                 const pos = intersects[0].object.position
                 this.selected.position.x = pos.x
                 this.selected.position.z = pos.z
+                this.selected.setCanPlace(true)
+            }
+            //jeśli kursor jest na polu przeciwnika lub terenie neutralnym to model wyświetla sie nad wskazywanym przez kursor polem na czerwono
+            else if (this.player === 1 ? intersects[0].object.player === 'p2' : intersects[0].object.player === 'p1'
+                || intersects[0].object.player === 'neutral') {
+                const pos = intersects[0].object.position
+                this.selected.position.x = pos.x
+                this.selected.position.z = pos.z
+                this.selected.setCanPlace(false)
             }
         }
         window.onclick = (e) => {
             if (!this.selected) //jeśli żaden model nie jest wybrany nic sie nie dzieje
                 return
             const intersects = this.raycaster.get(e, this.tiles.children) //raycaster na plansze
-            if (intersects.length === 0) { //jeśli kursor nie jest na planszy to wybrany model sie resetuje
+            //jeśli kursor nie jest na planszy lub jest na terenie na którym nie mogą chodzić modele to wybrany model sie resetuje
+            if (intersects.length === 0 || intersects[0].object.player === 'none') {
                 this.scene.remove(this.selected)
                 this.selected = null
             }
-            else { //jeśli kursor jest na planszy to stawiamy model (pozycja jest już dobrze ustalona przez window.onmouemove)
+            //jeśli kursor jest na planszy i canPlace jest true stawiamy model (pozycja jest już dobrze ustalona przez window.onmouemove)
+            else if (this.selected.canPlace) {
                 const pos = intersects[0].object.position
                 const timestamp = Date.now() + 1000
                 this.selected.place(timestamp)
