@@ -39,7 +39,7 @@ class Model extends THREE.Group {
     static materials = (() => {
         const arr = []
         const data = [{ //data bedzie brana potem z bazy danych z serwera
-            name: 'BillGates', model: '../mats/billgates/tris.js', modelMap: "../mats/billgates/map.png", weapon: "../mats/billgates/weapon.js", weaponMap: "../mats/billgates/weapon.png"
+            name: 'BillGates', model: 'mats/billgates/tris.js', modelMap: "mats/billgates/map.png", weapon: "mats/billgates/weapon.js", weaponMap: "mats/billgates/weapon.png"
         }]
         for (const e of data) {
             const obj = {}
