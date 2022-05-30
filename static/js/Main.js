@@ -1,6 +1,16 @@
 'use strict'
 
 window.onload = () => {
+    const geometry = new THREE.BoxGeometry(100, 100, 100);
+    const material = new THREE.MeshBasicMaterial({
+        color: 0x8888ff,
+        side: THREE.DoubleSide,
+        wireframe: false,
+        transparent: true,
+        opacity: 0.5
+    });
+    const cube = new THREE.Mesh(geometry, material);
+    console.log(JSON.stringify(geometry.toJSON()));
     Net.initialize()
     //generowanie sceny i planszy
     Game.initialize()
