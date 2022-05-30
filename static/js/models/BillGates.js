@@ -18,6 +18,9 @@ class BillGates extends Model {
     targets
     currentTarget = 0
     milestones
+    hp
+    attack
+    cost
 
     constructor(player, name) {
         super()
@@ -34,6 +37,9 @@ class BillGates extends Model {
         const obj = await this._load('BillGates')
         const model = obj.model
         const weapon = obj.weapon
+        this.hp = obj.hp
+        this.attack = obj.attack
+        this.cost = obj.cost
         this.add(model, weapon)
         this.modelMixer = new THREE.AnimationMixer(model)
         this.weaponMixer = new THREE.AnimationMixer(weapon)

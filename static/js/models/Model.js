@@ -43,6 +43,9 @@ class Model extends THREE.Group {
         for (const e of data) {
             const obj = {}
             obj.name = e.name
+            obj.hp = e.hp
+            obj.attack = e.attack
+            obj.cost = e.cost
             //model
             obj.modelMap = e.modelMap //zapisywanie patha do tekstury
             this.loader.load(e.model, (geometry) => { //ładowanie geometrii
