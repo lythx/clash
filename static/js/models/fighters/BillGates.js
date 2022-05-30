@@ -1,6 +1,6 @@
 'use strict'
 
-class BillGates extends Model {
+class BillGates extends Fighter {
 
     name
     player
@@ -27,8 +27,8 @@ class BillGates extends Model {
         super()
         this.name = name
         this.player = player
-        this.targets = player === 1 ? Model.p1Targets : Model.p2Targets
-        this.milestones = player === 1 ? Model.milestones : Model.milestones.map(a => -a)
+        this.targets = player === 1 ? Fighter.p1Targets : Fighter.p2Targets
+        this.milestones = player === 1 ? Fighter.milestones : Fighter.milestones.map(a => -a)
     }
 
     /**
