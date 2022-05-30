@@ -18,6 +18,7 @@ class BillGates extends Model {
     targets
     currentTarget = 0
     milestones
+    canPlace
 
     constructor(player, name) {
         super()
@@ -59,10 +60,16 @@ class BillGates extends Model {
     /**
      * Zaznacza model przed postawieniem go
      */
-    select() {
-        for (const c of this.children) {
-            c.material.color.setHex(0x00ff00)
-        }
+    setCanPlace(canPlace) {
+        this.canPlace = canPlace
+        if (canPlace)
+            for (const c of this.children) {
+                c.material.color.setHex(0x00ff00)
+            }
+        else
+            for (const c of this.children) {
+                c.material.color.setHex(0xff0000)
+            }
     }
 
     /**

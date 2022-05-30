@@ -3,6 +3,9 @@
 class Tile extends THREE.Mesh {
 
     height = 5
+    player
+    style
+    name
 
     constructor(name, size, player, style) {
         super()
