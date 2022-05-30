@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const PORT = 3000
 const WebSocket = require('ws')
+const Datastore = require('nedb')
 
 app.use(express.static('static'))
 app.use(express.json())
@@ -40,6 +41,24 @@ class Timer {
     }
 }
 
+const coll1 = new Datastore({
+    filename: 'kolekcja.db',
+    autoload: true
+});
+// const doc = {
+//     name: "BillGates",
+//     hp: "100",
+//     attack: "30",
+//     cost: "5",
+//     model: 'mats/billgates/tris.js',
+//     modelMap: "mats/billgates/map.png",
+//     weapon: "mats/billgates/weapon.js",
+//     weaponMap: "mats/billgates/weapon.png"
+// };
+// coll1.insert(doc, function (err, newDoc) {
+//     console.log("dodano dokument (obiekt):")
+//     console.log(newDoc)
+// });
 const timer = new Timer();
 const players = []
 let gameRunning = false
