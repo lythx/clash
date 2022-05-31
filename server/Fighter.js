@@ -109,18 +109,16 @@ class Fighter extends Model {
             this.currentObjectiveIndex++
         else if (this.player === 2 && this.x + this.z > this.objectiveTriggers[this.currentObjectiveIndex])
             this.currentObjectiveIndex++
-        const fighters = this.models.filter(a => a.player !== this.player) //Celem może być tylko przeciwnik
         let target = null
         let minDistance = null
         //Sprawdzenie czy jakiś przeciwnik jest w zasięgu ataku
-        for (const m of models) {
+        for (const t of targets) {
             //wzór na sprawdzenie zasięgu (x2-x1)^2 + (y2-y1)^2 < r^2 (zasięg jest okręgiem)
-            const distance = Math.sqrt((m.position.x - this.position.x) * (m.position.x - this.position.x)
-                + (m.position.z - this.position.z) * (m.position.z - this.position.z))
+            const distance = Math.sqrt((t.x - this.x) * (t.x - this.x) + (t.z - this.z) * (t.z - this.z))
             //jeśli przeciwnik jest w zasięgu ataku to dodaje go do arrayu 
             //jeśli znaleziono już jakiegoś przeciwnika ale dystans do nowego przeciwnika jest krótszy to nadpisuje przeciwnika
             if (distance < this.attackRange * this.attackRange && (minDistance > distance || minDistance === null)) {
-                target = m
+                target = t
                 minDistance = distance
             }
         }
@@ -129,26 +127,24 @@ class Fighter extends Model {
             return
         }
         //Sprawdzenie czy jakiś przeciwnik jest w zasięgu widzenia (jeśli żaden nie był w zasięgu ataku)
-        for (const m of models) {
-            if (Math.abs(this.currentTarget + m.currentTarget) !== 2)
+        for (const t of targets) {
+            if (this.currentObjectiveIndex + t.currentObjectiveIndex !== 2)
                 continue
-            const distance = Math.sqrt((m.position.x - this.position.x) * (m.position.x - this.position.x)
-                + (m.position.z - this.position.z) * (m.position.z - this.position.z))
+            const distance = Math.sqrt((t.x - this.x) * (t.x - this.x) + (t.z - this.z) * (t.z - this.z))
             if (distance < this.sightRange && (minDistance > distance || minDistance === null)) {
                 target = m
                 minDistance = distance
             }
         }
         if (target !== null) { //jeśli jakiś przeciwnik jest w zasięgu widzenia 
-            this.go({ x: target.position.x, z: target.position.z }) //idzie w jego kierunku
+            this.go({ x: target.x, z: target.z }) //idzie w jego kierunku
             return
         }
         //Jeśli nie ma przeciwników w zasięgu widzenia to idzie na główny target (most lub baza)
-        for (const t of this.targets[this.currentTarget]) {
-            const distance = Math.sqrt((t.x - this.position.x) * (t.x - this.position.x)
-                + (t.z - this.position.z) * (t.z - this.position.z))
+        for (const o of this.objectives[this.currentObjectiveIndex]) {
+            const distance = Math.sqrt((o.x - this.x) * (o.x - this.x) + (o.z - this.z) * (o.z - this.z))
             if (minDistance > distance || minDistance === null) {
-                target = t
+                target = o
                 minDistance = distance
             }
         }
@@ -159,9 +155,9 @@ class Fighter extends Model {
     /**
      * Ustawia rotation w kierunku danej lokacji
      */
-    rotate(loc) {
+    rotate(location) {
         //kąt obrotu
-        let targetAngle = Math.atan2(loc.z - this.z, -(loc.x - this.x)) + (2 * Math.PI)
+        let targetAngle = Math.atan2(location.z - this.z, -(location.x - this.x)) + (2 * Math.PI)
         if (targetAngle >= 2 * Math.PI) //układ współrzędnych jest tu jakoś dziwnie ustawiony, więc trzeba tak zrobić
             targetAngle -= 2 * Math.PI
         this.rotation = targetAngle
@@ -170,13 +166,12 @@ class Fighter extends Model {
     /**
      * Obraca i przesuwa model do danej lokacji
      */
-    async move(loc) {
+    async move(location) {
         //długość drogi (potrzebna do szybkości animacji)
-        const distance = Math.sqrt(((loc.x - this.x) * (loc.x - this.x) +
-            (loc.z - this.z) * (loc.z - this.z)))
+        const distance = Math.sqrt(((location.x - this.x) * (location.x - this.x) + (location.z - this.z) * (location.z - this.z)))
         this.movementTween?.stop() //zatrzymanie poprzednich animacji
         this.movementTween = new TWEEN.Tween(this.position) //animacja
-            .to(loc, distance * 75)
+            .to(location, distance * this.movementSpeed)
             .start()
     }
 
