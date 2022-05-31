@@ -3,6 +3,7 @@ const app = express()
 const PORT = 3000
 const WebSocket = require('ws')
 const Datastore = require('nedb')
+const Game = require('./server/Game')
 
 app.use(express.static('static'))
 app.use(express.json())
@@ -137,6 +138,7 @@ wss.on('connection', (socket) => {
                         name: data.body.name
                     }
                 }))
+                new Game(socket, socket, 180)
                 //wysłanie do drugiego gracza rozpoczęcia gry (nie trzeba sendMessage() bo mamy tu socket 2 gracza)
                 socket.send(JSON.stringify({ event: 'start' }))
                 //wysłanie do pierwszego gracza rozpoczęcia gry
