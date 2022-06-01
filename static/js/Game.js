@@ -148,7 +148,7 @@ class Game {
                 const timestamp = Date.now() + 1000
                 this.selected.place(timestamp)
                 //wysłanie informacji o modelu do przeciwnika
-                Net.newFighter(this.selected.name, this.selected.constructor.name, pos.x, pos.z, timestamp)
+                Net.newFighter(this.selected.player, this.selected.constructor.name, pos.x, pos.z, this.selected.rotation)
                 this.selected = null
             }
         }

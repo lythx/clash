@@ -1,6 +1,6 @@
 const TWEEN = require('@tweenjs/tween.js')
-const Model = require('./Model.js')
 const Fighter = require('./Fighter.js')
+const BillGates = require('./fighters/BillGates.js')
 
 class Game {
 
@@ -10,6 +10,7 @@ class Game {
     buildings = []
     time
     lastSendDataTimestamp = 0
+    static modelTypes = { BillGates }
 
     constructor(player1Socket, player2Socket, time) {
         this.player1Socket = player1Socket
@@ -33,6 +34,7 @@ class Game {
             gameData.push(this.fighters[i].data)
         }
         if (this.lastSendDataTimestamp + 200 < Date.now()) {
+            console.log(gameData[0]?.x, gameData[0]?.z)
             this.lastSendDataTimestamp = Date.now()
             this.player1Socket.send(JSON.stringify({ event: 'GameData', body: gameData }))
             this.player2Socket.send(JSON.stringify({ event: 'GameData', body: gameData }))
@@ -40,8 +42,7 @@ class Game {
     }
 
     addModel(modelType, player, x, z, rotation) {
-        const model = new Model.modelTypeList[modelType](player, x, z, rotation)
-        console.log(model)
+        const model = new Game.modelTypes[modelType](player, x, z, rotation)
         if (model instanceof Fighter)
             this.fighters.push(model)
         else

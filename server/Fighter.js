@@ -42,11 +42,13 @@ class Fighter extends Model {
     startTime
     objectives
     objectiveTriggers
-    currentObjectiveIndex
+    currentObjectiveIndex = 0
     placed = false
     ready = false
     movementTween
     lastAttackTimestamp
+    targetPosition
+    targetPositionTravelTime
 
     constructor(player, x, y, z, attack, hp, movementSpeed, attackSpeed, rotation, attackRange, sightRange, startTime) {
         const createDate = Date.now()
@@ -68,14 +70,14 @@ class Fighter extends Model {
             this.objectives = Fighter.p2Objectives
             this.objectiveTriggers = Fighter.p1ObjectiveTriggers.map(a => -a)
         }
-        this.currentObjectiveIndex = 0
         this.awaitReady(createDate)
     }
 
     get data() {
         return {
-            id: this.id, player: this.player, position: this.position, maxHp: this.maxHp, hp: this.hp,
-            rotation: this.rotation, targetPosition, targetPositionTravelTime, currentAnimation, placed, ready
+            id: this.id, player: this.player, x: this.x, y: this.y, z: this.z, maxHp: this.maxHp, hp: this.hp,
+            rotation: this.rotation, targetPosition: this.targetPosition, targetPositionTravelTime: this.targetPositionTravelTime,
+            currentAnimation: this.currentAnimation, placed: this.placed, ready: this.ready
         }
     }
 
@@ -86,26 +88,27 @@ class Fighter extends Model {
                     resolve()
                     return
                 }
-                requestAnimationFrame(poll)
+                setImmediate(poll)
             }
-            requestAnimationFrame(poll)
+            setImmediate(poll)
         })
         this.placed = true
         this.currentAnimation = 'taunt'
         await new Promise((resolve) => {
             const poll = () => {
-                if (Date.now() > createDate + startTime) {
+                if (Date.now() > createDate + this.startTime) {
                     resolve()
                     return
                 }
-                requestAnimationFrame(poll)
+                setImmediate(poll)
             }
-            requestAnimationFrame(poll)
+            setImmediate(poll)
         })
         this.ready = true
     }
 
     calculateTarget(targets) {
+        TWEEN.update()
         if (!this.ready)
             return
         if (this.player === 1 && this.x + this.z < this.objectiveTriggers[this.currentObjectiveIndex])
@@ -141,7 +144,7 @@ class Fighter extends Model {
         }
         if (target !== null) { //jeśli jakiś przeciwnik jest w zasięgu widzenia 
             this.rotate({ x: target.x, z: target.z })
-            this.go({ x: target.x, z: target.z }) //idzie w jego kierunku
+            this.move({ x: target.x, z: target.z }) //idzie w jego kierunku
             return
         }
         //Jeśli nie ma przeciwników w zasięgu widzenia to idzie na główny target (most lub baza)
@@ -153,7 +156,7 @@ class Fighter extends Model {
             }
         }
         this.rotate(target)
-        this.go(target)
+        this.move(target)
     }
 
 
@@ -168,14 +171,20 @@ class Fighter extends Model {
         this.rotation = targetAngle
     }
 
+    penis
     /**
      * Obraca i przesuwa model do danej lokacji
      */
     move(location) {
+        if (this.penis) {
+            return
+        }
+        this.penis = true
         //długość drogi (potrzebna do szybkości animacji)
         const distance = Math.sqrt(((location.x - this.x) * (location.x - this.x) + (location.z - this.z) * (location.z - this.z)))
         this.movementTween?.stop() //zatrzymanie poprzednich animacji
-        this.movementTween = new TWEEN.Tween(this.position) //animacja
+        console.log({ x: this.x, z: this.z }, location, distance /*this.movementSpeed*/)
+        this.movementTween = new TWEEN.Tween({ x: this.x, z: this.z }) //animacja
             .to(location, distance * this.movementSpeed)
             .start()
     }

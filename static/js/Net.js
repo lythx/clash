@@ -60,7 +60,7 @@ class Net {
     /**
      * Wysyła informacje o nowym fighterze na serwer
      */
-    static newFighter(name, className, x, z, timestamp) {
-        this.socket.send(JSON.stringify({ event: 'fighter', body: { name, className, x, z, timestamp } }))
+    static newFighter(player, className, x, z, rotation) {
+        this.socket.send(JSON.stringify({ event: 'fighter', body: { player, className, x, z, rotation } }))
     }
 }

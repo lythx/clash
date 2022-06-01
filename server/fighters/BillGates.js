@@ -1,12 +1,13 @@
 
-const Fighter = require('../Fighter.js')
+const Fighter = require('../Fighter')
+const modelData = require('../modelData').data
 
 class BillGates extends Fighter {
 
     constructor(player, x, z, rotation) {
-        const data = Model.modelData.find(a.name === 'BillGates')
+        const data = modelData.find(a => a.name === 'BillGates')
         super(player, x, data.defaultY, z, data.attack, data.hp, data.movementSpeed, data.attackSpeed, rotation,
-            data.attackRange, data.sightRange, Date.now())
+            data.attackRange, data.sightRange, data.startTime)
     }
 
 }

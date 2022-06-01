@@ -1,8 +1,6 @@
 
 class Model {
 
-    static modelTypeList = []
-    static modelData = []
     static idCount = 0
 
     id
@@ -12,17 +10,11 @@ class Model {
     player
 
     constructor(player, x, y, z) {
-        this.id = idCount++
+        this.id = Model.idCount++
         this.x = x
         this.y = y
         this.z = z
         this.player = player
-    }
-
-    static loadModelData(data) {
-        for (const e of data) {
-            this.modelData.push({ attack: e.attack, hp: e.hp, speed: e.speed, attackSpeed: e.attackSpeed })
-        }
     }
 
     updateAndGetData() {

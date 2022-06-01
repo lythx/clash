@@ -4,6 +4,7 @@ const PORT = 3000
 const WebSocket = require('ws')
 const Datastore = require('nedb')
 const Game = require('./server/Game')
+const modelData = require('./server/modelData')
 
 app.use(express.static('static'))
 app.use(express.json())
@@ -46,7 +47,6 @@ const coll1 = new Datastore({
     filename: 'kolekcja.db',
     autoload: true
 });
-let game
 // const doc = {
 //     name: "Base1",
 //     hp: "1000",
@@ -61,9 +61,9 @@ let game
 //     console.log("dodano dokument (obiekt):")
 //     console.log(newDoc)
 // });
+let game
 const timer = new Timer();
 const players = []
-let gameRunning = false
 let p1Socket
 let p2Socket
 
@@ -79,7 +79,7 @@ const handleMessage = (message, player) => {
     switch (data.event) {
         case 'fighter':
             sendMessage(player === 1 ? 2 : 1, JSON.stringify(data))
-            game.addModel(data.className, data.player, data.x, data.z, 0)
+            game.addModel(data.body.className, data.body.player, data.body.x, data.body.z, 0)
             break
     }
 }
@@ -102,6 +102,7 @@ wss.on('connection', (socket) => {
             event: 'database',
             body: docs
         }));
+        modelData.load(docs)
     });
     socket.on('message', (message) => {
         const data = JSON.parse(message.toString())

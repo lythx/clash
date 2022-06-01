@@ -10,7 +10,6 @@ window.onload = () => {
         opacity: 0.5
     });
     const cube = new THREE.Mesh(geometry, material);
-    console.log(JSON.stringify(geometry.toJSON()));
     Net.initialize()
     //generowanie sceny i planszy
     Game.initialize()
