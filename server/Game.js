@@ -1,3 +1,7 @@
+const TWEEN = require('@tweenjs/tween.js')
+const Model = require('./Model.js')
+const Fighter = require('./Fighter.js')
+
 class Game {
 
     player1Socket
@@ -12,11 +16,11 @@ class Game {
         this.player2Socket = player2Socket
         this.time = time
 
-        setImmediate(this.render)
+        setImmediate(() => this.render())
     }
 
     render() {
-        setImmediate(this.render)
+        setImmediate(() => this.render())
         const gameData = []
         const buildingsLength = this.buildings.length
         TWEEN.update()
@@ -35,8 +39,9 @@ class Game {
         }
     }
 
-    addModel(modelType, player, x, y, z) {
-        const model = new Model.modelTypeList[modelType](player, x, y, z)
+    addModel(modelType, player, x, z, rotation) {
+        const model = new Model.modelTypeList[modelType](player, x, z, rotation)
+        console.log(model)
         if (model instanceof Fighter)
             this.fighters.push(model)
         else
@@ -44,5 +49,6 @@ class Game {
     }
 
 }
+
 
 module.exports = Game

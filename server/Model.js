@@ -1,6 +1,7 @@
+
 class Model {
 
-    static modelTypeList = { BillGates }
+    static modelTypeList = []
     static modelData = []
     static idCount = 0
 
@@ -29,3 +30,5 @@ class Model {
     }
 
 }
+
+module.exports = Model

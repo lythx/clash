@@ -1,3 +1,6 @@
+const TWEEN = require('@tweenjs/tween.js')
+const Model = require('./Model.js')
+
 class Fighter extends Model {
 
     static p1Objectives = [
@@ -137,6 +140,7 @@ class Fighter extends Model {
             }
         }
         if (target !== null) { //jeśli jakiś przeciwnik jest w zasięgu widzenia 
+            this.rotate({ x: target.x, z: target.z })
             this.go({ x: target.x, z: target.z }) //idzie w jego kierunku
             return
         }
@@ -148,6 +152,7 @@ class Fighter extends Model {
                 minDistance = distance
             }
         }
+        this.rotate(target)
         this.go(target)
     }
 
@@ -166,7 +171,7 @@ class Fighter extends Model {
     /**
      * Obraca i przesuwa model do danej lokacji
      */
-    async move(location) {
+    move(location) {
         //długość drogi (potrzebna do szybkości animacji)
         const distance = Math.sqrt(((location.x - this.x) * (location.x - this.x) + (location.z - this.z) * (location.z - this.z)))
         this.movementTween?.stop() //zatrzymanie poprzednich animacji
@@ -176,3 +181,5 @@ class Fighter extends Model {
     }
 
 }
+
+module.exports = Fighter

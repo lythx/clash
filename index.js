@@ -46,6 +46,7 @@ const coll1 = new Datastore({
     filename: 'kolekcja.db',
     autoload: true
 });
+let game
 // const doc = {
 //     name: "Base1",
 //     hp: "1000",
@@ -78,6 +79,7 @@ const handleMessage = (message, player) => {
     switch (data.event) {
         case 'fighter':
             sendMessage(player === 1 ? 2 : 1, JSON.stringify(data))
+            game.addModel(data.className, data.player, data.x, data.z, 0)
             break
     }
 }
@@ -138,7 +140,7 @@ wss.on('connection', (socket) => {
                         name: data.body.name
                     }
                 }))
-                new Game(socket, socket, 180)
+                game = new Game(p1Socket, socket, 180)
                 //wysłanie do drugiego gracza rozpoczęcia gry (nie trzeba sendMessage() bo mamy tu socket 2 gracza)
                 socket.send(JSON.stringify({ event: 'start' }))
                 //wysłanie do pierwszego gracza rozpoczęcia gry
