@@ -183,7 +183,7 @@ class Fighter extends Model {
         //długość drogi (potrzebna do szybkości animacji)
         const distance = Math.sqrt(((location.x - this.position.x) * (location.x - this.position.x) + (location.z - this.position.z) * (location.z - this.position.z)))
         this.movementTween?.stop() //zatrzymanie poprzednich animacji
-        this.movementTween = new TWEEN.Tween({ x: this.position.x, z: this.position.z }) //animacja
+        this.movementTween = new TWEEN.Tween(this.position) //animacja
             .to(location, distance * this.movementSpeed)
             .start()
     }
