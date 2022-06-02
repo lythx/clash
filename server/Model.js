@@ -4,16 +4,12 @@ class Model {
     static idCount = 0
 
     id
-    x
-    y
-    z
+    position
     player
 
-    constructor(player, x, y, z) {
+    constructor(player, position) {
         this.id = Model.idCount++
-        this.x = x
-        this.y = y
-        this.z = z
+        this.position = Object.assign(position)
         this.player = player
     }
 

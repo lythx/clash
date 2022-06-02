@@ -1,4 +1,3 @@
-const TWEEN = require('@tweenjs/tween.js')
 const Fighter = require('./Fighter.js')
 const BillGates = require('./fighters/BillGates.js')
 
@@ -24,7 +23,6 @@ class Game {
         setImmediate(() => this.render())
         const gameData = []
         const buildingsLength = this.buildings.length
-        TWEEN.update()
         for (let i = 0; i < buildingsLength; i++) {
             gameData.push(this.buildings[i].data)
         }
@@ -34,7 +32,7 @@ class Game {
             gameData.push(this.fighters[i].data)
         }
         if (this.lastSendDataTimestamp + 200 < Date.now()) {
-            console.log(gameData[0]?.x, gameData[0]?.z)
+            console.log(gameData[0]?.position.x, gameData[0]?.position.z)
             this.lastSendDataTimestamp = Date.now()
             this.player1Socket.send(JSON.stringify({ event: 'GameData', body: gameData }))
             this.player2Socket.send(JSON.stringify({ event: 'GameData', body: gameData }))

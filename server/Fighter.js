@@ -50,9 +50,9 @@ class Fighter extends Model {
     targetPosition
     targetPositionTravelTime
 
-    constructor(player, x, y, z, attack, hp, movementSpeed, attackSpeed, rotation, attackRange, sightRange, startTime) {
+    constructor(player, position, attack, hp, movementSpeed, attackSpeed, rotation, attackRange, sightRange, startTime) {
         const createDate = Date.now()
-        super(player, x, y, z)
+        super(player, position)
         this.attack = attack
         this.maxHp = hp
         this.hp = hp
@@ -75,7 +75,7 @@ class Fighter extends Model {
 
     get data() {
         return {
-            id: this.id, player: this.player, x: this.x, y: this.y, z: this.z, maxHp: this.maxHp, hp: this.hp,
+            id: this.id, player: this.player, position: this.position, maxHp: this.maxHp, hp: this.hp,
             rotation: this.rotation, targetPosition: this.targetPosition, targetPositionTravelTime: this.targetPositionTravelTime,
             currentAnimation: this.currentAnimation, placed: this.placed, ready: this.ready
         }
@@ -111,16 +111,16 @@ class Fighter extends Model {
         TWEEN.update()
         if (!this.ready)
             return
-        if (this.player === 1 && this.x + this.z < this.objectiveTriggers[this.currentObjectiveIndex])
+        if (this.player === 1 && this.position.x + this.position.z < this.objectiveTriggers[this.currentObjectiveIndex])
             this.currentObjectiveIndex++
-        else if (this.player === 2 && this.x + this.z > this.objectiveTriggers[this.currentObjectiveIndex])
+        else if (this.player === 2 && this.position.x + this.position.z > this.objectiveTriggers[this.currentObjectiveIndex])
             this.currentObjectiveIndex++
         let target = null
         let minDistance = null
         //Sprawdzenie czy jakiś przeciwnik jest w zasięgu ataku
         for (const t of targets) {
             //wzór na sprawdzenie zasięgu (x2-x1)^2 + (y2-y1)^2 < r^2 (zasięg jest okręgiem)
-            const distance = Math.sqrt((t.x - this.x) * (t.x - this.x) + (t.z - this.z) * (t.z - this.z))
+            const distance = Math.sqrt((t.x - this.position.x) * (t.x - this.position.x) + (t.z - this.position.z) * (t.z - this.position.z))
             //jeśli przeciwnik jest w zasięgu ataku to dodaje go do arrayu 
             //jeśli znaleziono już jakiegoś przeciwnika ale dystans do nowego przeciwnika jest krótszy to nadpisuje przeciwnika
             if (distance < this.attackRange * this.attackRange && (minDistance > distance || minDistance === null)) {
@@ -136,7 +136,7 @@ class Fighter extends Model {
         for (const t of targets) {
             if (this.currentObjectiveIndex + t.currentObjectiveIndex !== 2)
                 continue
-            const distance = Math.sqrt((t.x - this.x) * (t.x - this.x) + (t.z - this.z) * (t.z - this.z))
+            const distance = Math.sqrt((t.x - this.position.x) * (t.x - this.position.x) + (t.z - this.position.z) * (t.z - this.position.z))
             if (distance < this.sightRange && (minDistance > distance || minDistance === null)) {
                 target = m
                 minDistance = distance
@@ -149,7 +149,7 @@ class Fighter extends Model {
         }
         //Jeśli nie ma przeciwników w zasięgu widzenia to idzie na główny target (most lub baza)
         for (const o of this.objectives[this.currentObjectiveIndex]) {
-            const distance = Math.sqrt((o.x - this.x) * (o.x - this.x) + (o.z - this.z) * (o.z - this.z))
+            const distance = Math.sqrt((o.x - this.position.x) * (o.x - this.position.x) + (o.z - this.position.z) * (o.z - this.position.z))
             if (minDistance > distance || minDistance === null) {
                 target = o
                 minDistance = distance
@@ -165,7 +165,7 @@ class Fighter extends Model {
      */
     rotate(location) {
         //kąt obrotu
-        let targetAngle = Math.atan2(location.z - this.z, -(location.x - this.x)) + (2 * Math.PI)
+        let targetAngle = Math.atan2(location.z - this.position.z, -(location.x - this.position.x)) + (2 * Math.PI)
         if (targetAngle >= 2 * Math.PI) //układ współrzędnych jest tu jakoś dziwnie ustawiony, więc trzeba tak zrobić
             targetAngle -= 2 * Math.PI
         this.rotation = targetAngle
@@ -181,10 +181,9 @@ class Fighter extends Model {
         }
         this.penis = true
         //długość drogi (potrzebna do szybkości animacji)
-        const distance = Math.sqrt(((location.x - this.x) * (location.x - this.x) + (location.z - this.z) * (location.z - this.z)))
+        const distance = Math.sqrt(((location.x - this.position.x) * (location.x - this.position.x) + (location.z - this.position.z) * (location.z - this.position.z)))
         this.movementTween?.stop() //zatrzymanie poprzednich animacji
-        console.log({ x: this.x, z: this.z }, location, distance /*this.movementSpeed*/)
-        this.movementTween = new TWEEN.Tween({ x: this.x, z: this.z }) //animacja
+        this.movementTween = new TWEEN.Tween({ x: this.position.x, z: this.position.z }) //animacja
             .to(location, distance * this.movementSpeed)
             .start()
     }
