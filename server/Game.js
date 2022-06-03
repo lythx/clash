@@ -31,11 +31,10 @@ class Game {
             this.fighters[i].calculateTarget(this.fighters.filter(a => a.player !== this.fighters[i].player))
             gameData.push(this.fighters[i].data)
         }
-        if (this.lastSendDataTimestamp + 200 < Date.now()) {
-            console.log(gameData[0]?.position.x, gameData[0]?.position.z)
+        if (this.lastSendDataTimestamp + 300 < Date.now()) {
             this.lastSendDataTimestamp = Date.now()
-            this.player1Socket.send(JSON.stringify({ event: 'GameData', body: gameData }))
-            this.player2Socket.send(JSON.stringify({ event: 'GameData', body: gameData }))
+            this.player1Socket.send(JSON.stringify({ event: 'gamedata', body: gameData }))
+            this.player2Socket.send(JSON.stringify({ event: 'gamedata', body: gameData }))
         }
     }
 

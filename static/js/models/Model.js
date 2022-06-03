@@ -2,7 +2,6 @@
 
 class Model extends THREE.Group {
 
-    static models = []
     static loader = new THREE.JSONLoader();
     textureLoader = new THREE.TextureLoader()
     static materials
@@ -57,6 +56,14 @@ class Model extends THREE.Group {
         })
         const model = new THREE.Mesh(obj.modelGeometry, modelMaterial)
         const weapon = new THREE.Mesh(obj.weaponGeometry, weaponMaterial)
-        return { model, weapon, attack: obj.attack, hp: obj.hp, cost: obj.cost }
+        return {
+            model,
+            weapon,
+            attack: obj.attack,
+            cost: obj.cost,
+            attackAnimation: obj.attackAnimation,
+            runAnimation: obj.runAnimation,
+            deathAnimation: obj.deathAnimation
+        }
     }
 }

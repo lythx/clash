@@ -9,7 +9,8 @@ class Game {
     static clock = new THREE.Clock();
     static raycaster = new Raycaster()
     static player
-    static fighterClasses = ['none', BillGates]
+    static modelClasses = ['none', BillGates]
+    static models = []
     static selected = null
 
     /**
@@ -46,6 +47,30 @@ class Game {
         this.renderer.render(this.scene, this.camera);
     }
 
+    static update = (data) => {
+        for (const e of data) {
+            const obj = this.models.find(a => a.name === e.name)
+            if (obj === undefined)
+                this.addObject(e)
+            else
+                obj.update(e)
+        }
+        for (const e of this.models) {
+            if (!data.some(a => a.name === e.name))
+                this.removeObject(e)
+        }
+    }
+
+    static addObject(data) {
+        const model = new this.modelClasses.find(a => a === data.className)(data)
+        this.models.push(model)
+    }
+
+    static removeObject(obj) {
+        this.models.splice(this.models.indexOf(obj), 1)
+        obj.kill()
+    }
+
     /**
      * Rozpoczyna grę 
      */
@@ -59,19 +84,6 @@ class Game {
         this.setupListeners()
     }
 
-    /**
-     * Stawia fightera przeciwnika po odebraniu informacji z socketa 
-     */
-    static async opponentFighter(data) {
-        const FighterClass = this.fighterClasses.find(a => a.name === data.className)
-        const fighter = new FighterClass(this.player === 1 ? 2 : 1, data.name)
-        await fighter.load()
-        fighter.position.x = data.x
-        fighter.position.z = data.z
-        fighter.place(data.timestamp)
-        this.scene.add(fighter)
-    }
-
     static setupListeners() {
         window.onkeydown = async (e) => {
             //jeśli kliknięty klawisz to od 1 do 4
@@ -81,7 +93,7 @@ class Game {
                     this.selected = null
                 }
                 //tu trzeba bedzie zmienić bo jak bedziemy mieć rotacje to e.key nie bedzie dzialal ale to pozniej
-                const fighter = new this.fighterClasses[e.key](this.player, `p${this.player}t${Date.now()}`) //nazwa to p[numer gracza]t[unixowe milisekundy]
+                const fighter = new this.modelClasses[e.key](this.player, `p${this.player}t${Date.now()}`) //nazwa to p[numer gracza]t[unixowe milisekundy]
                 await fighter.load()
                 this.selected = fighter //ustawinie klasowej zmiennej na nowo utworzony model
                 this.scene.add(fighter)

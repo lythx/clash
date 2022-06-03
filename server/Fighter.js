@@ -49,10 +49,11 @@ class Fighter extends Model {
     lastAttackTimestamp
     targetPosition
     targetPositionTravelTime
+    dead = false
 
     constructor(player, position, attack, hp, movementSpeed, attackSpeed, rotation, attackRange, sightRange, startTime) {
         const createDate = Date.now()
-        super(player, position)
+        super(player, position, rotation)
         this.attack = attack
         this.maxHp = hp
         this.hp = hp
@@ -71,13 +72,14 @@ class Fighter extends Model {
             this.objectiveTriggers = Fighter.p1ObjectiveTriggers.map(a => -a)
         }
         this.awaitReady(createDate)
+        console.log(this)
     }
 
     get data() {
         return {
-            id: this.id, player: this.player, position: this.position, maxHp: this.maxHp, hp: this.hp,
+            name: this.name, player: this.player, position: this.position, hp: this.hp,
             rotation: this.rotation, targetPosition: this.targetPosition, targetPositionTravelTime: this.targetPositionTravelTime,
-            currentAnimation: this.currentAnimation, placed: this.placed, ready: this.ready
+            currentAnimation: this.currentAnimation, placed: this.placed, ready: this.ready, events: this.getEvents()
         }
     }
 
@@ -96,7 +98,7 @@ class Fighter extends Model {
         this.currentAnimation = 'taunt'
         await new Promise((resolve) => {
             const poll = () => {
-                if (Date.now() > createDate + this.startTime) {
+                if (Date.now() > createDate + 300 + this.startTime) {
                     resolve()
                     return
                 }
@@ -171,23 +173,36 @@ class Fighter extends Model {
         this.rotation = targetAngle
     }
 
-    penis
     /**
      * Obraca i przesuwa model do danej lokacji
      */
     move(location) {
-        if (this.penis) {
-            return
-        }
-        this.penis = true
         //długość drogi (potrzebna do szybkości animacji)
         const distance = Math.sqrt(((location.x - this.position.x) * (location.x - this.position.x) + (location.z - this.position.z) * (location.z - this.position.z)))
+        this.targetPosition = location
+        this.targetPositionTravelTime = distance * this.movementSpeed
         this.movementTween?.stop() //zatrzymanie poprzednich animacji
         this.movementTween = new TWEEN.Tween(this.position) //animacja
             .to(location, distance * this.movementSpeed)
             .start()
     }
 
+    attackEnemy(target) {
+        if (this.lastAttackTimestamp + (1 / this.attackSpeed) * 10 < Date.now())
+            return
+        this.lastAttackTimestamp = Date.now()
+        target.handleGetAttacked(this.attack)
+        this.currentAnimation = 'none'
+        this.addEvent('attack', { name: this.name })
+    }
+
+    handleGetAttacked(attackValue) {
+        this.hp -= attackValue
+        if (this.hp <= 0) {
+            this.dead = true
+            this.addEvent('die')
+        }
+    }
 }
 
 module.exports = Fighter
