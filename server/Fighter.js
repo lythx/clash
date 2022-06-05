@@ -51,9 +51,9 @@ class Fighter extends Model {
     targetPositionTravelTime
     dead = false
 
-    constructor(player, position, attack, hp, movementSpeed, attackSpeed, rotation, attackRange, sightRange, startTime) {
+    constructor(name, player, position, attack, hp, movementSpeed, attackSpeed, rotation, attackRange, sightRange, startTime) {
         const createDate = Date.now()
-        super(player, position, rotation)
+        super(name, player, position, rotation)
         this.attack = attack
         this.maxHp = hp
         this.hp = hp
@@ -72,12 +72,11 @@ class Fighter extends Model {
             this.objectiveTriggers = Fighter.p1ObjectiveTriggers.map(a => -a)
         }
         this.awaitReady(createDate)
-        console.log(this)
     }
 
     get data() {
         return {
-            name: this.name, player: this.player, position: this.position, hp: this.hp,
+            className: this.constructor.name, name: this.name, player: this.player, position: this.position, hp: this.hp,
             rotation: this.rotation, targetPosition: this.targetPosition, targetPositionTravelTime: this.targetPositionTravelTime,
             currentAnimation: this.currentAnimation, placed: this.placed, ready: this.ready, events: this.getEvents()
         }

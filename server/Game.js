@@ -38,8 +38,8 @@ class Game {
         }
     }
 
-    addModel(modelType, player, x, z, rotation) {
-        const model = new Game.modelTypes[modelType](player, x, z, rotation)
+    addModel(name, modelType, player, x, z, rotation) {
+        const model = new Game.modelTypes[modelType](name, player, x, z, rotation)
         if (model instanceof Fighter)
             this.fighters.push(model)
         else

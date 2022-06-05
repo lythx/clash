@@ -9,7 +9,7 @@ class Game {
     static clock = new THREE.Clock();
     static raycaster = new Raycaster()
     static player
-    static modelClasses = ['none', BillGates]
+    static modelClasses = [BillGates]
     static models = []
     static selected = null
 
@@ -24,8 +24,7 @@ class Game {
         this.camera.lookAt(0, -110, 0)
         this.scene.add(new THREE.AxesHelper(1000))
         requestAnimationFrame(() => this.render())
-        const board = new Board()
-        this.tiles = board.tiles
+        this.tiles = new Board().tiles
         this.scene.add(this.tiles)
         //zmiana proporcji sceny przy zmianie wielkości okna przeglądarki
         window.onresize = () => {
@@ -54,14 +53,11 @@ class Game {
             else
                 obj.update(e)
         }
-        for (const e of this.models) {
-            if (!data.some(a => a.name === e.name))
-                this.removeObject(e)
-        }
     }
 
     static addObject(data) {
-        const model = new this.modelClasses.find(a => a === data.className)(data)
+        const ModelClass = this.modelClasses.find(a => a.name === data.className)
+        const model = new ModelClass(data)
         this.models.push(model)
     }
 
@@ -91,7 +87,7 @@ class Game {
                     this.selected = null
                 }
                 //tu trzeba bedzie zmienić bo jak bedziemy mieć rotacje to e.key nie bedzie dzialal ale to pozniej
-                const fighter = new BillGates({ name: null, player: this.player, position: { x: 5000, z: 5000 }, rotation: 0 }) //nazwa to p[numer gracza]t[unixowe milisekundy]
+                const fighter = new BillGates({ name: `p${this.player}t${Date.now()}`, player: this.player, position: { x: 5000, z: 5000 }, rotation: 0 }) //nazwa to p[numer gracza]t[unixowe milisekundy]
                 this.selected = fighter //ustawinie klasowej zmiennej na nowo utworzony model
                 this.scene.add(fighter)
                 const intersects = this.raycaster.get(e, this.tiles.children) //raycaster na plansze
@@ -118,7 +114,6 @@ class Game {
             }
         }
         window.onmousemove = (e) => {
-            console.log(this.selected)
             if (!this.selected) //jeśli żaden model nie jest wybrany nic sie bue dzuehe
                 return
             const intersects = this.raycaster.get(e, this.tiles.children) //raycaster na plansze
@@ -157,8 +152,9 @@ class Game {
                 const pos = intersects[0].object.position
                 const timestamp = Date.now() + 1000
                 this.selected.place(timestamp)
+                this.models.push(this.selected)
                 //wysłanie informacji o modelu do przeciwnika
-                Net.newFighter(this.selected.player, this.selected.constructor.name, pos.x, pos.z, this.selected.rotation)
+                Net.newFighter(this.selected.player, this.selected.name, this.selected.constructor.name, pos.x, pos.z, this.selected.rotation.y)
                 this.selected = null
             }
         }

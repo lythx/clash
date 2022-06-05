@@ -13,7 +13,7 @@ class Fighter extends Model {
     modelMixer
     weaponMixer
 
-    constructor(name, player, position, rotation, cost, maxHp, attack, attackSpeed, startTime, scale, modelGeometry, modelMap, weaponGeometry, weaponMap, attackAnimation, runAnimation, tauntAnimation, deathAnimation) {
+    constructor(name, player, position, rotation, cost, maxHp, attack, attackSpeed, startTime, scale, modelGeometry, modelMap, weaponGeometry, weaponMap) {
         super(name, player, position, rotation, modelGeometry, modelMap, weaponGeometry, weaponMap)
         this.cost = cost
         this.maxHp = maxHp
@@ -21,7 +21,6 @@ class Fighter extends Model {
         this.attack = attack
         this.attackSpeed = attackSpeed
         this.startTime = startTime
-        this.attackAnimation = attackAnimation
         this.scale.set(scale, scale, scale)
         //model
         const modelMaterial = new THREE.MeshBasicMaterial(
@@ -51,13 +50,14 @@ class Fighter extends Model {
         }
     }
 
-    update(rotation, targetPosition, targetPositionTravelTime) {
-        this.rotation.y = rotation
-        this.move(targetPosition, targetPositionTravelTime)
+    update(data) {
+        this.rotation.y = data.rotation
+        if (data.targetPosition !== undefined && data.targetPositionTravelTime !== undefined)
+            this.move(data.targetPosition, data.targetPositionTravelTime)
     }
 
     move(targetPosition, targetPositionTravelTime) {
-        this?.movementTween.stop()
+        this.movementTween?.stop()
         this.movementTween = new TWEEN.Tween(this.position)
             .to(targetPosition, targetPositionTravelTime)
             .start()

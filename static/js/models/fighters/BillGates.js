@@ -1,10 +1,13 @@
 'use strict'
+let i = 0
 
 class BillGates extends Fighter {
 
     constructor(data) {
+        if (i++ === 1)
+            throw err
         const obj = Model.materials.find(a => a.name === 'BillGates')
-        super(data.name, data.player, { x: data.position.x, y: obj.defaultY, z: data.position.Z }, data.rotation, obj.cost, obj.hp, obj.attack, obj.attackSpeed, obj.startTime, obj.scale, obj.modelGeometry, obj.modelMap, obj.weaponGeometry, obj.weaponMap)
+        super(data.name, data.player, { x: data.position.x, y: obj.defaultY, z: data.position.z }, data.rotation, obj.cost, obj.hp, obj.attack, obj.attackSpeed, obj.startTime, obj.scale, obj.modelGeometry, obj.modelMap, obj.weaponGeometry, obj.weaponMap)
         this.createClips(obj.attackAnimation, obj.runAnimation, obj.tauntAnimation, obj.deathAnimation)
     }
 
@@ -54,7 +57,7 @@ class BillGates extends Fighter {
             }
             requestAnimationFrame(poll)
         })
-        this.tauntAnimation()
+        // this.tauntAnimation()
         for (const c of this.children) {
             c.material.color.setHex(0xffffff)
         }

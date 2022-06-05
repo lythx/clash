@@ -1,8 +1,6 @@
 
 class Model {
 
-    static idCount = 0
-
     name
     position
     player
@@ -10,8 +8,8 @@ class Model {
     events = []
     eventIndex = 0
 
-    constructor(player, position, rotation) {
-        this.name = Model.idCount++
+    constructor(name, player, position, rotation) {
+        this.name = name
         this.position = Object.assign(position)
         this.player = player
         this.rotation = rotation

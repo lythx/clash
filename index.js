@@ -79,7 +79,7 @@ const handleMessage = (message, player) => {
     switch (data.event) {
         case 'fighter':
             sendMessage(player === 1 ? 2 : 1, JSON.stringify(data))
-            game.addModel(data.body.className, data.body.player, data.body.x, data.body.z, 0)
+            game.addModel(data.body.name, data.body.className, data.body.player, data.body.x, data.body.z, 0)
             break
     }
 }

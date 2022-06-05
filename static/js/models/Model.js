@@ -9,7 +9,6 @@ class Model extends THREE.Group {
     player
 
     constructor(name, player, position, rotation) {
-        console.log(name, player, position, rotation)
         super()
         this.name = name
         this.player = player
@@ -38,7 +37,6 @@ class Model extends THREE.Group {
                 tauntAnimation: e.tauntAnimation,
                 deathAnimation: e.deathAnimation
             }
-            console.log(obj)
             this.loader.load(e.model, (geometry) => { //ładowanie geometrii
                 obj.modelGeometry = geometry
             });
