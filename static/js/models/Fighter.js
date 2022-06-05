@@ -2,19 +2,56 @@
 
 class Fighter extends Model {
 
+    cost
+    maxHp
+    hp
+    attack
+    attackSpeed
+    startTime
+    clips
     movementTween
-    events = []
+    modelMixer
+    weaponMixer
 
-    constructor(className, name, player, position, rotation) {
-        super(className, name, player, position, rotation)
+    constructor(name, player, position, rotation, cost, maxHp, attack, attackSpeed, startTime, scale, modelGeometry, modelMap, weaponGeometry, weaponMap, attackAnimation, runAnimation, tauntAnimation, deathAnimation) {
+        super(name, player, position, rotation, modelGeometry, modelMap, weaponGeometry, weaponMap)
+        this.cost = cost
+        this.maxHp = maxHp
+        this.hp = maxHp
+        this.attack = attack
+        this.attackSpeed = attackSpeed
+        this.startTime = startTime
+        this.attackAnimation = attackAnimation
+        this.scale.set(scale, scale, scale)
+        //model
+        const modelMaterial = new THREE.MeshBasicMaterial(
+            {
+                map: this.textureLoader.load(modelMap),
+                morphTargets: true //to jest potrzebne do animacji
+            });
+        //broń
+        const weaponMaterial = new THREE.MeshBasicMaterial(
+            {
+                map: this.textureLoader.load(weaponMap),
+                morphTargets: true //to jest potrzebne do animacji
+            });
+        const model = new THREE.Mesh(modelGeometry, modelMaterial)
+        const weapon = new THREE.Mesh(weaponGeometry, weaponMaterial)
+        this.add(model, weapon)
+        this.modelMixer = new THREE.AnimationMixer(model)
+        this.weaponMixer = new THREE.AnimationMixer(weapon)
     }
 
-    update(events, rotation, targetPosition, targetPositionTravelTime) {
-        this.events.push(...events)
-        const timestamp = Date.now()
-        for (const e of events.find(a => a.timestamp < timestamp))
-            this.handleEvents(e.eventType, e.data)
-        this.events.push(events)
+    createClips(attackAnimation, runAnimation, tauntAnimation, deathAnimation) {
+        this.clips = {
+            attack: [this.modelMixer.clipAction(attackAnimation).setLoop(THREE.LoopRepeat), this.weaponMixer.clipAction(attackAnimation).setLoop(THREE.LoopRepeat)],
+            run: [this.modelMixer.clipAction(runAnimation).setLoop(THREE.LoopRepeat), this.weaponMixer.clipAction(runAnimation).setLoop(THREE.LoopRepeat)],
+            taunt: [this.modelMixer.clipAction(tauntAnimation).setLoop(THREE.LoopRepeat), this.weaponMixer.clipAction(tauntAnimation).setLoop(THREE.LoopRepeat)],
+            death: [this.modelMixer.clipAction(deathAnimation).setLoop(THREE.LoopRepeat), this.weaponMixer.clipAction(deathAnimation).setLoop(THREE.LoopRepeat)]
+        }
+    }
+
+    update(rotation, targetPosition, targetPositionTravelTime) {
         this.rotation.y = rotation
         this.move(targetPosition, targetPositionTravelTime)
     }
@@ -26,29 +63,34 @@ class Fighter extends Model {
             .start()
     }
 
-    handleEvents(event, data) {
-        switch (event) {
-            case 'attack':
-                //animacja ataku
-                break
-            case 'getAttacked':
-                this.handleGetAttacked(data.attackValue)
-                break
-            case 'death':
-                this.die()
-                break
-        }
+    animate(delta) {
+        this.modelMixer.update(delta)
+        this.weaponMixer.update(delta)
     }
 
-    attack() {
-        this.playAnimation(this.attackAnimation)
-    }
+    // handleEvents(event, data) {
+    //     switch (event) {
+    //         case 'attack':
+    //             //animacja ataku
+    //             break
+    //         case 'getAttacked':
+    //             this.handleGetAttacked(data.attackValue)
+    //             break
+    //         case 'death':
+    //             this.die()
+    //             break
+    //     }
+    // }
 
-    handleGetAttacked(attackValue) {
-        this.hp -= attackValue
-    }
+    // attackAnimation() {
+    //     this.playAnimation(this.attackAnimation)
+    // }
 
-    die() {
-        this.playAnimation(this.deathAnimation)
-    }
+    // handleGetAttacked(attackValue) {
+    //     this.hp -= attackValue
+    // }
+
+    // die() {
+    //     this.playAnimation(this.deathAnimation)
+    // }
 }

@@ -38,11 +38,10 @@ class Game {
     static render = () => {
         requestAnimationFrame(this.render);
         const delta = this.clock.getDelta();
-        const lgt = Model.models.length
+        const lgt = this.models.length
         TWEEN.update()
         for (let i = 0; i < lgt; i++) {
-            Model.models[i].animate(delta)
-            Model.models[i].target()
+            this.models[i].animate(delta)
         }
         this.renderer.render(this.scene, this.camera);
     }
@@ -80,7 +79,6 @@ class Game {
             this.camera.position.set(-205, 200, -205)
             this.camera.lookAt(0, -110, 0)
         }
-        STATE.gaming = true
         this.setupListeners()
     }
 
@@ -93,8 +91,7 @@ class Game {
                     this.selected = null
                 }
                 //tu trzeba bedzie zmienić bo jak bedziemy mieć rotacje to e.key nie bedzie dzialal ale to pozniej
-                const fighter = new this.modelClasses[e.key](this.player, `p${this.player}t${Date.now()}`) //nazwa to p[numer gracza]t[unixowe milisekundy]
-                await fighter.load()
+                const fighter = new BillGates({ name: null, player: this.player, position: { x: 5000, z: 5000 }, rotation: 0 }) //nazwa to p[numer gracza]t[unixowe milisekundy]
                 this.selected = fighter //ustawinie klasowej zmiennej na nowo utworzony model
                 this.scene.add(fighter)
                 const intersects = this.raycaster.get(e, this.tiles.children) //raycaster na plansze
@@ -121,6 +118,7 @@ class Game {
             }
         }
         window.onmousemove = (e) => {
+            console.log(this.selected)
             if (!this.selected) //jeśli żaden model nie jest wybrany nic sie bue dzuehe
                 return
             const intersects = this.raycaster.get(e, this.tiles.children) //raycaster na plansze

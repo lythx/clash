@@ -124,8 +124,6 @@ class Board {
                 this.tiles.add(tile)
             }
         }
-        const base1 = new Base(1)
-        Game.scene.add(base1)
     }
 
 }
