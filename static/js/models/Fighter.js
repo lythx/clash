@@ -55,20 +55,17 @@ class Fighter extends Model {
 
     update(data) {
         this.rotation.y = data.rotation
-        if (data.position.x - this.position.x > Fighter.positionOffset || data.position.y - this.position.y > Fighter.positionOffset || data.position.z - this.position.z > Fighter.positionOffset)
-            this.position.set(data.position.x, data.position.y, data.position.z)
-        if (data.targetPosition !== undefined)
-            this.move(data.targetPosition)
+        // if (data.position.x - this.position.x > Fighter.positionOffset || data.position.y - this.position.y > Fighter.positionOffset || data.position.z - this.position.z > Fighter.positionOffset)
+        this.position.set(data.position.x, data.position.y, data.position.z)
+        // if (data.targetPosition !== undefined)
+        //     this.move(data.targetPosition)
     }
 
     move(targetPosition) {
         const distance = Math.sqrt(((targetPosition.x - this.position.x) * (targetPosition.x - this.position.x) + (targetPosition.z - this.position.z) * (targetPosition.z - this.position.z)))
-        console.log(targetPosition)
-        console.log(this.position)
-        console.log(distance * this.movementSpeed)
         this.movementTween?.stop()
         this.movementTween = new TWEEN.Tween(this.position)
-            .to(targetPosition, distance * this.movementSpeed)
+            .to(targetPosition, distance * 75)
             .start()
     }
 
