@@ -47,4 +47,9 @@ class Model extends THREE.Group {
         }
         this.materials = arr
     }
+
+    setColor(hex) {
+        for (const e of this.children)
+            e.material.color.setHex(hex)
+    }
 }

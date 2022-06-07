@@ -74,20 +74,6 @@ class Fighter extends Model {
         this.weaponMixer.update(delta)
     }
 
-    // handleEvents(event, data) {
-    //     switch (event) {
-    //         case 'attack':
-    //             //animacja ataku
-    //             break
-    //         case 'getAttacked':
-    //             this.handleGetAttacked(data.attackValue)
-    //             break
-    //         case 'death':
-    //             this.die()
-    //             break
-    //     }
-    // }
-
     // attackAnimation() {
     //     this.playAnimation(this.attackAnimation)
     // }

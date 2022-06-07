@@ -82,14 +82,14 @@ class Game {
         switch (eventName) {
             case 'newFighter':
                 const model = this.models.find(a => a.name === data.name)
-                console.log(model)
                 if (model === undefined) {
                     const ModelClass = this.modelClasses.find(a => a.name === data.className)
                     const model = new ModelClass(data)
                     this.models.push(model)
                     this.scene.add(model)
+                    model.setColor(0xffa500)
                 } else {
-                    model.place()
+                    model.setColor(0xffa500)
                 }
         }
     }
