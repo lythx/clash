@@ -1,5 +1,8 @@
 const Fighter = require('./Fighter.js')
 const BillGates = require('./fighters/BillGates.js')
+const CFG = require('./GameConfig.js')
+
+let g = 0
 
 class Game {
 
@@ -15,26 +18,37 @@ class Game {
         this.player1Socket = player1Socket
         this.player2Socket = player2Socket
         this.time = time
-
         setImmediate(() => this.render())
     }
 
     render() {
         setImmediate(() => this.render())
-        const gameData = []
-        const buildingsLength = this.buildings.length
-        for (let i = 0; i < buildingsLength; i++) {
-            gameData.push(this.buildings[i].data)
-        }
-        const fightersLength = this.fighters.length
-        for (let i = 0; i < fightersLength; i++) {
-            this.fighters[i].calculateTarget(this.fighters.filter(a => a.player !== this.fighters[i].player))
-            gameData.push(this.fighters[i].data)
-        }
-        if (this.lastSendDataTimestamp + 300 < Date.now()) {
+        if (this.lastSendDataTimestamp + CFG.POLLING_INTERVAL < Date.now()) {
+            const gameData = []
+            const buildingsLength = this.buildings.length
+            for (let i = 0; i < buildingsLength; i++) {
+                gameData.push(this.buildings[i].data)
+            }
+            const fightersLength = this.fighters.length
+            for (let i = 0; i < fightersLength; i++) {
+                this.fighters[i].calculateTarget(this.fighters.filter(a => a.player !== this.fighters[i].player))
+                gameData.push(this.fighters[i].data)
+            }
             this.lastSendDataTimestamp = Date.now()
             this.player1Socket.send(JSON.stringify({ event: 'gamedata', body: gameData }))
             this.player2Socket.send(JSON.stringify({ event: 'gamedata', body: gameData }))
+        }
+        else {
+            const fightersLength = this.fighters.length
+            for (let i = 0; i < fightersLength; i++) {
+                this.fighters[i].calculateTarget(this.fighters.filter(a => a.player !== this.fighters[i].player))
+                const events = this.fighters[i].getEvents()
+                const lgt = events.length
+                for (let i = 0; i < lgt; i++) {
+                    this.player1Socket.send(JSON.stringify({ event: 'gameevent', body: events[i] }))
+                    this.player2Socket.send(JSON.stringify({ event: 'gameevent', body: events[i] }))
+                }
+            }
         }
     }
 

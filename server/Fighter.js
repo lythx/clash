@@ -1,5 +1,6 @@
 const TWEEN = require('@tweenjs/tween.js')
 const Model = require('./Model.js')
+const CFG = require('./GameConfig.js')
 
 class Fighter extends Model {
 
@@ -71,14 +72,25 @@ class Fighter extends Model {
             this.objectives = Fighter.p2Objectives
             this.objectiveTriggers = Fighter.p1ObjectiveTriggers.map(a => -a)
         }
+        this.emitEvent(
+            'newFighter',
+            {
+                className: this.constructor.name,
+                name: this.name, player: this.player,
+                position: this.position,
+                hp: this.hp,
+                rotation: this.rotation
+            },
+            createDate + CFG.SERVER_DELAY
+        )
         this.awaitReady(createDate)
     }
 
     get data() {
         return {
-            className: this.constructor.name, name: this.name, player: this.player, position: this.position, hp: this.hp,
+            name: this.name, position: this.position, hp: this.hp,
             rotation: this.rotation, targetPosition: this.targetPosition, targetPositionTravelTime: this.targetPositionTravelTime,
-            currentAnimation: this.currentAnimation, placed: this.placed, ready: this.ready, events: this.getEvents()
+            currentAnimation: this.currentAnimation, placed: this.placed, ready: this.ready
         }
     }
 

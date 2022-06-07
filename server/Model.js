@@ -1,3 +1,4 @@
+'use strict'
 
 class Model {
 
@@ -15,24 +16,18 @@ class Model {
         this.rotation = rotation
     }
 
-    addEvent(event, data) {
-        this.events.unshift({ event, data, timestamp: Date.now() + 50 })
-        this.eventIndex++
+    emitEvent(event, data, timestamp) {
+        this.events.unshift({ event, data, timestamp })
     }
 
     getEvents() {
-        this.events.length = Math.min(20, this.events.length)
-        const ret = []
-        const lgt = this.eventIndex
-        for (let i = 0; i < lgt; i++) {
-            ret.push(this.events)
-        }
-        this.eventIndex -= lgt
+        const ret = [...this.events]
+        this.events.length = this.events.length - ret.length
         return ret
     }
 
     updateAndGetData() {
-        return { name: this.name, player: this.player, position: this.position, events: this.getEvents() }
+        return { name: this.name, player: this.player, position: this.position }
     }
 
 }

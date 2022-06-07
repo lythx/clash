@@ -12,6 +12,7 @@ class Game {
     static modelClasses = [BillGates]
     static models = []
     static selected = null
+    static events = []
 
     /**
      * Generuje scene i plansze
@@ -36,6 +37,13 @@ class Game {
 
     static render = () => {
         requestAnimationFrame(this.render);
+        const eventsLgt = this.events.length
+        for (let i = 0; i < eventsLgt; i++) {
+            if (this.events[i].timestamp < Date.now()) {
+                this.handleEvent(this.events[i].event, this.events[i].data)
+                this.events.splice(i, 1)
+            }
+        }
         const delta = this.clock.getDelta();
         const lgt = this.models.length
         TWEEN.update()
@@ -48,22 +56,9 @@ class Game {
     static update = (data) => {
         for (const e of data) {
             const obj = this.models.find(a => a.name === e.name)
-            if (obj === undefined)
-                this.addObject(e)
-            else
+            if (obj !== undefined)
                 obj.update(e)
         }
-    }
-
-    static addObject(data) {
-        const ModelClass = this.modelClasses.find(a => a.name === data.className)
-        const model = new ModelClass(data)
-        this.models.push(model)
-    }
-
-    static removeObject(obj) {
-        this.models.splice(this.models.indexOf(obj), 1)
-        obj.kill()
     }
 
     /**
@@ -76,6 +71,27 @@ class Game {
             this.camera.lookAt(0, -110, 0)
         }
         this.setupListeners()
+    }
+
+    static registerEvent(event) {
+        this.events.push(event)
+    }
+
+    static handleEvent(eventName, data) {
+        console.log(eventName)
+        switch (eventName) {
+            case 'newFighter':
+                const model = this.models.find(a => a.name === data.name)
+                console.log(model)
+                if (model === undefined) {
+                    const ModelClass = this.modelClasses.find(a => a.name === data.className)
+                    const model = new ModelClass(data)
+                    this.models.push(model)
+                    this.scene.add(model)
+                } else {
+                    model.place()
+                }
+        }
     }
 
     static setupListeners() {

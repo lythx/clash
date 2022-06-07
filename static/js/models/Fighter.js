@@ -2,6 +2,8 @@
 
 class Fighter extends Model {
 
+    static positionOffset = 10
+
     cost
     maxHp
     hp
@@ -52,6 +54,8 @@ class Fighter extends Model {
 
     update(data) {
         this.rotation.y = data.rotation
+        if (data.position.x - this.position.x > Fighter.positionOffset || data.position.y - this.position.y > Fighter.positionOffset || data.position.z - this.position.z > Fighter.positionOffset)
+            this.position.set(data.position.x, data.position.y, data.position.z)
         if (data.targetPosition !== undefined && data.targetPositionTravelTime !== undefined)
             this.move(data.targetPosition, data.targetPositionTravelTime)
     }
