@@ -31,6 +31,7 @@ class Net {
                     }
                     break
                 case 'gamedata':
+                    console.log('asdsa')
                     Game.update(data.body)
                     break
                 case 'gameevent':

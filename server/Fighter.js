@@ -89,7 +89,7 @@ class Fighter extends Model {
     get data() {
         return {
             name: this.name, position: this.position, hp: this.hp,
-            rotation: this.rotation, targetPosition: this.targetPosition, targetPositionTravelTime: this.targetPositionTravelTime,
+            rotation: this.rotation, targetPosition: this.targetPosition,
             currentAnimation: this.currentAnimation, placed: this.placed, ready: this.ready
         }
     }
@@ -191,7 +191,6 @@ class Fighter extends Model {
         //długość drogi (potrzebna do szybkości animacji)
         const distance = Math.sqrt(((location.x - this.position.x) * (location.x - this.position.x) + (location.z - this.position.z) * (location.z - this.position.z)))
         this.targetPosition = location
-        this.targetPositionTravelTime = distance * this.movementSpeed
         this.movementTween?.stop() //zatrzymanie poprzednich animacji
         this.movementTween = new TWEEN.Tween(this.position) //animacja
             .to(location, distance * this.movementSpeed)

@@ -2,8 +2,6 @@ const Fighter = require('./Fighter.js')
 const BillGates = require('./fighters/BillGates.js')
 const CFG = require('./GameConfig.js')
 
-let g = 0
-
 class Game {
 
     player1Socket
