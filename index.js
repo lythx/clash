@@ -3,6 +3,8 @@ const app = express()
 const PORT = 3000
 const WebSocket = require('ws')
 const Datastore = require('nedb')
+const Game = require('./server/Game')
+const modelData = require('./server/modelData')
 
 app.use(express.static('static'))
 app.use(express.json())
@@ -59,9 +61,9 @@ const coll1 = new Datastore({
 //     console.log("dodano dokument (obiekt):")
 //     console.log(newDoc)
 // });
+let game
 const timer = new Timer();
 const players = []
-let gameRunning = false
 let p1Socket
 let p2Socket
 
@@ -76,7 +78,7 @@ const handleMessage = (message, player) => {
     const data = JSON.parse(message.toString())
     switch (data.event) {
         case 'fighter':
-            sendMessage(player === 1 ? 2 : 1, JSON.stringify(data))
+            game.addModel(data.body.name, data.body.className, data.body.player, data.body.x, data.body.z, 0)
             break
     }
 }
@@ -99,6 +101,7 @@ wss.on('connection', (socket) => {
             event: 'database',
             body: docs
         }));
+        modelData.load(docs)
     });
     socket.on('message', (message) => {
         const data = JSON.parse(message.toString())
@@ -137,6 +140,7 @@ wss.on('connection', (socket) => {
                         name: data.body.name
                     }
                 }))
+                game = new Game(p1Socket, socket, 180)
                 //wysłanie do drugiego gracza rozpoczęcia gry (nie trzeba sendMessage() bo mamy tu socket 2 gracza)
                 socket.send(JSON.stringify({ event: 'start' }))
                 //wysłanie do pierwszego gracza rozpoczęcia gry

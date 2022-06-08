@@ -9,8 +9,10 @@ class Game {
     static clock = new THREE.Clock();
     static raycaster = new Raycaster()
     static player
-    static fighterClasses = ['none', BillGates]
+    static modelClasses = [BillGates]
+    static models = []
     static selected = null
+    static events = []
 
     /**
      * Generuje scene i plansze
@@ -23,8 +25,7 @@ class Game {
         this.camera.lookAt(0, -110, 0)
         this.scene.add(new THREE.AxesHelper(1000))
         requestAnimationFrame(() => this.render())
-        const board = new Board()
-        this.tiles = board.tiles
+        this.tiles = new Board().tiles
         this.scene.add(this.tiles)
         //zmiana proporcji sceny przy zmianie wielkości okna przeglądarki
         window.onresize = () => {
@@ -36,12 +37,19 @@ class Game {
 
     static render = () => {
         requestAnimationFrame(this.render);
+        // const eventsLgt = this.events.length
+        for (let i = 0; i < this.events.length; i++) {
+            if (this.events[i].timestamp < Date.now()) {
+                this.handleEvent(this.events[i].event, this.events[i].data)
+                this.events.splice(i, 1)
+                i--
+            }
+        }
         const delta = this.clock.getDelta();
-        const lgt = Model.models.length
+        const lgt = this.models.length
         TWEEN.update()
         for (let i = 0; i < lgt; i++) {
-            Model.models[i].animate(delta)
-            Model.models[i].target()
+            this.models[i].animate(delta)
         }
         this.renderer.render(this.scene, this.camera);
     }
@@ -55,21 +63,85 @@ class Game {
             this.camera.position.set(-205, 200, -205)
             this.camera.lookAt(0, -110, 0)
         }
-        STATE.gaming = true
         this.setupListeners()
     }
 
-    /**
-     * Stawia fightera przeciwnika po odebraniu informacji z socketa 
-     */
-    static async opponentFighter(data) {
-        const FighterClass = this.fighterClasses.find(a => a.name === data.className)
-        const fighter = new FighterClass(this.player === 1 ? 2 : 1, data.name)
-        await fighter.load()
-        fighter.position.x = data.x
-        fighter.position.z = data.z
-        fighter.place(data.timestamp)
-        this.scene.add(fighter)
+    static registerEvent(event) {
+        this.events.push(event)
+    }
+
+    static handleEvent(eventName, data) {
+        switch (eventName) {
+            case 'gameData': {
+                for (const e of data) {
+                    const model = this.models.find(a => a.name === e.name)
+                    model.update(e.position, e.targetPosition, e.rotation)
+                }
+                break
+            }
+            case 'newFighter': {
+                const model = this.models.find(a => a.name === data.name)
+                if (model === undefined) {
+                    const ModelClass = this.modelClasses.find(a => a.name === data.className)
+                    const model = new ModelClass(data)
+                    this.models.push(model)
+                    this.scene.add(model)
+                    model.setColor(0xffa500)
+                    return
+                }
+                model.setColor(0xffa500)
+                break
+            }
+            case 'fighterPlaced': {
+                const model = this.models.find(a => a.name === data.name)
+                if (model === undefined) {
+                    console.warn('MODEL NOT EXISTING FIGHTERPLACED ERROR')
+                    return
+                }
+                model.setColor(0xffffff)
+                model.tauntAnimation()
+                break
+            }
+            case 'fighterRun': {
+                const model = this.models.find(a => a.name === data.name)
+                if (model === undefined) {
+                    console.warn('MODEL NOT EXISTING FIGHTERRUN ERROR')
+                    return
+                }
+                model.runAnimation()
+                break
+            }
+            case 'fighterAttack': {
+                const model = this.models.find(a => a.name === data.name)
+                if (model === undefined) {
+                    console.warn('MODEL NOT EXISTING FIGHTERATTACK ERROR')
+                    return
+                }
+                const target = this.models.find(a => a.name === data.target)
+                if (target === undefined) {
+                    console.warn('TARGET NOT EXISTING FIGHTERATTACK ERROR')
+                    return
+                }
+                model.handleAttack(target)
+                break
+            }
+            case 'fighterDeath': {
+                const model = this.models.find(a => a.name === data.name)
+                if (model === undefined) {
+                    console.warn('MODEL NOT EXISTING FIGHTERDIE ERROR')
+                    return
+                }
+                model.die()
+                this.removeObject(model, 500)
+                break
+            }
+        }
+    }
+
+    static async removeObject(object, delay) {
+        await new Promise((resolve) => setTimeout(resolve, delay))
+        this.models = this.models.filter(a => a.name !== object.name)
+        this.scene.remove(object)
     }
 
     static setupListeners() {
@@ -81,8 +153,7 @@ class Game {
                     this.selected = null
                 }
                 //tu trzeba bedzie zmienić bo jak bedziemy mieć rotacje to e.key nie bedzie dzialal ale to pozniej
-                const fighter = new this.fighterClasses[e.key](this.player, `p${this.player}t${Date.now()}`) //nazwa to p[numer gracza]t[unixowe milisekundy]
-                await fighter.load()
+                const fighter = new BillGates({ name: `p${this.player}t${Date.now()}`, player: this.player, position: { x: 5000, z: 5000 }, rotation: 0 }) //nazwa to p[numer gracza]t[unixowe milisekundy]
                 this.selected = fighter //ustawinie klasowej zmiennej na nowo utworzony model
                 this.scene.add(fighter)
                 const intersects = this.raycaster.get(e, this.tiles.children) //raycaster na plansze
@@ -147,8 +218,9 @@ class Game {
                 const pos = intersects[0].object.position
                 const timestamp = Date.now() + 1000
                 this.selected.place(timestamp)
+                this.models.push(this.selected)
                 //wysłanie informacji o modelu do przeciwnika
-                Net.newFighter(this.selected.name, this.selected.constructor.name, pos.x, pos.z, timestamp)
+                Net.newFighter(this.selected.player, this.selected.name, this.selected.constructor.name, pos.x, pos.z, this.selected.rotation.y)
                 this.selected = null
             }
         }

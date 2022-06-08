@@ -1,0 +1,3 @@
+const SERVER_DELAY = 500
+const POLLING_INTERVAL = 200
+module.exports = { SERVER_DELAY, POLLING_INTERVAL }

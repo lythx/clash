@@ -30,14 +30,14 @@ class Net {
                         Ui.status('Maksymalna liczba graczy')
                     }
                     break
+                case 'gameevent':
+                    Game.registerEvent(data.body)
+                    break
                 //wysyłane po zalogowaniu sie drugiego gracza do obu graczy
                 case 'start':
                     Game.start(this.player)
                     Ui.start()
                     break
-                //wysyłane do przeciwnika kiedy gracz postawi fightera
-                case 'fighter':
-                    Game.opponentFighter(data.body)
             }
         })
     }
@@ -60,7 +60,7 @@ class Net {
     /**
      * Wysyła informacje o nowym fighterze na serwer
      */
-    static newFighter(name, className, x, z, timestamp) {
-        this.socket.send(JSON.stringify({ event: 'fighter', body: { name, className, x, z, timestamp } }))
+    static newFighter(player, name, className, x, z, rotation) {
+        this.socket.send(JSON.stringify({ event: 'fighter', body: { player, name, className, x, z, rotation } }))
     }
 }
