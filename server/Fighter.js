@@ -47,7 +47,7 @@ class Fighter extends Model {
     placed = false
     ready = false
     movementTween
-    lastAttackTimestamp
+    lastAttackTimestamp = 0
     targetPosition
     targetPositionTravelTime
     dead = false
@@ -88,9 +88,10 @@ class Fighter extends Model {
 
     get data() {
         return {
-            name: this.name, position: this.position, hp: this.hp,
-            rotation: this.rotation, targetPosition: this.targetPosition,
-            currentAnimation: this.currentAnimation, placed: this.placed, ready: this.ready
+            name: this.name,
+            position: this.position,
+            rotation: this.rotation,
+            targetPosition: this.targetPosition
         }
     }
 
@@ -106,7 +107,7 @@ class Fighter extends Model {
             setImmediate(poll)
         })
         this.placed = true
-        this.currentAnimation = 'taunt'
+        this.emitEvent('fighterPlaced', { name: this.name }, Date.now() + CFG.SERVER_DELAY)
         await new Promise((resolve) => {
             const poll = () => {
                 if (Date.now() > createDate + 300 + this.startTime) {
@@ -118,6 +119,7 @@ class Fighter extends Model {
             setImmediate(poll)
         })
         this.ready = true
+        this.emitEvent('fighterRun', { name: this.name }, Date.now() + CFG.SERVER_DELAY)
     }
 
     calculateTarget(targets) {
@@ -133,7 +135,7 @@ class Fighter extends Model {
         //Sprawdzenie czy jakiś przeciwnik jest w zasięgu ataku
         for (const t of targets) {
             //wzór na sprawdzenie zasięgu (x2-x1)^2 + (y2-y1)^2 < r^2 (zasięg jest okręgiem)
-            const distance = Math.sqrt((t.x - this.position.x) * (t.x - this.position.x) + (t.z - this.position.z) * (t.z - this.position.z))
+            const distance = Math.sqrt((t.position.x - this.position.x) * (t.position.x - this.position.x) + (t.position.z - this.position.z) * (t.position.z - this.position.z))
             //jeśli przeciwnik jest w zasięgu ataku to dodaje go do arrayu 
             //jeśli znaleziono już jakiegoś przeciwnika ale dystans do nowego przeciwnika jest krótszy to nadpisuje przeciwnika
             if (distance < this.attackRange * this.attackRange && (minDistance > distance || minDistance === null)) {
@@ -149,15 +151,15 @@ class Fighter extends Model {
         for (const t of targets) {
             if (this.currentObjectiveIndex + t.currentObjectiveIndex !== 2)
                 continue
-            const distance = Math.sqrt((t.x - this.position.x) * (t.x - this.position.x) + (t.z - this.position.z) * (t.z - this.position.z))
+            const distance = Math.sqrt((t.position.x - this.position.x) * (t.position.x - this.position.x) + (t.position.z - this.position.z) * (t.position.z - this.position.z))
             if (distance < this.sightRange && (minDistance > distance || minDistance === null)) {
-                target = m
+                target = t
                 minDistance = distance
             }
         }
         if (target !== null) { //jeśli jakiś przeciwnik jest w zasięgu widzenia 
-            this.rotate({ x: target.x, z: target.z })
-            this.move({ x: target.x, z: target.z }) //idzie w jego kierunku
+            this.rotate({ x: target.position.x, z: target.position.z })
+            this.move({ x: target.position.x, z: target.position.z }) //idzie w jego kierunku
             return
         }
         //Jeśli nie ma przeciwników w zasięgu widzenia to idzie na główny target (most lub baza)
@@ -198,19 +200,19 @@ class Fighter extends Model {
     }
 
     attackEnemy(target) {
-        if (this.lastAttackTimestamp + (1 / this.attackSpeed) * 10 < Date.now())
+        if (this.lastAttackTimestamp + 1000 > Date.now())
             return
         this.lastAttackTimestamp = Date.now()
         target.handleGetAttacked(this.attack)
         this.currentAnimation = 'none'
-        this.addEvent('attack', { name: this.name })
+        this.emitEvent('fighterAttack', { name: this.name, target: target.name }, Date.now() + CFG.SERVER_DELAY)
     }
 
     handleGetAttacked(attackValue) {
         this.hp -= attackValue
         if (this.hp <= 0) {
             this.dead = true
-            this.addEvent('die')
+            this.emitEvent('fighterDeath', { name: this.name }, Date.now() + CFG.SERVER_DELAY)
         }
     }
 }

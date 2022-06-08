@@ -37,11 +37,12 @@ class Game {
 
     static render = () => {
         requestAnimationFrame(this.render);
-        const eventsLgt = this.events.length
-        for (let i = 0; i < eventsLgt; i++) {
+        // const eventsLgt = this.events.length
+        for (let i = 0; i < this.events.length; i++) {
             if (this.events[i].timestamp < Date.now()) {
                 this.handleEvent(this.events[i].event, this.events[i].data)
                 this.events.splice(i, 1)
+                i--
             }
         }
         const delta = this.clock.getDelta();
@@ -51,14 +52,6 @@ class Game {
             this.models[i].animate(delta)
         }
         this.renderer.render(this.scene, this.camera);
-    }
-
-    static update = (data) => {
-        for (const e of data) {
-            const obj = this.models.find(a => a.name === e.name)
-            if (obj !== undefined)
-                obj.update(e)
-        }
     }
 
     /**
@@ -78,9 +71,15 @@ class Game {
     }
 
     static handleEvent(eventName, data) {
-        console.log(eventName)
         switch (eventName) {
-            case 'newFighter':
+            case 'gameData': {
+                for (const e of data) {
+                    const model = this.models.find(a => a.name === e.name)
+                    model.update(e.position, e.targetPosition, e.rotation)
+                }
+                break
+            }
+            case 'newFighter': {
                 const model = this.models.find(a => a.name === data.name)
                 if (model === undefined) {
                     const ModelClass = this.modelClasses.find(a => a.name === data.className)
@@ -88,9 +87,48 @@ class Game {
                     this.models.push(model)
                     this.scene.add(model)
                     model.setColor(0xffa500)
-                } else {
-                    model.setColor(0xffa500)
+                    return
                 }
+                model.setColor(0xffa500)
+                break
+            }
+            case 'fighterPlaced': {
+                const model = this.models.find(a => a.name === data.name)
+                if (model === undefined) {
+                    console.warn('MODEL NOT EXISTING FIGHTERPLACED ERROR')
+                    return
+                }
+                model.setColor(0xffffff)
+                model.tauntAnimation()
+                break
+            }
+            case 'fighterRun': {
+                const model = this.models.find(a => a.name === data.name)
+                if (model === undefined) {
+                    console.warn('MODEL NOT EXISTING FIGHTERRUN ERROR')
+                    return
+                }
+                model.runAnimation()
+                break
+            }
+            case 'fighterAttack': {
+                const model = this.models.find(a => a.name === data.name)
+                if (model === undefined) {
+                    console.warn('MODEL NOT EXISTING FIGHTERATTACK ERROR')
+                    return
+                }
+                model.handleAttack(data)
+                break
+            }
+            case 'fighterDeath': {
+                const model = this.models.find(a => a.name === data.name)
+                if (model === undefined) {
+                    console.warn('MODEL NOT EXISTING FIGHTERDIE ERROR')
+                    return
+                }
+                model.die()
+                break
+            }
         }
     }
 

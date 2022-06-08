@@ -27,7 +27,7 @@ class Model {
     }
 
     updateAndGetData() {
-        return { name: this.name, player: this.player, position: this.position }
+        return { name: this.name, position: this.position }
     }
 
 }

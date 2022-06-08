@@ -30,10 +30,6 @@ class Net {
                         Ui.status('Maksymalna liczba graczy')
                     }
                     break
-                case 'gamedata':
-                    console.log('asdsa')
-                    Game.update(data.body)
-                    break
                 case 'gameevent':
                     Game.registerEvent(data.body)
                     break

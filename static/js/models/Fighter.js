@@ -46,19 +46,19 @@ class Fighter extends Model {
 
     createClips(attackAnimation, runAnimation, tauntAnimation, deathAnimation) {
         this.clips = {
-            attack: [this.modelMixer.clipAction(attackAnimation).setLoop(THREE.LoopRepeat), this.weaponMixer.clipAction(attackAnimation).setLoop(THREE.LoopRepeat)],
+            attack: [this.modelMixer.clipAction(attackAnimation).setLoop(THREE.LoopOnce), this.weaponMixer.clipAction(attackAnimation).setLoop(THREE.LoopOnce)],
             run: [this.modelMixer.clipAction(runAnimation).setLoop(THREE.LoopRepeat), this.weaponMixer.clipAction(runAnimation).setLoop(THREE.LoopRepeat)],
             taunt: [this.modelMixer.clipAction(tauntAnimation).setLoop(THREE.LoopRepeat), this.weaponMixer.clipAction(tauntAnimation).setLoop(THREE.LoopRepeat)],
             death: [this.modelMixer.clipAction(deathAnimation).setLoop(THREE.LoopRepeat), this.weaponMixer.clipAction(deathAnimation).setLoop(THREE.LoopRepeat)]
         }
     }
 
-    update(data) {
-        this.rotation.y = data.rotation
-        // if (data.position.x - this.position.x > Fighter.positionOffset || data.position.y - this.position.y > Fighter.positionOffset || data.position.z - this.position.z > Fighter.positionOffset)
-        this.position.set(data.position.x, data.position.y, data.position.z)
+    update(position, targetPosition, rotation) {
+        this.rotation.y = rotation
+        // if (position.x - this.position.x > Fighter.positionOffset || position.y - this.position.y > Fighter.positionOffset || position.z - this.position.z > Fighter.positionOffset)
+        this.position.set(position.x, position.y, position.z)
         // if (data.targetPosition !== undefined)
-        //     this.move(data.targetPosition)
+        //     this.move(targetPosition)
     }
 
     move(targetPosition) {
@@ -74,15 +74,42 @@ class Fighter extends Model {
         this.weaponMixer.update(delta)
     }
 
-    // attackAnimation() {
-    //     this.playAnimation(this.attackAnimation)
-    // }
+    handleAttack(attackValue) {
+        console.log('ATTACK')
+        this.attackAnimation()
+    }
 
-    // handleGetAttacked(attackValue) {
-    //     this.hp -= attackValue
-    // }
+    die() {
+        console.log('DIE')
+        this.deathAnimation()
+    }
 
-    // die() {
-    //     this.playAnimation(this.deathAnimation)
-    // }
+    tauntAnimation() {
+        this.stopAnimations()
+        for (const e of this.clips.taunt) { e.play() }
+    }
+
+    attackAnimation() {
+        this.stopAnimations()
+        console.log('ATTACKANIMATION')
+    }
+
+    runAnimation() {
+        this.stopAnimations()
+        for (const e of this.clips.run) { e.play() }
+    }
+
+    deathAnimation() {
+        this.stopAnimations()
+        console.log('DEATH')
+    }
+
+    stopAnimations() {
+        for (const key in this.clips) {
+            for (const e of this.clips[key]) {
+                e.stop()
+            }
+        }
+    }
+
 }

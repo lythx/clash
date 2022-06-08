@@ -23,18 +23,14 @@ class Game {
         setImmediate(() => this.render())
         if (this.lastSendDataTimestamp + CFG.POLLING_INTERVAL < Date.now()) {
             const gameData = []
-            const buildingsLength = this.buildings.length
-            for (let i = 0; i < buildingsLength; i++) {
-                gameData.push(this.buildings[i].data)
-            }
             const fightersLength = this.fighters.length
             for (let i = 0; i < fightersLength; i++) {
                 this.fighters[i].calculateTarget(this.fighters.filter(a => a.player !== this.fighters[i].player))
                 gameData.push(this.fighters[i].data)
             }
             this.lastSendDataTimestamp = Date.now()
-            this.player1Socket.send(JSON.stringify({ event: 'gamedata', body: gameData }))
-            this.player2Socket.send(JSON.stringify({ event: 'gamedata', body: gameData }))
+            this.player1Socket.send(JSON.stringify({ event: 'gameevent', body: { event: 'gameData', data: gameData, timestamp: this.lastSendDataTimestamp + CFG.SERVER_DELAY } }))
+            this.player2Socket.send(JSON.stringify({ event: 'gameevent', body: { event: 'gameData', data: gameData, timestamp: this.lastSendDataTimestamp + CFG.SERVER_DELAY } }))
         }
         else {
             const fightersLength = this.fighters.length
