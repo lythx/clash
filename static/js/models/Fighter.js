@@ -14,7 +14,9 @@ class Fighter extends Model {
     movementTween
     modelMixer
     movementSpeed = 100
+    attackAnimationDelay = 200
     weaponMixer
+    dead = false
 
     constructor(name, player, position, rotation, cost, maxHp, attack, attackSpeed, startTime, scale, modelGeometry, modelMap, weaponGeometry, weaponMap) {
         super(name, player, position, rotation, modelGeometry, modelMap, weaponGeometry, weaponMap)
@@ -49,7 +51,7 @@ class Fighter extends Model {
             attack: [this.modelMixer.clipAction(attackAnimation).setLoop(THREE.LoopOnce), this.weaponMixer.clipAction(attackAnimation).setLoop(THREE.LoopOnce)],
             run: [this.modelMixer.clipAction(runAnimation).setLoop(THREE.LoopRepeat), this.weaponMixer.clipAction(runAnimation).setLoop(THREE.LoopRepeat)],
             taunt: [this.modelMixer.clipAction(tauntAnimation).setLoop(THREE.LoopRepeat), this.weaponMixer.clipAction(tauntAnimation).setLoop(THREE.LoopRepeat)],
-            death: [this.modelMixer.clipAction(deathAnimation).setLoop(THREE.LoopRepeat), this.weaponMixer.clipAction(deathAnimation).setLoop(THREE.LoopRepeat)]
+            death: [this.modelMixer.clipAction(deathAnimation).setLoop(THREE.LoopOnce), this.weaponMixer.clipAction(deathAnimation).setLoop(THREE.LoopOnce)]
         }
     }
 
@@ -74,13 +76,22 @@ class Fighter extends Model {
         this.weaponMixer.update(delta)
     }
 
-    handleAttack(attackValue) {
-        console.log('ATTACK')
+    async handleAttack(target) {
         this.attackAnimation()
+        await new Promise((resolve) => setTimeout(resolve, this.attackAnimationDelay))
+        target.handleGetAttacked(this.attack)
+    }
+
+    async handleGetAttacked(attackStrength) {
+        this.hp -= attackStrength
+        this.setColor(0xff0000)
+        if (this.hp <= 0) { return }
+        await new Promise((resolve) => setTimeout(resolve, 200))
+        this.setColor(0xffffff)
     }
 
     die() {
-        console.log('DIE')
+        this.setColor(0xff0000)
         this.deathAnimation()
     }
 
@@ -91,7 +102,7 @@ class Fighter extends Model {
 
     attackAnimation() {
         this.stopAnimations()
-        console.log('ATTACKANIMATION')
+        for (const e of this.clips.attack) { e.play() }
     }
 
     runAnimation() {
@@ -101,7 +112,7 @@ class Fighter extends Model {
 
     deathAnimation() {
         this.stopAnimations()
-        console.log('DEATH')
+        for (const e of this.clips.death) { e.play() }
     }
 
     stopAnimations() {

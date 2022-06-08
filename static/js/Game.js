@@ -117,7 +117,12 @@ class Game {
                     console.warn('MODEL NOT EXISTING FIGHTERATTACK ERROR')
                     return
                 }
-                model.handleAttack(data)
+                const target = this.models.find(a => a.name === data.target)
+                if (target === undefined) {
+                    console.warn('TARGET NOT EXISTING FIGHTERATTACK ERROR')
+                    return
+                }
+                model.handleAttack(target)
                 break
             }
             case 'fighterDeath': {
@@ -127,9 +132,16 @@ class Game {
                     return
                 }
                 model.die()
+                this.removeObject(model, 500)
                 break
             }
         }
+    }
+
+    static async removeObject(object, delay) {
+        await new Promise((resolve) => setTimeout(resolve, delay))
+        this.models = this.models.filter(a => a.name !== object.name)
+        this.scene.remove(object)
     }
 
     static setupListeners() {

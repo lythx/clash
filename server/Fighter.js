@@ -1,6 +1,6 @@
 const TWEEN = require('@tweenjs/tween.js')
 const Model = require('./Model.js')
-const CFG = require('./GameConfig.js')
+const CFG = require('./ServerConfig.js')
 
 class Fighter extends Model {
 
@@ -202,6 +202,7 @@ class Fighter extends Model {
     attackEnemy(target) {
         if (this.lastAttackTimestamp + 1000 > Date.now())
             return
+        this.movementTween?.stop()
         this.lastAttackTimestamp = Date.now()
         target.handleGetAttacked(this.attack)
         this.currentAnimation = 'none'
