@@ -1,7 +1,13 @@
+// Przechowywanie danych o modelach
+
 const data = []
 
-const load = (d) => {
-    data.push(...d)
+/**
+ * Ładuje stałe dane modeli
+ * @param {modelData[]} models 
+ */
+const load = (models) => {
+    data.push(...models)
 }
 
 module.exports = { load, data }

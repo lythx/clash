@@ -4,8 +4,15 @@ const modelData = require('../modelData').data
 
 class BillGates extends Fighter {
 
+    /**
+     * @param {string} name 
+     * @param {number} player 
+     * @param {number} x 
+     * @param {number} z 
+     * @param {object} rotation 
+     */
     constructor(name, player, x, z, rotation) {
-        const data = modelData.find(a => a.name === 'BillGates')
+        const data = modelData.find(a => a.name === 'BillGates') // Stałe dane są ładowane z model data, mp. hp, attack, movementSpeed etc
         super(name, player, { x, y: data.defaultY, z }, data.attack, data.hp, data.movementSpeed, data.attackSpeed, rotation,
             data.attackRange, data.sightRange, data.startTime)
     }

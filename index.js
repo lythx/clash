@@ -72,11 +72,11 @@ const coll1 = new Datastore({
 //     console.log("dodano dokument (obiekt):")
 //     console.log(newDoc)
 // });
+
 let game
 const timer = new Timer();
 const players = []
 let p1Socket
-let p2Socket
 
 const server = app.listen(PORT, () => {
     console.log(`server start on port ${PORT}`)
@@ -92,16 +92,6 @@ const handleMessage = (message, player) => {
             game.addModel(data.body.name, data.body.className, data.body.player, data.body.x, data.body.z, 0)
             break
     }
-}
-
-/**
- * Wysyła socketem wiadomość do danego gracza
- */
-const sendMessage = (player, message) => {
-    if (player === 1)
-        p1Socket.send(message)
-    else
-        p2Socket.send(message)
 }
 
 const wss = new WebSocket.Server({ server });
@@ -155,7 +145,7 @@ wss.on('connection', (socket) => {
                 //wysłanie do drugiego gracza rozpoczęcia gry (nie trzeba sendMessage() bo mamy tu socket 2 gracza)
                 socket.send(JSON.stringify({ event: 'start' }))
                 //wysłanie do pierwszego gracza rozpoczęcia gry
-                sendMessage(1, JSON.stringify({ event: 'start' }))
+                p1Socket.send(JSON.stringify({ event: 'start' }))
             }
             else { //jeśli jest za dużo graczy odesłanie błędu
                 socket.send(JSON.stringify({
@@ -172,10 +162,6 @@ wss.on('connection', (socket) => {
             if (p1Socket) {
                 p1Socket.terminate() //rozłączenie socketa 1
                 p1Socket = null
-            }
-            if (p2Socket) {
-                p2Socket.terminate() //rozłączenie socketa 2
-                p2Socket = null
             }
         }
     })

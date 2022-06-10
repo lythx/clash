@@ -2,35 +2,50 @@
 
 const Fighter = require('../Fighter')
 const modelData = require('../modelData').data
-const CFG = require('../ServerConfig.js')
+const CFG = require('../serverConfig.js')
 
 class Bazooka extends Fighter {
 
     attackRadius = 30
 
+    /**
+     * @param {string} name 
+     * @param {number} player 
+     * @param {number} x 
+     * @param {number} z 
+     * @param {object} rotation 
+     */
     constructor(name, player, x, z, rotation) {
-        const data = modelData.find(a => a.name === 'Bazooka')
+        const data = modelData.find(a => a.name === 'Bazooka') // Stałe dane są ładowane z model data, mp. hp, attack, movementSpeed etc
         super(name, player, { x, y: data.defaultY, z }, data.attack, data.hp, data.movementSpeed, data.attackSpeed, rotation,
             data.attackRange, data.sightRange, data.startTime)
     }
 
+    /**
+     * Atak obszarowy w kształcie okręgu, dmg spada im dalej jest przeciwnik
+     * @param {object} target - model w który strzelił
+     * @param {object[]} targets - wszystkie przeciwne modele
+     * @returns 
+     */
     attackEnemy(target, targets) {
         if (this.lastAttackTimestamp + 5000 > Date.now())
             return
-        this.movementTween?.stop()
         this.lastAttackTimestamp = Date.now()
+        this.movementTween?.stop()
         this.rotate(target.position)
-        const impact = target.position
-        const hits = []
+        const impact = target.position // Pozycja w którą strzelił
+        const hits = [] // Array z trafionymi przeciwnikami
         for (const t of targets) {
-            //wzór na sprawdzenie zasięgu (x2-x1)^2 + (y2-y1)^2 < r^2 (zasięg jest okręgiem)
+            // Wzór na sprawdzenie zasięgu sqrt((x2-x1)^2 + (y2-y1)^2) < r (zasięg jest okręgiem)
             const distance = Math.sqrt((t.position.x - impact.x) * (t.position.x - impact.x) + (t.position.z - impact.z) * (t.position.z - impact.z))
             if (distance < this.attackRadius) {
+                // attackValue obliczane na podstawie dystansu od wybuchu
                 hits.push({ target: t, attackValue: this.attack * ((this.attackRadius - distance) / this.attackRadius) })
             }
         }
+        // Wysłanie ewentu ze wszystkimi trafionymi przeciwnikami i ich obrażeniami
         this.emitEvent('fighterAttack', { name: this.name, targets: [...hits.map(a => ({ name: a.target.name, attackValue: a.attackValue }))] }, Date.now() + CFG.SERVER_DELAY)
-        for (const e of hits) {
+        for (const e of hits) { // Atak w obliczeniach po stronie serwera
             e.target.handleGetAttacked(e.attackValue)
         }
     }
