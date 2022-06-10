@@ -30,8 +30,8 @@ class Net {
                         Ui.status('Maksymalna liczba graczy')
                     }
                     break
-                case 'gameevent':
-                    Game.registerEvent(data.body)
+                case 'gamedata':
+                    Game.update(data.body)
                     break
                 //wysyłane po zalogowaniu sie drugiego gracza do obu graczy
                 case 'start':

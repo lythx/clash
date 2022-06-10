@@ -9,7 +9,7 @@ class Game {
     static clock = new THREE.Clock();
     static raycaster = new Raycaster()
     static player
-    static modelClasses = [BillGates]
+    static modelClasses = [BillGates, Bazooka]
     static models = []
     static selected = null
     static events = []
@@ -38,8 +38,9 @@ class Game {
     static render = () => {
         requestAnimationFrame(this.render);
         // const eventsLgt = this.events.length
+        const date = Date.now()
         for (let i = 0; i < this.events.length; i++) {
-            if (this.events[i].timestamp < Date.now()) {
+            if (this.events[i].timestamp < date) {
                 this.handleEvent(this.events[i].event, this.events[i].data)
                 this.events.splice(i, 1)
                 i--
@@ -66,8 +67,12 @@ class Game {
         this.setupListeners()
     }
 
-    static registerEvent(event) {
-        this.events.push(event)
+    static update(data) {
+        this.registerEvents({ event: 'gameData', data: data.data, timestamp: data.timestamp }, ...data.events)
+    }
+
+    static registerEvents(...events) {
+        this.events.push(...events)
     }
 
     static handleEvent(eventName, data) {
@@ -75,7 +80,10 @@ class Game {
             case 'gameData': {
                 for (const e of data) {
                     const model = this.models.find(a => a.name === e.name)
-                    model.update(e.position, e.targetPosition, e.rotation)
+                    if (model !== undefined) { model.update(e.position, e.targetPosition, e.rotation) }
+                    else {
+                        console.warn('MODEL NOT EXISTING HANDLEVENT ERROR')
+                    }
                 }
                 break
             }
@@ -117,12 +125,15 @@ class Game {
                     console.warn('MODEL NOT EXISTING FIGHTERATTACK ERROR')
                     return
                 }
-                const target = this.models.find(a => a.name === data.target)
-                if (target === undefined) {
-                    console.warn('TARGET NOT EXISTING FIGHTERATTACK ERROR')
-                    return
+                for (const e of data.targets) {
+                    const target = this.models.find(a => a.name === e.name)
+                    console.log(e)
+                    if (target === undefined) {
+                        console.warn('TARGET NOT EXISTING FIGHTERATTACK ERROR')
+                        return
+                    }
+                    model.handleAttack(target, e.attackValue)
                 }
-                model.handleAttack(target)
                 break
             }
             case 'fighterDeath': {
@@ -153,7 +164,11 @@ class Game {
                     this.selected = null
                 }
                 //tu trzeba bedzie zmienić bo jak bedziemy mieć rotacje to e.key nie bedzie dzialal ale to pozniej
-                const fighter = new BillGates({ name: `p${this.player}t${Date.now()}`, player: this.player, position: { x: 5000, z: 5000 }, rotation: 0 }) //nazwa to p[numer gracza]t[unixowe milisekundy]
+                let fighter
+                if (e.key === '1')
+                    fighter = new BillGates({ name: `p${this.player}t${Date.now()}`, player: this.player, position: { x: 5000, z: 5000 }, rotation: 0 }) //nazwa to p[numer gracza]t[unixowe milisekundy]
+                else if (e.key === '2')
+                    fighter = new Bazooka({ name: `p${this.player}t${Date.now()}`, player: this.player, position: { x: 5000, z: 5000 }, rotation: 0 }) //nazwa to p[numer gracza]t[unixowe milisekundy]
                 this.selected = fighter //ustawinie klasowej zmiennej na nowo utworzony model
                 this.scene.add(fighter)
                 const intersects = this.raycaster.get(e, this.tiles.children) //raycaster na plansze

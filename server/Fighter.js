@@ -51,6 +51,7 @@ class Fighter extends Model {
     targetPosition
     targetPositionTravelTime
     dead = false
+    toDelete = false
 
     constructor(name, player, position, attack, hp, movementSpeed, attackSpeed, rotation, attackRange, sightRange, startTime) {
         const createDate = Date.now()
@@ -123,6 +124,10 @@ class Fighter extends Model {
     }
 
     calculateTarget(targets) {
+        if (this.dead === true) {
+            this.toDelete = true
+            return
+        }
         TWEEN.update()
         if (!this.ready)
             return
@@ -144,7 +149,7 @@ class Fighter extends Model {
             }
         }
         if (target !== null) { //jeśli jakiś przeciwnik jest w zasięgu ataku 
-            this.attackEnemy(target) //atakuje go
+            this.attackEnemy(target, targets) //atakuje go
             return
         }
         //Sprawdzenie czy jakiś przeciwnik jest w zasięgu widzenia (jeśli żaden nie był w zasięgu ataku)
@@ -205,8 +210,7 @@ class Fighter extends Model {
         this.movementTween?.stop()
         this.lastAttackTimestamp = Date.now()
         target.handleGetAttacked(this.attack)
-        this.currentAnimation = 'none'
-        this.emitEvent('fighterAttack', { name: this.name, target: target.name }, Date.now() + CFG.SERVER_DELAY)
+        this.emitEvent('fighterAttack', { name: this.name, targets: [{ target: target.name, attackValue: this.attack }] }, Date.now() + CFG.SERVER_DELAY)
     }
 
     handleGetAttacked(attackValue) {

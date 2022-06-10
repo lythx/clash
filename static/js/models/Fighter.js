@@ -76,17 +76,17 @@ class Fighter extends Model {
         this.weaponMixer.update(delta)
     }
 
-    async handleAttack(target) {
+    async handleAttack(target, attackValue) {
         this.attackAnimation()
         await new Promise((resolve) => setTimeout(resolve, this.attackAnimationDelay))
-        target.handleGetAttacked(this.attack)
+        target.handleGetAttacked(attackValue)
     }
 
     async handleGetAttacked(attackStrength) {
         this.hp -= attackStrength
         this.setColor(0xff0000)
         if (this.hp <= 0) { return }
-        await new Promise((resolve) => setTimeout(resolve, 200))
+        await new Promise((resolve) => setTimeout(resolve, 600))
         this.setColor(0xffffff)
     }
 
