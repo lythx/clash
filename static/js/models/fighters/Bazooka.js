@@ -26,5 +26,13 @@ class Bazooka extends Fighter {
             death: [this.modelMixer.clipAction(deathAnimation).setLoop(THREE.LoopOnce)]
         }
     }
+    async handleAttack(target, dmg) {
+        Game.scene.add(new Explosion(15, target.position))
+        //Game.scene.add(new Explosion(4, this.position))
+        this.attackAnimation()
+        // Opóźnienie dmga żeby zgrał sie z animacją ataku
+        await new Promise((resolve) => setTimeout(resolve, this.attackAnimationDelay))
+        target.handleGetAttacked(dmg)
+    }
 
 }
