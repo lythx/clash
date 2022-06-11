@@ -20,11 +20,16 @@ class Chicken extends Fighter {
      */
     createClips(attackAnimation, runAnimation, tauntAnimation, deathAnimation) {
         this.clips = {
-            attack: [this.modelMixer.clipAction(attackAnimation).setLoop(THREE.LoopOnce), this.weaponMixer.clipAction(attackAnimation).setLoop(THREE.LoopOnce)],
-            run: [this.modelMixer.clipAction(runAnimation).setLoop(THREE.LoopRepeat), this.weaponMixer.clipAction(runAnimation).setLoop(THREE.LoopRepeat)],
-            taunt: [this.modelMixer.clipAction(tauntAnimation).setLoop(THREE.LoopRepeat), this.weaponMixer.clipAction(tauntAnimation).setLoop(THREE.LoopRepeat)],
+            attack: [this.modelMixer.clipAction(attackAnimation).setLoop(THREE.LoopOnce)],
+            run: [this.modelMixer.clipAction(runAnimation).setLoop(THREE.LoopRepeat)],
+            taunt: [this.modelMixer.clipAction(tauntAnimation).setLoop(THREE.LoopRepeat)],
             death: [this.modelMixer.clipAction(deathAnimation).setLoop(THREE.LoopOnce)]
         }
+    }
+    async handleAttack(target, dmg) {
+        Game.scene.add(new Explosion(15, this.position))
+        //Game.scene.add(new Explosion(4, this.position))
+        target.handleGetAttacked(dmg)
     }
 
 }
