@@ -1,14 +1,14 @@
 const Fighter = require('./Fighter.js')
 const BillGates = require('./fighters/BillGates.js')
 const Bazooka = require('./fighters/Bazooka.js')
+const Base = require('./Base.js')
 const CFG = require('./serverConfig.js')
 
 class Game {
 
     player1Socket
     player2Socket
-    fighters = []
-    buildings = []
+    models = []
     time
     lastSendDataTimestamp = 0
     static modelTypes = { BillGates, Bazooka }
@@ -23,6 +23,8 @@ class Game {
         this.player1Socket = player1Socket
         this.player2Socket = player2Socket
         this.time = time
+        this.models.push(new Base(1))
+        this.models.push(new Base(2))
         setImmediate(() => this.render())
     }
 
@@ -40,15 +42,15 @@ class Game {
                 data: [], // Data, czyli pozycja i rotacja fighterów
                 timestamp: Date.now() + CFG.SERVER_DELAY // Timestamp do data
             }
-            const lgt = this.fighters.length
+            const lgt = this.models.length
             for (let i = 0; i < lgt; i++) {
-                this.fighters[i].calculateTarget(this.fighters.filter(a => a.player !== this.fighters[i].player)) // Obliczenia
-                gameData.events.push(...this.fighters[i].getEvents()) // Pushowanie eventów
-                gameData.data.push(this.fighters[i].data) // Pushowanie rotacji i pozycji
+                this.models[i].calculateTarget(this.models.filter(a => a.player !== this.models[i].player)) // Obliczenia
+                gameData.events.push(...this.models[i].getEvents()) // Pushowanie eventów
+                gameData.data.push(this.models[i].data) // Pushowanie rotacji i pozycji
             }
             this.player1Socket.send(JSON.stringify({ event: 'gamedata', body: gameData })) // Wysłanie informacji do graczy
             this.player2Socket.send(JSON.stringify({ event: 'gamedata', body: gameData }))
-            this.fighters = this.fighters.filter(a => !a.toDelete) // Usunięcie martwych fighterów
+            this.models = this.models.filter(a => !a.toDelete) // Usunięcie martwych fighterów
         }
     }
 
@@ -63,7 +65,7 @@ class Game {
      */
     addModel(name, modelType, player, x, z, rotation) {
         const model = new Game.modelTypes[modelType](name, player, x, z, rotation) // Szuka modelu po nazwie i tworzy go
-        this.fighters.push(model)
+        this.models.push(model)
     }
 
 }

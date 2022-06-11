@@ -64,6 +64,12 @@ class Game {
             this.camera.position.set(-205, 200, -205)
             this.camera.lookAt(0, -110, 0)
         }
+        const base1 = new Base(1)
+        const base2 = new Base(2)
+        this.scene.add(base1)
+        this.models.push(base1)
+        this.scene.add(base2)
+        this.models.push(base2)
         this.setupListeners()
     }
 
@@ -187,9 +193,9 @@ class Game {
                 //tu trzeba bedzie zmienić bo jak bedziemy mieć rotacje to e.key nie bedzie dzialal ale to pozniej
                 let fighter
                 if (e.key === '1')
-                    fighter = new BillGates({ name: `p${this.player}t${Date.now()}`, player: this.player, position: { x: 5000, z: 5000 }, rotation: 0 }) //nazwa to p[numer gracza]t[unixowe milisekundy]
+                    fighter = new BillGates({ name: `p${this.player}t${Date.now()}`, player: this.player, position: { x: 5000, z: 5000 }, rotation: this.player === 1 ? 1.75 * Math.PI : 0.75 * Math.PI }) //nazwa to p[numer gracza]t[unixowe milisekundy]
                 else if (e.key === '2')
-                    fighter = new Bazooka({ name: `p${this.player}t${Date.now()}`, player: this.player, position: { x: 5000, z: 5000 }, rotation: 0 }) //nazwa to p[numer gracza]t[unixowe milisekundy]
+                    fighter = new Bazooka({ name: `p${this.player}t${Date.now()}`, player: this.player, position: { x: 5000, z: 5000 }, rotation: 1.5 }) //nazwa to p[numer gracza]t[unixowe milisekundy]
                 this.selected = fighter //ustawinie klasowej zmiennej na nowo utworzony model
                 this.scene.add(fighter)
                 const intersects = this.raycaster.get(e, this.tiles.children) //raycaster na plansze
