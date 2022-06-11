@@ -9,7 +9,7 @@ class Game {
     static clock = new THREE.Clock();
     static raycaster = new Raycaster()
     static player
-    static modelClasses = [BillGates, Bazooka]
+    static modelClasses = [BillGates, Bazooka, Chicken, DarthVader]
     static models = []
     static selected = null
     static events = []
@@ -26,6 +26,8 @@ class Game {
         this.scene.add(new THREE.AxesHelper(1000))
         requestAnimationFrame(() => this.render())
         this.tiles = new Board().tiles
+        const light = new THREE.AmbientLight(0xffffff, 10);
+        this.scene.add(light);
         this.scene.add(this.tiles)
         //zmiana proporcji sceny przy zmianie wielkości okna przeglądarki
         window.onresize = () => {
@@ -196,6 +198,10 @@ class Game {
                     fighter = new BillGates({ name: `p${this.player}t${Date.now()}`, player: this.player, position: { x: 5000, z: 5000 }, rotation: this.player === 1 ? 1.75 * Math.PI : 0.75 * Math.PI }) //nazwa to p[numer gracza]t[unixowe milisekundy]
                 else if (e.key === '2')
                     fighter = new Bazooka({ name: `p${this.player}t${Date.now()}`, player: this.player, position: { x: 5000, z: 5000 }, rotation: 1.5 }) //nazwa to p[numer gracza]t[unixowe milisekundy]
+                else if (e.key === '3')
+                    fighter = new Chicken({ name: `p${this.player}t${Date.now()}`, player: this.player, position: { x: 5000, z: 5000 }, rotation: 0 }) //nazwa to p[numer gracza]t[unixowe milisekundy]
+                else if (e.key === '4')
+                    fighter = new DarthVader({ name: `p${this.player}t${Date.now()}`, player: this.player, position: { x: 5000, z: 5000 }, rotation: 0 }) //nazwa to p[numer gracza]t[unixowe milisekundy]
                 this.selected = fighter //ustawinie klasowej zmiennej na nowo utworzony model
                 this.scene.add(fighter)
                 const intersects = this.raycaster.get(e, this.tiles.children) //raycaster na plansze
