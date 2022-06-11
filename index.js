@@ -48,10 +48,10 @@ const coll1 = new Datastore({
     autoload: true
 });
 // const doc = {
-//     name: "Chicken",
-//     cost: 4,
-//     hp: 200,
-//     attack: 150,
+//     name: "DarthVader",
+//     cost: 7,
+//     hp: 300,
+//     attack: 50,
 //     movementSpeed: 50,
 //     attackSpeed: 1,
 //     attackRange: 5,
@@ -63,10 +63,10 @@ const coll1 = new Datastore({
 //     runAnimation: "run",
 //     tauntAnimation: "taunt",
 //     deathAnimation: "crdeath",
-//     model: 'mats/chicken/tris.js',
-//     modelMap: "mats/chicken/map.png",
-//     weapon: "",
-//     weaponMap: ""
+//     model: 'mats/DarthVader/tris.js',
+//     modelMap: "mats/DarthVader/map.png",
+//     weapon: "mats/DarthVader/weapon.js",
+//     weaponMap: "mats/DarthVader/weapon.png"
 // };
 // coll1.insert(doc, function (err, newDoc) {
 //     console.log("dodano dokument (obiekt):")

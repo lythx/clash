@@ -48,6 +48,8 @@ class Model extends THREE.Group {
                 deathAnimation: e.deathAnimation
             }
             this.loader.load(e.model, (geometry) => { // Ładowanie geometrii
+                console.log(geometry.animations);
+                console.log(e.name);
                 obj.modelGeometry = geometry // Zapisywanie załadowanej geometrii do obiektu
             });
             this.loader.load(e.weapon, (geometry) => { // Ładowanie geometrii broni

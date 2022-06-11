@@ -51,6 +51,8 @@ class Ui {
         bottom.style.display = "initial"
         document.getElementById('model1').innerHTML = '1 - Billgats'
         document.getElementById('model2').innerHTML = '2 - Bazooka'
+        document.getElementById('model3').innerHTML = '3 - Chicken'
+        document.getElementById('model4').innerHTML = '4 - DarthVader'
     }
 
 }

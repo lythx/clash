@@ -9,7 +9,7 @@ class Game {
     static clock = new THREE.Clock();
     static raycaster = new Raycaster()
     static player
-    static modelClasses = [BillGates, Bazooka, Chicken]
+    static modelClasses = [BillGates, Bazooka, Chicken, DarthVader]
     static models = []
     static selected = null
     static events = []
@@ -194,6 +194,8 @@ class Game {
                     fighter = new Bazooka({ name: `p${this.player}t${Date.now()}`, player: this.player, position: { x: 5000, z: 5000 }, rotation: 0 }) //nazwa to p[numer gracza]t[unixowe milisekundy]
                 else if (e.key === '3')
                     fighter = new Chicken({ name: `p${this.player}t${Date.now()}`, player: this.player, position: { x: 5000, z: 5000 }, rotation: 0 }) //nazwa to p[numer gracza]t[unixowe milisekundy]
+                else if (e.key === '4')
+                    fighter = new DarthVader({ name: `p${this.player}t${Date.now()}`, player: this.player, position: { x: 5000, z: 5000 }, rotation: 0 }) //nazwa to p[numer gracza]t[unixowe milisekundy]
                 this.selected = fighter //ustawinie klasowej zmiennej na nowo utworzony model
                 this.scene.add(fighter)
                 const intersects = this.raycaster.get(e, this.tiles.children) //raycaster na plansze
