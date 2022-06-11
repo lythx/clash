@@ -18,6 +18,22 @@ class Fighter extends Model {
     weaponMixer
     dead = false
 
+    /**
+     * @param {string} name 
+     * @param {number} player 
+     * @param {object} position 
+     * @param {number} rotation 
+     * @param {number} cost 
+     * @param {number} maxHp 
+     * @param {number} attack 
+     * @param {number} attackSpeed 
+     * @param {number} startTime 
+     * @param {number} scale 
+     * @param {string} modelGeometry 
+     * @param {string} modelMap 
+     * @param {string} weaponGeometry 
+     * @param {string} weaponMap 
+     */
     constructor(name, player, position, rotation, cost, maxHp, attack, attackSpeed, startTime, scale, modelGeometry, modelMap, weaponGeometry, weaponMap) {
         super(name, player, position, rotation, modelGeometry, modelMap, weaponGeometry, weaponMap)
         this.cost = cost
@@ -46,6 +62,13 @@ class Fighter extends Model {
         this.weaponMixer = new THREE.AnimationMixer(weapon)
     }
 
+    /**
+     * Ładuje animacje modelu
+     * @param {string} attackAnimation 
+     * @param {string} runAnimation 
+     * @param {string} tauntAnimation 
+     * @param {string} deathAnimation 
+     */
     createClips(attackAnimation, runAnimation, tauntAnimation, deathAnimation) {
         this.clips = {
             attack: [this.modelMixer.clipAction(attackAnimation).setLoop(THREE.LoopOnce), this.weaponMixer.clipAction(attackAnimation).setLoop(THREE.LoopOnce)],
@@ -55,46 +78,74 @@ class Fighter extends Model {
         }
     }
 
-    update(position, targetPosition, rotation) {
+    /**
+     * Przesuwa model do danej pozycji i obraca go w danym kierunku
+     * @param {object} position 
+     * @param {number} rotation 
+     */
+    update(position, rotation) {
         this.rotation.y = rotation
-        // if (position.x - this.position.x > Fighter.positionOffset || position.y - this.position.y > Fighter.positionOffset || position.z - this.position.z > Fighter.positionOffset)
         this.position.set(position.x, position.y, position.z)
-        // if (data.targetPosition !== undefined)
-        //     this.move(targetPosition)
     }
 
-    move(targetPosition) {
-        const distance = Math.sqrt(((targetPosition.x - this.position.x) * (targetPosition.x - this.position.x) + (targetPosition.z - this.position.z) * (targetPosition.z - this.position.z)))
-        this.movementTween?.stop()
-        this.movementTween = new TWEEN.Tween(this.position)
-            .to(targetPosition, distance * 75)
-            .start()
+    /**
+     * Używane podczas stawiania fighterów, przy false zmienia kolor modelu na czerwony, a true na zielony
+     * @param {boolean} canPlace 
+     */
+    setCanPlace(canPlace) {
+        this.canPlace = canPlace
+        if (canPlace)
+            for (const c of this.children) {
+                c.material.color.setHex(0x00ff00)
+            }
+        else
+            for (const c of this.children) {
+                c.material.color.setHex(0xff0000)
+            }
     }
 
+    /**
+     * Updateuje animacje modelu
+     * @param {number} delta 
+     */
     animate(delta) {
         this.modelMixer.update(delta)
         this.weaponMixer.update(delta)
     }
 
-    async handleAttack(target, attackValue) {
+    /**
+     * Atakuje przeciwnika
+     * @param {Model} target 
+     * @param {number} dmg 
+     */
+    async handleAttack(target, dmg) {
         this.attackAnimation()
+        // Opóźnienie dmga żeby zgrał sie z animacją ataku
         await new Promise((resolve) => setTimeout(resolve, this.attackAnimationDelay))
-        target.handleGetAttacked(attackValue)
+        target.handleGetAttacked(dmg)
     }
 
-    async handleGetAttacked(attackStrength) {
-        this.hp -= attackStrength
-        this.setColor(0xff0000)
-        if (this.hp <= 0) { return }
-        await new Promise((resolve) => setTimeout(resolve, 600))
+    /**
+     * Bycie atakowanym 
+     * @param {number} dmg 
+     */
+    async handleGetAttacked(dmg) {
+        this.hp -= dmg
+        this.setColor(0xff0000) // Ustawienie koloru na czerwony
+        if (this.hp <= 0) { return } // Jeśli umarł to pozostaje czerwony
+        await new Promise((resolve) => setTimeout(resolve, 500)) // Jeśli nie to po pol sekundy znowu normalny
         this.setColor(0xffffff)
     }
 
+    /**
+     * Ustawia kolor na czerwony i odpala animacje śmierci
+     */
     die() {
         this.setColor(0xff0000)
         this.deathAnimation()
     }
 
+    // Animacje
     tauntAnimation() {
         this.stopAnimations()
         for (const e of this.clips.taunt) { e.play() }
@@ -115,6 +166,9 @@ class Fighter extends Model {
         for (const e of this.clips.death) { e.play() }
     }
 
+    /**
+     * Zatrzymanie wszystkich animacji
+     */
     stopAnimations() {
         for (const key in this.clips) {
             for (const e of this.clips[key]) {

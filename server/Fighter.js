@@ -144,9 +144,9 @@ class Fighter extends Model {
     }
 
     /**
-     * Tu dokonywane są wszystkie obliczenia i wybierany jest cel fightera.
+     * Tu wykonywane są wszystkie obliczenia i wybierany jest cel fightera.
      * Stąd też wołane są funkcje do atakowania poruszania sie i obracania
-     * @param {object[]} targets 
+     * @param {Model[]} targets 
      * @returns 
      */
     calculateTarget(targets) {
@@ -236,7 +236,7 @@ class Fighter extends Model {
 
     /**
      * Atakuje przeciwnika
-     * @param {object} target 
+     * @param {Model} target 
      */
     attackEnemy(target) {
         if (this.lastAttackTimestamp + 1000 > Date.now()) // Może atakować tylko co jakiś czas (attack speed)
@@ -245,15 +245,15 @@ class Fighter extends Model {
         this.movementTween?.stop() // Nie może sie ruszać podczas atakowania
         target.handleGetAttacked(this.attack) // Odpalenie funkcji na "bycie atakowanym" u przeciwnika
         // Wysłanie ewentu z celami ataku (tutaj zawsze jeden cel i taka sama siła ataku, ale w przypadku obszarowego jest inaczej)
-        this.emitEvent('fighterAttack', { name: this.name, targets: [{ target: target.name, attackValue: this.attack }] }, Date.now() + CFG.SERVER_DELAY)
+        this.emitEvent('fighterAttack', { name: this.name, targets: [{ name: target.name, dmg: this.attack }] }, Date.now() + CFG.SERVER_DELAY)
     }
 
     /**
      * Funkcja na "bycie atakwanym", odejmuje hp i zabija jeśli hp jest ujemne lub 0
-     * @param {number} attackValue 
+     * @param {number} dmg 
      */
-    handleGetAttacked(attackValue) {
-        this.hp -= attackValue
+    handleGetAttacked(dmg) {
+        this.hp -= dmg
         if (this.hp <= 0) {
             this.dead = true
             this.emitEvent('fighterDeath', { name: this.name }, Date.now() + CFG.SERVER_DELAY) // Wysłanie ewentu w przypadku śmierci

@@ -37,7 +37,6 @@ class Game {
 
     static render = () => {
         requestAnimationFrame(this.render);
-        // const eventsLgt = this.events.length
         const date = Date.now()
         for (let i = 0; i < this.events.length; i++) {
             if (this.events[i].timestamp < date) {
@@ -57,50 +56,65 @@ class Game {
 
     /**
      * Rozpoczyna grę 
+     * @param {number} player
      */
     static start = async (player) => {
         this.player = player
-        if (player == 2) {
+        if (player == 2) { // Obraca plansze dla drugiego gracza
             this.camera.position.set(-205, 200, -205)
             this.camera.lookAt(0, -110, 0)
         }
         this.setupListeners()
     }
 
+    /**
+     * Zapisuje wszystkie eventy wysłane przez serwer
+     * @param {object} data 
+     */
     static update(data) {
         this.registerEvents({ event: 'gameData', data: data.data, timestamp: data.timestamp }, ...data.events)
     }
 
+    /**
+     * Zapisuje podane eventy
+     * @param  {...object} events 
+     */
     static registerEvents(...events) {
         this.events.push(...events)
     }
 
+    /**
+     * Wykonuje akcje zależnie od podanego eventu
+     * @param {string} eventName 
+     * @param {object} data 
+     * @returns 
+     */
     static handleEvent(eventName, data) {
         switch (eventName) {
-            case 'gameData': {
+            case 'gameData': { // Updateuje pozycje i rotacje każdego modelu
                 for (const e of data) {
-                    const model = this.models.find(a => a.name === e.name)
-                    if (model !== undefined) { model.update(e.position, e.targetPosition, e.rotation) }
+                    const model = this.models.find(a => a.name === e.name) // Zalazienie modelu
+                    if (model !== undefined) { model.update(e.position, e.rotation) } // Update
                     else {
                         console.warn('MODEL NOT EXISTING HANDLEVENT ERROR')
                     }
                 }
                 break
             }
-            case 'newFighter': {
+            case 'newFighter': { // Dodaje nowego fightera
                 const model = this.models.find(a => a.name === data.name)
-                if (model === undefined) {
-                    const ModelClass = this.modelClasses.find(a => a.name === data.className)
-                    const model = new ModelClass(data)
+                if (model === undefined) { // Jeśli nie ma modelu na planszy (model postawił przeciwnik)
+                    const ModelClass = this.modelClasses.find(a => a.name === data.className) // Znajduje klasę modelu
+                    const model = new ModelClass(data) // Tworzy obiekt modelu
                     this.models.push(model)
                     this.scene.add(model)
                     model.setColor(0xffa500)
                     return
-                }
-                model.setColor(0xffa500)
+                } // Jeśli model jest na planszy 
+                model.setColor(0xffa500) // Ustawia kolor na żółty
                 break
             }
-            case 'fighterPlaced': {
+            case 'fighterPlaced': { // Ustawia kolor na biały i odpala taunta
                 const model = this.models.find(a => a.name === data.name)
                 if (model === undefined) {
                     console.warn('MODEL NOT EXISTING FIGHTERPLACED ERROR')
@@ -110,7 +124,7 @@ class Game {
                 model.tauntAnimation()
                 break
             }
-            case 'fighterRun': {
+            case 'fighterRun': { // Odpala animacje biegu
                 const model = this.models.find(a => a.name === data.name)
                 if (model === undefined) {
                     console.warn('MODEL NOT EXISTING FIGHTERRUN ERROR')
@@ -119,7 +133,7 @@ class Game {
                 model.runAnimation()
                 break
             }
-            case 'fighterAttack': {
+            case 'fighterAttack': { // Atakuje przeciwnika lub wielu przeciwników
                 const model = this.models.find(a => a.name === data.name)
                 if (model === undefined) {
                     console.warn('MODEL NOT EXISTING FIGHTERATTACK ERROR')
@@ -127,34 +141,41 @@ class Game {
                 }
                 for (const e of data.targets) {
                     const target = this.models.find(a => a.name === e.name)
-                    console.log(e)
                     if (target === undefined) {
                         console.warn('TARGET NOT EXISTING FIGHTERATTACK ERROR')
                         return
                     }
-                    model.handleAttack(target, e.attackValue)
+                    model.handleAttack(target, e.dmg)
                 }
                 break
             }
-            case 'fighterDeath': {
+            case 'fighterDeath': { // Śmierć xd
                 const model = this.models.find(a => a.name === data.name)
                 if (model === undefined) {
                     console.warn('MODEL NOT EXISTING FIGHTERDIE ERROR')
                     return
                 }
                 model.die()
-                this.removeObject(model, 500)
+                this.removeObject(model, 500) // Usunięcie modelu po 500 milisekundach
                 break
             }
         }
     }
 
+    /**
+     * Usuwa obiekt po danym czasie
+     * @param {Model} object 
+     * @param {number} delay 
+     */
     static async removeObject(object, delay) {
         await new Promise((resolve) => setTimeout(resolve, delay))
         this.models = this.models.filter(a => a.name !== object.name)
         this.scene.remove(object)
     }
 
+    /**
+     * Ustawia listenery do stawiania fighterów
+     */
     static setupListeners() {
         window.onkeydown = async (e) => {
             //jeśli kliknięty klawisz to od 1 do 4
@@ -231,8 +252,7 @@ class Game {
             //jeśli kursor jest na planszy i canPlace jest true stawiamy model (pozycja jest już dobrze ustalona przez window.onmouemove)
             else if (this.selected.canPlace) {
                 const pos = intersects[0].object.position
-                const timestamp = Date.now() + 1000
-                this.selected.place(timestamp)
+                this.selected.setColor(0xffa500)
                 this.models.push(this.selected)
                 //wysłanie informacji o modelu do przeciwnika
                 Net.newFighter(this.selected.player, this.selected.name, this.selected.constructor.name, pos.x, pos.z, this.selected.rotation.y)

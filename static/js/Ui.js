@@ -13,20 +13,26 @@ class Ui {
 
     /**
      * Ustawia tekst wyświetlany w lewym górnym rogu ui
+     * @param {string} str
      */
     static status = (str) => {
         document.getElementById('lefttop').innerHTML = str
     }
 
-    static timer = (str) => {
-        document.getElementById('righttop').innerHTML = str
+    /**
+     * Ustawia number wyświetlony na timerze
+     * @param {number} n
+     */
+    static timer = (n) => {
+        document.getElementById('righttop').innerHTML = Number(n)
     }
 
     /**
      * Wyświetla ekran ładowania podczas czekania na zalogowanie sie przeciwnika
+     * @param {string} player
      */
-    static awaitStart = (player) => {
-        this.playerName = player
+    static awaitStart = (playerName) => {
+        this.playerName = playerName
         document.getElementById('loginwrap').remove()
         const cover = document.getElementById('cover')
         cover.appendChild(this.loading)
@@ -37,13 +43,14 @@ class Ui {
     /**
      * Zmiania status i tworzy dolny pasek UI
      */
-    static start = (player) => {
+    static start = () => {
         const cover = document.getElementById('cover')
         cover.remove()
         this.status(`Witaj ${this.playerName}, gra rozpoczęta`)
         let bottom = document.getElementById('bottom')
         bottom.style.display = "initial"
         document.getElementById('model1').innerHTML = '1 - Billgats'
+        document.getElementById('model2').innerHTML = '2 - Bazooka'
     }
 
 }

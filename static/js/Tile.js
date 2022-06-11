@@ -7,6 +7,12 @@ class Tile extends THREE.Mesh {
     style
     name
 
+    /**
+     * @param {string} name 
+     * @param {number} size 
+     * @param {number} player 
+     * @param {string} style 
+     */
     constructor(name, size, player, style) {
         super()
         this.player = player
@@ -21,6 +27,9 @@ class Tile extends THREE.Mesh {
         this.mesh = new THREE.Mesh(this.geometry, this.material)
     }
 
+    /**
+     * Ustawia wygląd i pozycje obiektu zależnie od stylu
+     */
     loadStyle() {
         switch (this.style) {
             case 'corner':

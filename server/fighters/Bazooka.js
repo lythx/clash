@@ -23,8 +23,8 @@ class Bazooka extends Fighter {
 
     /**
      * Atak obszarowy w kształcie okręgu, dmg spada im dalej jest przeciwnik
-     * @param {object} target - model w który strzelił
-     * @param {object[]} targets - wszystkie przeciwne modele
+     * @param {Model} target - model w który strzelił
+     * @param {Model[]} targets - wszystkie przeciwne modele
      * @returns 
      */
     attackEnemy(target, targets) {
@@ -39,14 +39,14 @@ class Bazooka extends Fighter {
             // Wzór na sprawdzenie zasięgu sqrt((x2-x1)^2 + (y2-y1)^2) < r (zasięg jest okręgiem)
             const distance = Math.sqrt((t.position.x - impact.x) * (t.position.x - impact.x) + (t.position.z - impact.z) * (t.position.z - impact.z))
             if (distance < this.attackRadius) {
-                // attackValue obliczane na podstawie dystansu od wybuchu
-                hits.push({ target: t, attackValue: this.attack * ((this.attackRadius - distance) / this.attackRadius) })
+                // dmg obliczane na podstawie dystansu od wybuchu
+                hits.push({ target: t, dmg: this.attack * ((this.attackRadius - distance) / this.attackRadius) })
             }
         }
         // Wysłanie ewentu ze wszystkimi trafionymi przeciwnikami i ich obrażeniami
-        this.emitEvent('fighterAttack', { name: this.name, targets: [...hits.map(a => ({ name: a.target.name, attackValue: a.attackValue }))] }, Date.now() + CFG.SERVER_DELAY)
+        this.emitEvent('fighterAttack', { name: this.name, targets: [...hits.map(a => ({ name: a.target.name, dmg: a.dmg }))] }, Date.now() + CFG.SERVER_DELAY)
         for (const e of hits) { // Atak w obliczeniach po stronie serwera
-            e.target.handleGetAttacked(e.attackValue)
+            e.target.handleGetAttacked(e.dmg)
         }
     }
 

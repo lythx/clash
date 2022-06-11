@@ -4,7 +4,7 @@ const data = []
 
 /**
  * Ładuje stałe dane modeli
- * @param {modelData[]} models 
+ * @param {object[]} models 
  */
 const load = (models) => {
     data.push(...models)

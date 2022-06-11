@@ -44,6 +44,7 @@ class Net {
 
     /**
      * Logowanie na serwerze
+     * @param {string} name
      */
     static login = async (name) => {
         const body = { name }
@@ -59,6 +60,12 @@ class Net {
 
     /**
      * Wysyła informacje o nowym fighterze na serwer
+     * @param {number} player
+     * @param {string} name
+     * @param {string} className
+     * @param {number} x
+     * @param {number} z
+     * @param {number} rotation
      */
     static newFighter(player, name, className, x, z, rotation) {
         this.socket.send(JSON.stringify({ event: 'fighter', body: { player, name, className, x, z, rotation } }))

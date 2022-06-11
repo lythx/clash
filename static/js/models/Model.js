@@ -8,6 +8,13 @@ class Model extends THREE.Group {
 
     player
 
+    /**
+     * 
+     * @param {string} name 
+     * @param {number} player 
+     * @param {object} position 
+     * @param {number} rotation 
+     */
     constructor(name, player, position, rotation) {
         super()
         this.name = name
@@ -16,12 +23,15 @@ class Model extends THREE.Group {
         this.rotation.y = rotation
     }
 
-    //geometry każdego modelu jest ładowane od razu żeby nie trzeba było go ładować potem
-    //material nie może być tak ładowany bo wtedy kolory sie psują
+    /**
+     * Geometry każdego modelu jest ładowane od razu żeby nie trzeba było go ładować potem.
+     * Material nie może być tak ładowany bo wtedy kolory sie psują
+     * @param {object} data 
+     */
     static loadMaterials(data) {
         const arr = []
         for (const e of data) {
-            const obj = {
+            const obj = { // Zapisywanie danych każdego typu modelu do obiektu
                 name: e.name,
                 cost: e.cost,
                 hp: e.hp,
@@ -37,17 +47,21 @@ class Model extends THREE.Group {
                 tauntAnimation: e.tauntAnimation,
                 deathAnimation: e.deathAnimation
             }
-            this.loader.load(e.model, (geometry) => { //ładowanie geometrii
-                obj.modelGeometry = geometry
+            this.loader.load(e.model, (geometry) => { // Ładowanie geometrii
+                obj.modelGeometry = geometry // Zapisywanie załadowanej geometrii do obiektu
             });
-            this.loader.load(e.weapon, (geometry) => { //ładowanie geometrii
-                obj.weaponGeometry = geometry
+            this.loader.load(e.weapon, (geometry) => { // Ładowanie geometrii broni
+                obj.weaponGeometry = geometry // Zapisywanie załadowanej geometrii do obiektu  broni
             });
             arr.push(obj)
         }
         this.materials = arr
     }
 
+    /**
+     * Ustawia kolor wszystkim elementom obiektu
+     * @param {number} hex 
+     */
     setColor(hex) {
         for (const e of this.children)
             e.material.color.setHex(hex)

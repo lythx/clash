@@ -6,6 +6,8 @@ class Raycaster extends THREE.Raycaster {
 
     /**
      * Zwraca obiekty na których jest mysz
+     * @param {KeyboardEvent} event
+     * @param {THREE.Object3D} parent
      */
     get(event, parent) {
         this.mouseVector.x = (event.clientX / window.innerWidth) * 2 - 1;
