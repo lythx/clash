@@ -48,13 +48,13 @@ const coll1 = new Datastore({
     autoload: true
 });
 // const doc = {
-//     name: "Bazooka",
-//     cost: 6,
-//     hp: 500,
-//     attack: 70,
+//     name: "Chicken",
+//     cost: 4,
+//     hp: 200,
+//     attack: 150,
 //     movementSpeed: 50,
 //     attackSpeed: 1,
-//     attackRange: 20,
+//     attackRange: 5,
 //     sightRange: 50,
 //     defaultY: 15,
 //     startTime: 1000,
@@ -63,10 +63,10 @@ const coll1 = new Datastore({
 //     runAnimation: "run",
 //     tauntAnimation: "taunt",
 //     deathAnimation: "crdeath",
-//     model: 'mats/bazooka/tris.js',
-//     modelMap: "mats/bazooka/map.png",
-//     weapon: "mats/bazooka/weapon.png",
-//     weaponMap: "mats/bazooka/weapon.png"
+//     model: 'mats/chicken/tris.js',
+//     modelMap: "mats/chicken/map.png",
+//     weapon: "",
+//     weaponMap: ""
 // };
 // coll1.insert(doc, function (err, newDoc) {
 //     console.log("dodano dokument (obiekt):")

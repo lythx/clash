@@ -1,7 +1,7 @@
 const Fighter = require('./Fighter.js')
 const BillGates = require('./fighters/BillGates.js')
 const Bazooka = require('./fighters/Bazooka.js')
-const Chicken = require('./fighters/C')
+const Chicken = require('./fighters/Chicken.js')
 const CFG = require('./serverConfig.js')
 
 class Game {
