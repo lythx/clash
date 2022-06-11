@@ -23,8 +23,18 @@ class Bazooka extends Fighter {
         }
     }
     async handleAttack(target, dmg) {
-        Game.scene.add(new Explosion(15, target.position))
-        //Game.scene.add(new Explosion(4, this.position))
+        // DMG bedzie taki jak atak tylko w przypadku głownego targetu, a tylko tam tworzymy eksplozje (żeby była tylko jedna)
+        if (dmg === this.attack) {
+            Game.scene.add(new Explosion(15, target.position))
+            // Wybuch przy broni strzelającego
+            // Obliczenie kątu pod którym jest obrócony ten co strzela
+            let angle = Math.atan2(target.position.z - this.position.z, -(target.position.x - this.position.x)) + (2 * Math.PI)
+            if (angle >= 2 * Math.PI) //układ współrzędnych jest tu jakoś dziwnie ustawiony, więc trzeba tak zrobić
+                angle -= 2 * Math.PI
+            const distance = 15 // Wybuch musi być troche z przodu, taki dystans daje dobry efekt
+            // Tu do x dodane 2 bo bron jest troche po prawej stronie
+            Game.scene.add(new Explosion(4, { x: (this.position.x - distance * Math.cos(angle)) + 2, y: this.position.y + 8, z: this.position.z + distance * Math.sin(angle) }))
+        }
         this.attackAnimation()
         // Opóźnienie dmga żeby zgrał sie z animacją ataku
         await new Promise((resolve) => setTimeout(resolve, this.attackAnimationDelay))

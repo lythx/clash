@@ -6,13 +6,14 @@ class Base extends Model {
     attackRange = 4
     hp
     attack
+    rotationOffset
 
     /**
      * @param {number} player 
      */
     constructor(player) {
         const obj = Model.materials.find(a => a.name === 'Base' + player)
-        super('Base' + player, player, player === 1 ? { x: 125, y: 5, z: 125 } : { x: -125, y: 5, z: -125 }, player === 1 ? 1.75 * Math.PI : 0.75 * Math.PI)
+        super('Base' + player, player, player === 1 ? { x: 125, y: 5, z: 125 } : { x: -125, y: 5, z: -125 }, 0)
         this.hp = obj.hp
         this.attack = obj.attack
         this.scale.set(obj.scale, obj.scale, obj.scale)
@@ -20,7 +21,6 @@ class Base extends Model {
         this.attackSpeed = obj.attackSpeed
         this.attackRange = obj.attackRange
         const geometry = new THREE.CylinderGeometry(obj.cylinderRadius, obj.cylinderRadius, obj.cylinderHeight, 30)
-        console.log(obj)
         const material = new THREE.MeshBasicMaterial({ color: Number(obj.cylinderColor) })
         //model
         const modelMaterial = new THREE.MeshBasicMaterial(
@@ -38,13 +38,14 @@ class Base extends Model {
         const weapon = new THREE.Mesh(obj.weaponGeometry, weaponMaterial)
         model.position.y = obj.defaultY
         weapon.position.y = obj.defaultY
-        this.add(model, weapon, new THREE.Mesh(geometry, material))
+        this.rotationOffset = obj.rotationOffset
         model.rotation.y += obj.rotationOffset
         weapon.rotation.y += obj.rotationOffset
         model.position.x += obj.xOffset
         weapon.position.z += obj.zOffset
         model.position.x += obj.xOffset
         weapon.position.z += obj.zOffset
+        this.add(model, weapon, new THREE.Mesh(geometry, material))
         this.modelMixer = new THREE.AnimationMixer(model)
         this.weaponMixer = new THREE.AnimationMixer(weapon)
         this.createClips(obj.attackAnimation, obj.tauntAnimation, obj.deathAnimation)
@@ -62,8 +63,8 @@ class Base extends Model {
     }
 
     update(position, rotation) {
-        this.children[0].rotation.y = rotation + 0.3
-        this.children[1].rotation.y = rotation + 0.3
+        this.children[0].rotation.y = rotation + this.rotationOffset
+        this.children[1].rotation.y = rotation + this.rotationOffset
     }
 
     /**

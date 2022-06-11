@@ -14,6 +14,7 @@ class Fighter extends Model {
     modelMixer
     attackAnimationDelay = 200
     weaponMixer
+    isMoving = false
     dead = false
 
     /**
@@ -88,7 +89,13 @@ class Fighter extends Model {
      */
     update(position, rotation) {
         this.rotation.y = rotation
-        this.position.set(position.x, position.y, position.z)
+        if (this.position.x !== position.x || this.position.z !== position.z) {
+            if (this.isMoving === false) {
+                this.isMoving = true
+                this.runAnimation()
+            }
+            this.position.set(position.x, position.y, position.z)
+        }
     }
 
     /**
@@ -122,6 +129,7 @@ class Fighter extends Model {
      * @param {number} dmg 
      */
     async handleAttack(target, dmg) {
+        this.isMoving = false
         this.attackAnimation()
         // Opóźnienie dmga żeby zgrał sie z animacją ataku
         await new Promise((resolve) => setTimeout(resolve, this.attackAnimationDelay))

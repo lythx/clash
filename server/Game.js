@@ -1,4 +1,3 @@
-const Fighter = require('./Fighter.js')
 const BillGates = require('./fighters/BillGates.js')
 const Bazooka = require('./fighters/Bazooka.js')
 const Base = require('./Base.js')
@@ -71,6 +70,5 @@ class Game {
     }
 
 }
-
 
 module.exports = Game
