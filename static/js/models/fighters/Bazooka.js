@@ -22,7 +22,7 @@ class Bazooka extends Fighter {
         this.clips = {
             attack: [this.modelMixer.clipAction(attackAnimation).setLoop(THREE.LoopOnce), this.weaponMixer.clipAction("attack").setLoop(THREE.LoopOnce)],
             run: [this.modelMixer.clipAction(runAnimation).setLoop(THREE.LoopRepeat), this.weaponMixer.clipAction(runAnimation).setLoop(THREE.LoopRepeat)],
-            taunt: [this.modelMixer.clipAction(tauntAnimation).setLoop(THREE.LoopRepeat, this.weaponMixer.clipAction(tauntAnimation).setLoop(THREE.LoopRepeat))],
+            taunt: [this.modelMixer.clipAction(tauntAnimation).setLoop(THREE.LoopRepeat), this.weaponMixer.clipAction(tauntAnimation).setLoop(THREE.LoopRepeat)],
             death: [this.modelMixer.clipAction(deathAnimation).setLoop(THREE.LoopOnce)]
         }
     }

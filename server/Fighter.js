@@ -175,6 +175,7 @@ class Fighter extends Model {
             }
         }
         if (target !== null) { // Jeśli jakiś przeciwnik jest w zasięgu ataku 
+            this.rotate({ x: target.position.x, z: target.position.z }) // Obraca sie w jego kierunku
             this.attackEnemy(target, targets) // Atakuje go
             return
         }
