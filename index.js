@@ -68,6 +68,23 @@ const coll1 = new Datastore({
 //     weapon: "mats/DarthVader/weapon.js",
 //     weaponMap: "mats/DarthVader/weapon.png"
 // };
+// const doc = {
+//     name: "Base2",
+//     hp: 3000,
+//     attack: 70,
+//     attackSpeed: 1,
+//     attackRange: 20,
+//     defaultY: 15,
+//     scale: 0.4,
+//     attackAnimation: "attack",
+//     runAnimation: "run",
+//     tauntAnimation: "taunt",
+//     deathAnimation: "crdeath",
+//     model: 'mats/base1/tris.js',
+//     modelMap: "mats/base1/map.png",
+//     weapon: "mats/base1/weapon.png",
+//     weaponMap: "mats/base1/weapon.png"
+// };
 // coll1.insert(doc, function (err, newDoc) {
 //     console.log("dodano dokument (obiekt):")
 //     console.log(newDoc)

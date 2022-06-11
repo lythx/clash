@@ -6,7 +6,7 @@ const CFG = require('../serverConfig.js')
 
 class Bazooka extends Fighter {
 
-    attackRadius = 30
+    attackRadius
 
     /**
      * @param {string} name 
@@ -19,6 +19,7 @@ class Bazooka extends Fighter {
         const data = modelData.find(a => a.name === 'Bazooka') // Stałe dane są ładowane z model data, mp. hp, attack, movementSpeed etc
         super(name, player, { x, y: data.defaultY, z }, data.attack, data.hp, data.movementSpeed, data.attackSpeed, rotation,
             data.attackRange, data.sightRange, data.startTime)
+        this.attackRadius = data.attackRadius
     }
 
     /**

@@ -11,9 +11,7 @@ class Fighter extends Model {
     attackSpeed
     startTime
     clips
-    movementTween
     modelMixer
-    movementSpeed = 100
     attackAnimationDelay = 200
     weaponMixer
     dead = false
@@ -33,8 +31,11 @@ class Fighter extends Model {
      * @param {string} modelMap 
      * @param {string} weaponGeometry 
      * @param {string} weaponMap 
+     * @param {number} rotationOffset
+     * @param {number} xOffset
+     * @param {number} zOffset
      */
-    constructor(name, player, position, rotation, cost, maxHp, attack, attackSpeed, startTime, scale, modelGeometry, modelMap, weaponGeometry, weaponMap) {
+    constructor(name, player, position, rotation, cost, maxHp, attack, attackSpeed, startTime, scale, modelGeometry, modelMap, weaponGeometry, weaponMap, rotationOffset = 0, xOffset = 0, zOffset = 0) {
         super(name, player, position, rotation, modelGeometry, modelMap, weaponGeometry, weaponMap)
         this.cost = cost
         this.maxHp = maxHp
@@ -58,23 +59,25 @@ class Fighter extends Model {
         const model = new THREE.Mesh(modelGeometry, modelMaterial)
         const weapon = new THREE.Mesh(weaponGeometry, weaponMaterial)
         this.add(model, weapon)
+        model.rotation.y += rotationOffset
+        weapon.rotation.y += rotationOffset
+        model.position.x += xOffset
+        weapon.position.z += zOffset
+        model.position.x += xOffset
+        weapon.position.z += zOffset
         this.modelMixer = new THREE.AnimationMixer(model)
         this.weaponMixer = new THREE.AnimationMixer(weapon)
     }
 
     /**
      * Ładuje animacje modelu
-     * @param {string} attackAnimation 
-     * @param {string} runAnimation 
-     * @param {string} tauntAnimation 
-     * @param {string} deathAnimation 
      */
-    createClips(attackAnimation, runAnimation, tauntAnimation, deathAnimation) {
+    createClips() {
         this.clips = {
-            attack: [this.modelMixer.clipAction(attackAnimation).setLoop(THREE.LoopOnce), this.weaponMixer.clipAction(attackAnimation).setLoop(THREE.LoopOnce)],
-            run: [this.modelMixer.clipAction(runAnimation).setLoop(THREE.LoopRepeat), this.weaponMixer.clipAction(runAnimation).setLoop(THREE.LoopRepeat)],
-            taunt: [this.modelMixer.clipAction(tauntAnimation).setLoop(THREE.LoopRepeat), this.weaponMixer.clipAction(tauntAnimation).setLoop(THREE.LoopRepeat)],
-            death: [this.modelMixer.clipAction(deathAnimation).setLoop(THREE.LoopOnce), this.weaponMixer.clipAction(deathAnimation).setLoop(THREE.LoopOnce)]
+            attack: [],
+            run: [],
+            taunt: [],
+            death: []
         }
     }
 
@@ -175,6 +178,15 @@ class Fighter extends Model {
                 e.stop()
             }
         }
+    }
+
+    /**
+     * Ustawia kolor wszystkim elementom obiektu
+     * @param {number} hex 
+     */
+    setColor(hex) {
+        for (const e of this.children)
+            e.material.color.setHex(hex)
     }
 
 }

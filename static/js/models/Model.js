@@ -31,41 +31,15 @@ class Model extends THREE.Group {
     static loadMaterials(data) {
         const arr = []
         for (const e of data) {
-            const obj = { // Zapisywanie danych każdego typu modelu do obiektu
-                name: e.name,
-                cost: e.cost,
-                hp: e.hp,
-                attack: e.attack,
-                attackSpeed: e.attackSpeed,
-                startTime: e.startTime,
-                scale: e.scale,
-                defaultY: e.defaultY,
-                modelMap: e.modelMap,
-                weaponMap: e.weaponMap,
-                attackAnimation: e.attackAnimation,
-                runAnimation: e.runAnimation,
-                tauntAnimation: e.tauntAnimation,
-                deathAnimation: e.deathAnimation
-            }
             this.loader.load(e.model, (geometry) => { // Ładowanie geometrii
-                console.log(geometry.animations);
-                console.log(e.name);
-                obj.modelGeometry = geometry // Zapisywanie załadowanej geometrii do obiektu
+                e.modelGeometry = geometry // Zapisywanie załadowanej geometrii do obiektu
             });
             this.loader.load(e.weapon, (geometry) => { // Ładowanie geometrii broni
-                obj.weaponGeometry = geometry // Zapisywanie załadowanej geometrii do obiektu  broni
+                e.weaponGeometry = geometry // Zapisywanie załadowanej geometrii do obiektu  broni
             });
-            arr.push(obj)
+            arr.push(e)
         }
         this.materials = arr
     }
 
-    /**
-     * Ustawia kolor wszystkim elementom obiektu
-     * @param {number} hex 
-     */
-    setColor(hex) {
-        for (const e of this.children)
-            e.material.color.setHex(hex)
-    }
 }
