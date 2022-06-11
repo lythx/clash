@@ -9,7 +9,7 @@ class Game {
     static clock = new THREE.Clock();
     static raycaster = new Raycaster()
     static player
-    static modelClasses = [BillGates, Bazooka]
+    static modelClasses = [BillGates, Bazooka, Chicken]
     static models = []
     static selected = null
     static events = []

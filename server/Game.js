@@ -1,6 +1,7 @@
 const Fighter = require('./Fighter.js')
 const BillGates = require('./fighters/BillGates.js')
 const Bazooka = require('./fighters/Bazooka.js')
+const Chicken = require('./fighters/C')
 const CFG = require('./serverConfig.js')
 
 class Game {
@@ -11,7 +12,7 @@ class Game {
     buildings = []
     time
     lastSendDataTimestamp = 0
-    static modelTypes = { BillGates, Bazooka }
+    static modelTypes = { BillGates, Bazooka, Chicken }
 
     /**
      * Rozpoczyna grę z podanym czasem rozgrywki
