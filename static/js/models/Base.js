@@ -1,6 +1,6 @@
 'use strict'
 
-class Base extends Building {
+class Base extends Model {
 
     player
     attackRange = 4

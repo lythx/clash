@@ -9,7 +9,7 @@ class BillGates extends Fighter {
      * @param {number} player 
      * @param {number} x 
      * @param {number} z 
-     * @param {object} rotation 
+     * @param {number} rotation 
      */
     constructor(name, player, x, z, rotation) {
         const data = modelData.find(a => a.name === 'BillGates') // Stałe dane są ładowane z model data, mp. hp, attack, movementSpeed etc
