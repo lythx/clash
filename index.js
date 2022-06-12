@@ -48,13 +48,13 @@ const coll1 = new Datastore({
     autoload: true
 });
 // const doc = {
-//     name: "DarthVader",
-//     cost: 7,
-//     hp: 300,
-//     attack: 50,
+//     name: "Beelzabub",
+//     cost: 4,
+//     hp: 50,
+//     attack: 10,
 //     movementSpeed: 50,
 //     attackSpeed: 1,
-//     attackRange: 5,
+//     attackRange: 4,
 //     sightRange: 50,
 //     defaultY: 15,
 //     startTime: 1000,
@@ -63,10 +63,10 @@ const coll1 = new Datastore({
 //     runAnimation: "run",
 //     tauntAnimation: "taunt",
 //     deathAnimation: "crdeath",
-//     model: 'mats/DarthVader/tris.js',
-//     modelMap: "mats/DarthVader/map.png",
-//     weapon: "mats/DarthVader/weapon.js",
-//     weaponMap: "mats/DarthVader/weapon.png"
+//     model: 'mats/beelzabub/tris.js',
+//     modelMap: "mats/beelzabub/map.png",
+//     weapon: "mats/beelzabub/weapon.js",
+//     weaponMap: "mats/beelzabub/weapon.png"
 // };
 // const doc = {
 //     name: "Base2",

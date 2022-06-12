@@ -9,7 +9,7 @@ class Game {
     static clock = new THREE.Clock();
     static raycaster = new Raycaster()
     static player
-    static modelClasses = [BillGates, Bazooka, Chicken, DarthVader]
+    static modelClasses = [BillGates, Bazooka, Chicken, DarthVader, Bauul, Wolf, Hunter, Beelzabub]
     static models = []
     static selected = null
     static events = []
@@ -187,7 +187,7 @@ class Game {
     static setupListeners() {
         window.onkeydown = async (e) => {
             //jeśli kliknięty klawisz to od 1 do 4
-            if (e.key.match(/[1-4]/)) {
+            if (e.key.match(/[1-8]/)) {
                 if (this.selected) { //usunięcie poprzedniego wyboru ze sceny 
                     this.scene.remove(this.selected)
                     this.selected = null
@@ -202,6 +202,14 @@ class Game {
                     fighter = new Chicken({ name: `p${this.player}t${Date.now()}`, player: this.player, position: { x: 5000, z: 5000 }, rotation: 0 }) //nazwa to p[numer gracza]t[unixowe milisekundy]
                 else if (e.key === '4')
                     fighter = new DarthVader({ name: `p${this.player}t${Date.now()}`, player: this.player, position: { x: 5000, z: 5000 }, rotation: 0 }) //nazwa to p[numer gracza]t[unixowe milisekundy]
+                else if (e.key === '5')
+                    fighter = new Bauul({ name: `p${this.player}t${Date.now()}`, player: this.player, position: { x: 5000, z: 5000 }, rotation: 0 }) //nazwa to p[numer gracza]t[unixowe milisekundy]
+                else if (e.key === '6')
+                    fighter = new Wolf({ name: `p${this.player}t${Date.now()}`, player: this.player, position: { x: 5000, z: 5000 }, rotation: 0 }) //nazwa to p[numer gracza]t[unixowe milisekundy]
+                else if (e.key === '7')
+                    fighter = new Hunter({ name: `p${this.player}t${Date.now()}`, player: this.player, position: { x: 5000, z: 5000 }, rotation: 0 }) //nazwa to p[numer gracza]t[unixowe milisekundy]
+                else if (e.key === '8')
+                    fighter = new Beelzabub({ name: `p${this.player}t${Date.now()}`, player: this.player, position: { x: 5000, z: 5000 }, rotation: 0 }) //nazwa to p[numer gracza]t[unixowe milisekundy]    
                 this.selected = fighter //ustawinie klasowej zmiennej na nowo utworzony model
                 this.scene.add(fighter)
                 const intersects = this.raycaster.get(e, this.tiles.children) //raycaster na plansze
