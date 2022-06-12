@@ -9,12 +9,8 @@ class Game {
     static clock = new THREE.Clock();
     static raycaster = new Raycaster()
     static player
-<<<<<<< HEAD
     static modelClasses = [BillGates, Bazooka, Chicken, DarthVader, Bauul, Wolf, Hunter, Beelzabub, Skeleton]
-=======
-    static modelClasses = [BillGates, Bazooka, Chicken, DarthVader, Bauul, Wolf, Hunter, Beelzabub]
     static modelsAndGroups = [BillGates, Bazooka, Chicken, DarthVader, Bauul, Wolf, Hunter, BeelzabubGroup]
->>>>>>> f1f3634ff91ce2ed95d9720f10844d424250f203
     static models = []
     static selected = null
     static events = []
@@ -194,9 +190,16 @@ class Game {
                 this.gaming = false
                 const model = this.models.find(a => a.name === 1)
                 Net.reset();
-                this.camera.position.set(0, 50, 0)
-                this.camera.lookAt(125, 20, 125)
-                Ui.endGame();
+                Ui.endGame(data.loser != this.player);
+                if (data.loser == 2) {
+                    this.camera.position.set(0, 50, 0)
+                    this.camera.lookAt(125, 20, 125)
+                }
+                else {
+                    this.camera.position.set(0, 50, 0)
+                    this.camera.lookAt(-125, 20, -125)
+                }
+
             }
         }
     }

@@ -63,11 +63,18 @@ class Ui {
         console.log(fighters)
     }
 
-    static endGame = () => {
+    static endGame = (win) => {
         const cover = document.createElement('div')
         cover.id = 'cover'
         document.body.append(cover)
-        cover.innerHTML = 'Wygrana'
+        if (win) {
+            cover.innerHTML = 'Wygrana'
+            this.status(`Gratulacje ${this.playerName}, zwycięstwo`)
+        }
+        else {
+            cover.innerHTML = 'Przegrana'
+            this.status(`Niestety ${this.playerName}, porażka`)
+        }
     }
 
 }
