@@ -1,3 +1,5 @@
+'use strict'
+
 const TWEEN = require('@tweenjs/tween.js')
 const Model = require('./Model.js')
 const CFG = require('./ServerConfig.js')

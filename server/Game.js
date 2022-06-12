@@ -1,3 +1,5 @@
+'use strict'
+
 const BillGates = require('./fighters/BillGates.js')
 const Bazooka = require('./fighters/Bazooka.js')
 const Base = require('./Base.js')

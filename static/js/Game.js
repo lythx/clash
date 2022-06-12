@@ -209,28 +209,37 @@ class Game {
                 else if (e.key === '7')
                     fighter = new Hunter({ name: `p${this.player}t${Date.now()}`, player: this.player, position: { x: 5000, z: 5000 }, rotation: 0 }) //nazwa to p[numer gracza]t[unixowe milisekundy]
                 else if (e.key === '8')
-                    fighter = new Beelzabub({ name: `p${this.player}t${Date.now()}`, player: this.player, position: { x: 5000, z: 5000 }, rotation: 0 }) //nazwa to p[numer gracza]t[unixowe milisekundy]    
+                    fighter = new BeelzabubGroup({ name: `p${this.player}t${Date.now()}`, player: this.player, position: { x: 5000, z: 5000 }, rotation: 0 }) //nazwa to p[numer gracza]t[unixowe milisekundy]    
                 this.selected = fighter //ustawinie klasowej zmiennej na nowo utworzony model
                 this.scene.add(fighter)
                 const intersects = this.raycaster.get(e, this.tiles.children) //raycaster na plansze
                 //jeśli kursor nie jest na planszy lub jest na terenie na którym nie mogą chodzić modele to model sie nie wyswietla
                 if (intersects.length === 0 || intersects[0].object.player === 'none') {
-                    this.selected.position.x = 5000 //możliwe da sie to lepiej zrobic niż dawać pozycje na taką żeby był giga daleko XD
-                    this.selected.position.z = 5000
+                    if (this.selected instanceof FightersGroup) { this.selected.setPosition({ x: 5000, z: 5000 }) }
+                    else {
+                        this.selected.position.x = 5000 //możliwe da sie to lepiej zrobic niż dawać pozycje na taką żeby był giga daleko XD
+                        this.selected.position.z = 5000
+                    }
                 }
                 //jeśli kursor jest na polu gracza to model wyświetla sie nad wskazywanym przez kursor polem na zielono
                 else if (this.player === 1 ? intersects[0].object.player === 'p1' : intersects[0].object.player === 'p2') {
                     const pos = intersects[0].object.position
-                    this.selected.position.x = pos.x
-                    this.selected.position.z = pos.z
+                    if (this.selected instanceof FightersGroup) { this.selected.setPosition(pos) }
+                    else {
+                        this.selected.position.x = pos.x
+                        this.selected.position.z = pos.z
+                    }
                     this.selected.setCanPlace(true)
                 }
                 //jeśli kursor jest na polu przeciwnika lub terenie neutralnym to model wyświetla sie nad wskazywanym przez kursor polem na czerwono
                 else if (this.player === 1 ? intersects[0].object.player === 'p2' : intersects[0].object.player === 'p1'
                     || intersects[0].object.player === 'neutral') {
                     const pos = intersects[0].object.position
-                    this.selected.position.x = pos.x
-                    this.selected.position.z = pos.z
+                    if (this.selected instanceof FightersGroup) { this.selected.setPosition(pos) }
+                    else {
+                        this.selected.position.x = pos.x
+                        this.selected.position.z = pos.z
+                    }
                     this.selected.setCanPlace(false)
                 }
             }
@@ -241,22 +250,31 @@ class Game {
             const intersects = this.raycaster.get(e, this.tiles.children) //raycaster na plansze
             //jeśli kursor nie jest na planszy lub jest na terenie na którym nie mogą chodzić modele to model sie nie wyswietla
             if (intersects.length === 0 || intersects[0].object.player === 'none') {
-                this.selected.position.x = 5000 //możliwe da sie to lepiej zrobic niż dawać pozycje na taką żeby był giga daleko XD
-                this.selected.position.z = 5000
+                if (this.selected instanceof FightersGroup) { this.selected.setPosition({ x: 5000, z: 5000 }) }
+                else {
+                    this.selected.position.x = 5000 //możliwe da sie to lepiej zrobic niż dawać pozycje na taką żeby był giga daleko XD
+                    this.selected.position.z = 5000
+                }
             }
             //jeśli kursor jest na polu gracza to model wyświetla sie nad wskazywanym przez kursor polem na zielono
             else if (this.player === 1 ? intersects[0].object.player === 'p1' : intersects[0].object.player === 'p2') {
                 const pos = intersects[0].object.position
-                this.selected.position.x = pos.x
-                this.selected.position.z = pos.z
+                if (this.selected instanceof FightersGroup) { this.selected.setPosition(pos) }
+                else {
+                    this.selected.position.x = pos.x
+                    this.selected.position.z = pos.z
+                }
                 this.selected.setCanPlace(true)
             }
             //jeśli kursor jest na polu przeciwnika lub terenie neutralnym to model wyświetla sie nad wskazywanym przez kursor polem na czerwono
             else if (this.player === 1 ? intersects[0].object.player === 'p2' : intersects[0].object.player === 'p1'
                 || intersects[0].object.player === 'neutral') {
                 const pos = intersects[0].object.position
-                this.selected.position.x = pos.x
-                this.selected.position.z = pos.z
+                if (this.selected instanceof FightersGroup) { this.selected.setPosition(pos) }
+                else {
+                    this.selected.position.x = pos.x
+                    this.selected.position.z = pos.z
+                }
                 this.selected.setCanPlace(false)
             }
         }
@@ -273,9 +291,17 @@ class Game {
             else if (this.selected.canPlace) {
                 const pos = intersects[0].object.position
                 this.selected.setColor(0xffa500)
-                this.models.push(this.selected)
+                if (this.selected instanceof FightersGroup) {
+                    for (const e of this.selected.children) {
+                        this.models.push(e)
+                        Net.newFighter(e.player, e.name, e.constructor.name, e.position.x, e.position.z, e.rotation.y)
+                    }
+                }
+                else {
+                    this.models.push(this.selected)
+                    Net.newFighter(this.selected.player, this.selected.name, this.selected.constructor.name, pos.x, pos.z, this.selected.rotation.y)
+                }
                 //wysłanie informacji o modelu do przeciwnika
-                Net.newFighter(this.selected.player, this.selected.name, this.selected.constructor.name, pos.x, pos.z, this.selected.rotation.y)
                 this.selected = null
             }
         }

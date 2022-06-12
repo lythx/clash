@@ -1,5 +1,3 @@
-//maly gowniak do grupki
-
 'use strict'
 
 class Beelzabub extends Fighter {

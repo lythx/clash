@@ -1,4 +1,4 @@
-//gosciu bardzo tank ale bije malo cos tego typu
+'use strict'
 
 const Fighter = require('../Fighter')
 const modelData = require('../modelData').data

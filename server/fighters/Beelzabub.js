@@ -1,7 +1,8 @@
-//maly gowniak do grupki
+'use strict'
 
 const Fighter = require('../Fighter')
 const modelData = require('../modelData').data
+
 
 class Beelzabub extends Fighter {
 

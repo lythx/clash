@@ -1,5 +1,3 @@
-//gosciu bardzo tank ale bije malo cos tego typu
-
 'use strict'
 
 class Hunter extends Fighter {
