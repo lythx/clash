@@ -10,13 +10,13 @@ class Hunter extends Fighter {
     constructor(data) {
         const obj = Model.materials.find(a => a.name === 'Hunter')
         super(data.name, data.player, { x: data.position.x, y: obj.defaultY, z: data.position.z }, data.rotation, obj.cost, obj.hp, obj.attack, obj.attackSpeed, obj.startTime, obj.scale, obj.modelGeometry, obj.modelMap, obj.weaponGeometry, obj.weaponMap)
-        this.createClips(obj.attackAnimation, obj.runAnimation, obj.tauntAnimation, obj.deathAnimation)
+        this.createClips()
     }
 
     /**
      * Ładuje animacje modelu
      */
-    createClips(attackAnimation, runAnimation, tauntAnimation, deathAnimation) {
+    createClips() {
         this.clips = {
             attack: [this.modelMixer.clipAction("attack").setLoop(THREE.LoopOnce), this.weaponMixer.clipAction("attack").setLoop(THREE.LoopOnce)],
             run: [this.modelMixer.clipAction("run").setLoop(THREE.LoopRepeat), this.weaponMixer.clipAction("run").setLoop(THREE.LoopRepeat)],

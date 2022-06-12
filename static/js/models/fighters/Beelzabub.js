@@ -10,7 +10,7 @@ class Beelzabub extends Fighter {
     constructor(data) {
         const obj = Model.materials.find(a => a.name === 'Beelzabub')
         super(data.name, data.player, { x: data.position.x, y: obj.defaultY, z: data.position.z }, data.rotation, obj.cost, obj.hp, obj.attack, obj.attackSpeed, obj.startTime, obj.scale, obj.modelGeometry, obj.modelMap, obj.weaponGeometry, obj.weaponMap)
-        this.createClips(obj.attackAnimation, obj.runAnimation, obj.tauntAnimation, obj.deathAnimation)
+        this.createClips()
     }
 
     /**
