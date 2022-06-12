@@ -15,17 +15,13 @@ class Beelzabub extends Fighter {
 
     /**
      * Ładuje animacje modelu
-     * @param {string} attackAnimation 
-     * @param {string} runAnimation 
-     * @param {string} tauntAnimation 
-     * @param {string} deathAnimation 
      */
-    createClips(attackAnimation, runAnimation, tauntAnimation, deathAnimation) {
+    createClips() {
         this.clips = {
-            attack: [this.modelMixer.clipAction(attackAnimation).setLoop(THREE.LoopOnce)],
-            run: [this.modelMixer.clipAction(runAnimation).setLoop(THREE.LoopRepeat)],
-            taunt: [this.modelMixer.clipAction(tauntAnimation).setLoop(THREE.LoopRepeat)],
-            death: [this.modelMixer.clipAction(deathAnimation).setLoop(THREE.LoopOnce)]
+            attack: [this.modelMixer.clipAction("attack").setLoop(THREE.LoopOnce)],
+            run: [this.modelMixer.clipAction("run").setLoop(THREE.LoopRepeat)],
+            taunt: [this.modelMixer.clipAction("taunt").setLoop(THREE.LoopRepeat)],
+            death: [this.modelMixer.clipAction("crdeath").setLoop(THREE.LoopOnce)]
         }
     }
 

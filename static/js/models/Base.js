@@ -48,7 +48,7 @@ class Base extends Model {
         this.add(model, weapon, new THREE.Mesh(geometry, material))
         this.modelMixer = new THREE.AnimationMixer(model)
         this.weaponMixer = new THREE.AnimationMixer(weapon)
-        this.createClips(obj.attackAnimation, obj.tauntAnimation, obj.deathAnimation)
+        this.createClips()
     }
 
     /**
