@@ -1,6 +1,3 @@
-//tankowny typek co focusuje wieze imo, tylko ze dalem mu sightrange na 0
-//a i tak bije innych gosci po drodze wiec nw o co mu chodzi
-
 'use strict'
 
 class Bauul extends Fighter {

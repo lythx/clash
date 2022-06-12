@@ -24,6 +24,12 @@ class Wolf extends Fighter {
             death: [this.modelMixer.clipAction("crdeath").setLoop(THREE.LoopOnce)]
         }
     }
+
+    /**
+     * Atakuje przeciwnika
+     * @param {Model} target 
+     * @param {number} dmg 
+     */
     async handleAttack(target, dmg) {
         // DMG bedzie taki jak atak tylko w przypadku głownego targetu, a tylko tam tworzymy eksplozje (żeby była tylko jedna)
         if (dmg === this.attack) {

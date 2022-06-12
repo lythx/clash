@@ -23,6 +23,11 @@ class Chicken extends Fighter {
         }
     }
 
+    /**
+     * Atakuje przeciwnika
+     * @param {Model} target 
+     * @param {number} dmg 
+     */
     async handleAttack(target, dmg) {
         Game.scene.add(new Explosion(15, this.position))
         //Game.scene.add(new Explosion(4, this.position))
