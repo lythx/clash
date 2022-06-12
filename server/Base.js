@@ -1,6 +1,6 @@
 const TWEEN = require('@tweenjs/tween.js')
 const Model = require('./Model.js')
-const CFG = require('./serverConfig.js')
+const CFG = require('./ServerConfig.js')
 const modelData = require('./modelData').data
 
 class Base extends Model {

@@ -2,7 +2,7 @@
 
 const Fighter = require('../Fighter')
 const modelData = require('../modelData').data
-const CFG = require('../serverConfig.js')
+const CFG = require('../ServerConfig.js')
 
 class Bazooka extends Fighter {
 

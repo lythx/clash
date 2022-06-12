@@ -3,7 +3,7 @@ const Bazooka = require('./fighters/Bazooka.js')
 const Base = require('./Base.js')
 const Chicken = require('./fighters/Chicken.js')
 const DarthVader = require('./fighters/DarthVader.js')
-const CFG = require('./serverConfig.js')
+const CFG = require('./ServerConfig.js')
 
 class Game {
 
