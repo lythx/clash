@@ -7,7 +7,7 @@ const Bauul = require('./fighters/Bauul.js')
 const Wolf = require('./fighters/Wolf.js')
 const Hunter = require('./fighters/Hunter.js')
 const Beelzabub = require('./fighters/Beelzabub.js')
-const CFG = require('./serverConfig.js')
+const CFG = require('./ServerConfig.js')
 
 class Game {
 
