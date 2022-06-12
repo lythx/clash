@@ -56,6 +56,7 @@ class Fighter extends Model {
     targetPositionTravelTime
     dead = false
     toDelete = false
+    radnomOffset = (Math.random() * 12) - 6
 
     /**
      * @param {string} name 
@@ -229,11 +230,13 @@ class Fighter extends Model {
      */
     move(location) {
         // Długość drogi (potrzebna do szybkości animacji)
-        const distance = Math.sqrt(((location.x - this.position.x) * (location.x - this.position.x) + (location.z - this.position.z) * (location.z - this.position.z)))
+        const x = location.x + this.radnomOffset
+        const z = location.z - this.radnomOffset
+        const distance = Math.sqrt(((x - this.position.x) * (x - this.position.x) + (z - this.position.z) * (z - this.position.z)))
         this.targetPosition = location
         this.movementTween?.stop() // Zatrzymanie poprzednich animacji
         this.movementTween = new TWEEN.Tween(this.position) // Animacja zapisana do zmiennej, żeby potem można było ją przerwać
-            .to(location, distance * 75)
+            .to({ x, z }, distance * 75)
             .start()
     }
 
