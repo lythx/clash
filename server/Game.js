@@ -9,6 +9,7 @@ const Bauul = require('./fighters/Bauul.js')
 const Wolf = require('./fighters/Wolf.js')
 const Hunter = require('./fighters/Hunter.js')
 const Beelzabub = require('./fighters/Beelzabub.js')
+const Skeleton = require('./fighters/Skeleton.js')
 const CFG = require('./ServerConfig.js')
 
 class Game {
@@ -18,7 +19,7 @@ class Game {
     models = []
     time
     lastSendDataTimestamp = 0
-    static modelTypes = { BillGates, Bazooka, Chicken, DarthVader, Bauul, Wolf, Hunter, Beelzabub }
+    static modelTypes = { BillGates, Bazooka, Chicken, DarthVader, Bauul, Wolf, Hunter, Beelzabub, Skeleton }
 
     /**
      * Rozpoczyna grę z podanym czasem rozgrywki

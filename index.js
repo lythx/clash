@@ -48,7 +48,7 @@ const coll1 = new Datastore({
     autoload: true
 });
 // const doc = {
-//     name: "Beelzabub",
+//     name: "Skeleton",
 //     cost: 4,
 //     hp: 50,
 //     attack: 10,
@@ -59,14 +59,10 @@ const coll1 = new Datastore({
 //     defaultY: 15,
 //     startTime: 1000,
 //     scale: 0.4,
-//     attackAnimation: "attack",
-//     runAnimation: "run",
-//     tauntAnimation: "taunt",
-//     deathAnimation: "crdeath",
-//     model: 'mats/beelzabub/tris.js',
-//     modelMap: "mats/beelzabub/map.png",
-//     weapon: "mats/beelzabub/weapon.js",
-//     weaponMap: "mats/beelzabub/weapon.png"
+//     model: 'mats/skeleton/tris.js',
+//     modelMap: "mats/skeleton/map.png",
+//     weapon: "mats/skeleton/weapon.js",
+//     weaponMap: "mats/skeleton/weapon.png"
 // };
 // const doc = {
 //     name: "Base2",
