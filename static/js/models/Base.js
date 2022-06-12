@@ -55,10 +55,18 @@ class Base extends Model {
      * Ładuje animacje modelu
      */
     createClips() {
-        this.clips = {
-            attack: [this.modelMixer.clipAction("attak").setLoop(THREE.LoopOnce), this.weaponMixer.clipAction("attack").setLoop(THREE.LoopOnce)],
-            taunt: [this.modelMixer.clipAction("taunt").setLoop(THREE.LoopRepeat), this.weaponMixer.clipAction("taunt").setLoop(THREE.LoopRepeat)],
-            death: [this.modelMixer.clipAction("crdeath").setLoop(THREE.LoopOnce)]
+        if (this.player === 1)
+            this.clips = {
+                attack: [this.modelMixer.clipAction("attak").setLoop(THREE.LoopOnce), this.weaponMixer.clipAction("attack").setLoop(THREE.LoopOnce)],
+                taunt: [this.modelMixer.clipAction("taunt").setLoop(THREE.LoopRepeat), this.weaponMixer.clipAction("taunt").setLoop(THREE.LoopRepeat)],
+                death: [this.modelMixer.clipAction("crdeath").setLoop(THREE.LoopOnce)]
+            }
+        else {
+            this.clips = {
+                attack: [this.modelMixer.clipAction("salute").setLoop(THREE.LoopOnce)],
+                taunt: [this.modelMixer.clipAction("taunt").setLoop(THREE.LoopRepeat)],
+                death: [this.modelMixer.clipAction("crdeath").setLoop(THREE.LoopOnce)]
+            }
         }
     }
 
