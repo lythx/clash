@@ -9,7 +9,8 @@ class Net {
      * Ustawia listenery socketa
      */
     static initialize() {
-        this.socket = new WebSocket('ws://localhost:3000')
+        const HOST = location.origin.replace(/^http/, 'ws')
+        this.socket = new WebSocket(HOST)
         this.socket.addEventListener('message', (message) => {
             const data = JSON.parse(message.data.toString())
             switch (data.event) {
