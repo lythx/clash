@@ -2,7 +2,7 @@
 
 class Ui {
 
-    playerName
+    static playerName
 
     static loading = (() => {
         const l = document.createElement('div')
