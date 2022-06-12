@@ -11,6 +11,11 @@ const Hunter = require('./fighters/Hunter.js')
 const Beelzabub = require('./fighters/Beelzabub.js')
 const Skeleton = require('./fighters/Skeleton.js')
 const CFG = require('./ServerConfig.js')
+const Datastore = require('nedb')
+const coll1 = new Datastore({
+    filename: 'gameHistory.db',
+    autoload: true
+});
 
 class Game {
 
@@ -18,8 +23,11 @@ class Game {
     player2Socket
     models = []
     time
+    player1Name
+    player2Name
     lastSendDataTimestamp = 0
     static modelTypes = { BillGates, Bazooka, Chicken, DarthVader, Bauul, Wolf, Hunter, Beelzabub, Skeleton }
+    gaming = true
 
     /**
      * Rozpoczyna grę z podanym czasem rozgrywki
@@ -27,16 +35,20 @@ class Game {
      * @param {WebSocket.socket} player2Socket 
      * @param {number} time 
      */
-    constructor(player1Socket, player2Socket, time) {
+    constructor(player1Socket, player2Socket, time, player1Name, player2Name) {
         this.player1Socket = player1Socket
         this.player2Socket = player2Socket
         this.time = time
+        this.player1Name = player1Name
+        this.player2Name = player2Name
         this.models.push(new Base(1))
         this.models.push(new Base(2))
         setImmediate(() => this.render())
     }
 
     render() {
+        if (this.gaming === false)
+            return
         setImmediate(() => this.render())
         // Set immediate działa ponad 1000 razy na sekunde co nie jest zbyt optymalne
         // Ten if sprawia, że obliczenia i wysłanie na serwer będzie się wykonywać co określony czas (CFG.POLLING_INTERVAL)
@@ -59,6 +71,10 @@ class Game {
             this.player1Socket.send(JSON.stringify({ event: 'gamedata', body: gameData })) // Wysłanie informacji do graczy
             this.player2Socket.send(JSON.stringify({ event: 'gamedata', body: gameData }))
             this.models = this.models.filter(a => !a.toDelete) // Usunięcie martwych fighterów
+            const endGame = gameData.events.find(a => a.event === 'endGame')
+            if (endGame !== undefined) {
+                this.endGame(endGame.data.loser)
+            }
         }
     }
 
@@ -74,6 +90,23 @@ class Game {
     addModel(name, modelType, player, x, z, rotation) {
         const model = new Game.modelTypes[modelType](name, player, x, z, rotation) // Szuka modelu po nazwie i tworzy go
         this.models.push(model)
+    }
+
+    /**
+     * Kończy gre i wysyła wynik do bazy danych
+     * @param {number} loser 
+     */
+    endGame(loser) {
+        this.gaming = false
+        const doc = {
+            winner: loser === 1 ? this.player2Name : this.player1Name,
+            loser: loser === 1 ? this.player1Name : this.player2Name,
+            date: new Date()
+        }
+        coll1.insert(doc, function (err, newDoc) {
+            console.log("koniec gry:")
+            console.log(newDoc)
+        });
     }
 
 }

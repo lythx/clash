@@ -154,7 +154,7 @@ wss.on('connection', (socket) => {
                         name: data.body.name
                     }
                 }))
-                game = new Game(p1Socket, socket, 180)
+                game = new Game(p1Socket, socket, 180, players[0], players[1])
                 //wysłanie do drugiego gracza rozpoczęcia gry (nie trzeba sendMessage() bo mamy tu socket 2 gracza)
                 socket.send(JSON.stringify({ event: 'start' }))
                 //wysłanie do pierwszego gracza rozpoczęcia gry

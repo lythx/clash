@@ -9,8 +9,8 @@ class Game {
     static clock = new THREE.Clock();
     static raycaster = new Raycaster()
     static player
-    static modelClasses = [BillGates, Bazooka, Chicken, DarthVader, Bauul, Wolf, Hunter, Beelzabub, Skeleton]
-    static modelsAndGroups = [BillGates, Bazooka, Chicken, DarthVader, Bauul, Wolf, Hunter, BeelzabubGroup]
+    static modelClasses = [Bazooka, Chicken, DarthVader, Bauul, Wolf, Hunter, Beelzabub, Skeleton]
+    static modelsAndGroups = [Bazooka, Chicken, DarthVader, Bauul, Wolf, Hunter, BeelzabubGroup, SkeletonGroup]
     static models = []
     static selected = null
     static events = []
@@ -212,7 +212,7 @@ class Game {
     static async removeObject(object, delay) {
         await new Promise((resolve) => setTimeout(resolve, delay))
         this.models = this.models.filter(a => a.name !== object.name)
-        if (object instanceof Beelzabub) {
+        if (object instanceof Beelzabub || object instanceof Skeleton) {
             const group = this.scene.children.find(a => a.name === object.name.substring(0, object.name.length - 2))
             if (group) {
                 group.remove(object)
