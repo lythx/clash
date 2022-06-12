@@ -1,5 +1,4 @@
-//gosciu strzelajacy taki o\
-
+'use strict'
 
 const Fighter = require('../Fighter')
 const modelData = require('../modelData').data

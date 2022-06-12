@@ -1,5 +1,3 @@
-//gosciu strzelajacy taki o
-
 'use strict'
 
 class Wolf extends Fighter {
