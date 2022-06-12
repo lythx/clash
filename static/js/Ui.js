@@ -55,4 +55,11 @@ class Ui {
         document.getElementById('model4').innerHTML = '4 - DarthVader'
     }
 
+    static endGame = () => {
+        const cover = document.createElement('div')
+        cover.id = 'cover'
+        document.body.append(cover)
+        cover.innerHTML = 'Wygrana'
+    }
+
 }
