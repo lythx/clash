@@ -20,11 +20,13 @@ class FightersGroup extends THREE.Object3D {
      * @param {number} hex 
      */
     setColor(hex) {
-        console.log(this.position)
-        console.log(this.children[0].position)
         for (const e of this.children)
             e.setColor(hex)
     }
 
     setPosition(position) { }
+
+    removeChild(child) {
+        this.remove(child)
+    }
 }

@@ -10,6 +10,7 @@ class BeelzabubGroup extends FightersGroup {
      */
     constructor(data) {
         super()
+        this.name = data.name
         const obj = Model.materials.find(a => a.name === 'Beelzabub')
         for (let i = 0; i < this.count; i++) {
             for (let j = 0; j < this.count; j++) {
@@ -28,7 +29,6 @@ class BeelzabubGroup extends FightersGroup {
      * @param {object} position 
      */
     setPosition(position) {
-        console.log('adasdsa')
         let n = 0
         for (let i = 0; i < this.count; i++) {
             for (let j = 0; j < this.count; j++) {

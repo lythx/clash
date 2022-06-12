@@ -55,4 +55,12 @@ class Ui {
         document.getElementById('model4').innerHTML = '4 - DarthVader'
     }
 
+    /**
+     * Renderuje pasek z fighterami dostępnymi do wyboru na dole
+     * @param {string[]} fighters 
+     */
+    static updateFighterBar = (fighters) => {
+        console.log(fighters)
+    }
+
 }
