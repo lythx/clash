@@ -9,10 +9,17 @@ class Game {
     static clock = new THREE.Clock();
     static raycaster = new Raycaster()
     static player
+<<<<<<< HEAD
     static modelClasses = [BillGates, Bazooka, Chicken, DarthVader, Bauul, Wolf, Hunter, Beelzabub, Skeleton]
+=======
+    static modelClasses = [BillGates, Bazooka, Chicken, DarthVader, Bauul, Wolf, Hunter, Beelzabub]
+    static modelsAndGroups = [BillGates, Bazooka, Chicken, DarthVader, Bauul, Wolf, Hunter, BeelzabubGroup]
+>>>>>>> f1f3634ff91ce2ed95d9720f10844d424250f203
     static models = []
     static selected = null
     static events = []
+    static readyFighters = []
+    static queuedFighters = []
     static gaming = true
 
     /**
@@ -36,6 +43,18 @@ class Game {
             this.camera.updateProjectionMatrix();
             this.renderer.setSize(window.innerWidth, window.innerHeight);
         }
+        for (let i = 0; i < 8; i++) {
+            const FighterClass = this.modelsAndGroups[Math.floor(Math.random() * 8)]
+            if (i < 4) {
+                if (!this.readyFighters.some(a => a === FighterClass)) { this.readyFighters.push(FighterClass) }
+                else { i-- }
+            }
+            else {
+                if (![...this.queuedFighters, ...this.readyFighters].some(a => a === FighterClass)) { this.queuedFighters.push(FighterClass) }
+                else { i-- }
+            }
+        }
+        Ui.updateFighterBar(this.readyFighters.map(a => a.name))
     }
 
     static render = () => {
@@ -190,6 +209,13 @@ class Game {
     static async removeObject(object, delay) {
         await new Promise((resolve) => setTimeout(resolve, delay))
         this.models = this.models.filter(a => a.name !== object.name)
+        if (object instanceof Beelzabub) {
+            const group = this.scene.children.find(a => a.name === object.name.substring(0, object.name.length - 2))
+            if (group) {
+                group.remove(object)
+                return
+            }
+        }
         this.scene.remove(object)
     }
 
@@ -201,33 +227,15 @@ class Game {
             if (!this.gaming)
                 return;
             //jeśli kliknięty klawisz to od 1 do 4
-            if (e.key.match(/[1-9]/)) {
+            if (e.key.match(/[1-4]/)) {
                 if (this.selected) { //usunięcie poprzedniego wyboru ze sceny 
                     this.scene.remove(this.selected)
                     this.selected = null
                 }
                 //tu trzeba bedzie zmienić bo jak bedziemy mieć rotacje to e.key nie bedzie dzialal ale to pozniej
-                let fighter
-                if (e.key === '1')
-                    fighter = new BillGates({ name: `p${this.player}t${Date.now()}`, player: this.player, position: { x: 5000, z: 5000 }, rotation: this.player === 1 ? 1.75 * Math.PI : 0.75 * Math.PI }) //nazwa to p[numer gracza]t[unixowe milisekundy]
-                else if (e.key === '2')
-                    fighter = new Bazooka({ name: `p${this.player}t${Date.now()}`, player: this.player, position: { x: 5000, z: 5000 }, rotation: 1.5 }) //nazwa to p[numer gracza]t[unixowe milisekundy]
-                else if (e.key === '3')
-                    fighter = new Chicken({ name: `p${this.player}t${Date.now()}`, player: this.player, position: { x: 5000, z: 5000 }, rotation: 0 }) //nazwa to p[numer gracza]t[unixowe milisekundy]
-                else if (e.key === '4')
-                    fighter = new DarthVader({ name: `p${this.player}t${Date.now()}`, player: this.player, position: { x: 5000, z: 5000 }, rotation: 0 }) //nazwa to p[numer gracza]t[unixowe milisekundy]
-                else if (e.key === '5')
-                    fighter = new Bauul({ name: `p${this.player}t${Date.now()}`, player: this.player, position: { x: 5000, z: 5000 }, rotation: 0 }) //nazwa to p[numer gracza]t[unixowe milisekundy]
-                else if (e.key === '6')
-                    fighter = new Wolf({ name: `p${this.player}t${Date.now()}`, player: this.player, position: { x: 5000, z: 5000 }, rotation: 0 }) //nazwa to p[numer gracza]t[unixowe milisekundy]
-                else if (e.key === '7')
-                    fighter = new Hunter({ name: `p${this.player}t${Date.now()}`, player: this.player, position: { x: 5000, z: 5000 }, rotation: 0 }) //nazwa to p[numer gracza]t[unixowe milisekundy]
-                else if (e.key === '8')
-                    fighter = new BeelzabubGroup({ name: `p${this.player}t${Date.now()}`, player: this.player, position: { x: 5000, z: 5000 }, rotation: 0 }) //nazwa to p[numer gracza]t[unixowe milisekundy]
-                else if (e.key === '9')
-                    fighter = new Skeleton({ name: `p${this.player}t${Date.now()}`, player: this.player, position: { x: 5000, z: 5000 }, rotation: 0 }) //nazwa to p[numer gracza]t[unixowe milisekundy]        
-                this.selected = fighter //ustawinie klasowej zmiennej na nowo utworzony model
-                this.scene.add(fighter)
+                const Fighter = this.readyFighters[Number(e.key) - 1]
+                this.selected = new Fighter({ name: `p${this.player}t${Date.now()}`, player: this.player, position: { x: 5000, z: 5000 }, rotation: 0 }) //ustawinie klasowej zmiennej na nowo utworzony model
+                this.scene.add(this.selected)
                 const intersects = this.raycaster.get(e, this.tiles.children) //raycaster na plansze
                 //jeśli kursor nie jest na planszy lub jest na terenie na którym nie mogą chodzić modele to model sie nie wyswietla
                 if (intersects.length === 0 || intersects[0].object.player === 'none') {
@@ -317,6 +325,13 @@ class Game {
                     this.models.push(this.selected)
                     Net.newFighter(this.selected.player, this.selected.name, this.selected.constructor.name, pos.x, pos.z, this.selected.rotation.y)
                 }
+                for (const E of this.modelsAndGroups) {
+                    if (this.selected instanceof E) {
+                        this.queuedFighters.push(E)
+                        this.readyFighters[this.readyFighters.indexOf(E)] = this.queuedFighters.shift()
+                    }
+                }
+                Ui.updateFighterBar(this.readyFighters.map(a => a.name))
                 //wysłanie informacji o modelu do przeciwnika
                 this.selected = null
             }
