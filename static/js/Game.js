@@ -16,6 +16,7 @@ class Game {
     static events = []
     static readyFighters = []
     static queuedFighters = []
+    static gaming = true
 
     /**
      * Generuje scene i plansze
@@ -113,6 +114,8 @@ class Game {
      * @returns 
      */
     static handleEvent(eventName, data) {
+        if (!this.gaming)
+            return;
         switch (eventName) {
             case 'gameData': { // Updateuje pozycje i rotacje każdego modelu
                 for (const e of data) {
@@ -182,6 +185,15 @@ class Game {
                 this.removeObject(model, 500) // Usunięcie modelu po 500 milisekundach
                 break
             }
+            case 'endGame': {
+                console.log(data);
+                this.gaming = false
+                const model = this.models.find(a => a.name === 1)
+                Net.reset();
+                this.camera.position.set(0, 50, 0)
+                this.camera.lookAt(125, 20, 125)
+                Ui.endGame();
+            }
         }
     }
 
@@ -208,6 +220,8 @@ class Game {
      */
     static setupListeners() {
         window.onkeydown = async (e) => {
+            if (!this.gaming)
+                return;
             //jeśli kliknięty klawisz to od 1 do 4
             if (e.key.match(/[1-4]/)) {
                 if (this.selected) { //usunięcie poprzedniego wyboru ze sceny 

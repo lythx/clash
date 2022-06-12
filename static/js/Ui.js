@@ -63,4 +63,11 @@ class Ui {
         console.log(fighters)
     }
 
+    static endGame = () => {
+        const cover = document.createElement('div')
+        cover.id = 'cover'
+        document.body.append(cover)
+        cover.innerHTML = 'Wygrana'
+    }
+
 }
