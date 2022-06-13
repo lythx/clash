@@ -236,7 +236,7 @@ class Fighter extends Model {
         this.targetPosition = location
         this.movementTween?.stop() // Zatrzymanie poprzednich animacji
         this.movementTween = new TWEEN.Tween(this.position) // Animacja zapisana do zmiennej, żeby potem można było ją przerwać
-            .to({ x, z }, distance * 75)
+            .to({ x, z }, (distance * 75 * 50) / this.movementSpeed)
             .start()
     }
 
