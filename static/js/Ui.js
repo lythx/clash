@@ -143,9 +143,13 @@ class Ui {
         results.innerHTML = "Wyniki"
         const table = document.createElement('table')
         const headers = ['Winner', 'Loser', 'HP', 'Time', 'Data']
+        const tr = document.createElement('tr')
         for (const e of headers) {
-
+            const td = document.createElement('td')
+            td.innerHTML = e
+            tr.appendChild(td)
         }
+        table.appendChild(tr)
         for (const e of history.docs) {
             const tr = document.createElement('tr')
             for (const key in e) {
