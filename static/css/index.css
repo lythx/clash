@@ -177,6 +177,21 @@ input:focus {
   border: 1px solid black;
   float: left;
   background-size: cover;
+  position: relative;
+}
+
+.cost {
+  position: absolute;
+  bottom: 0px;
+  width: 40px;
+  height: 40px;
+  background-color: var(--darkbg);
+  border-right: 1px solid var(--orange);
+  border-top: 1px solid var(--orange);
+  color: var(--orange);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 #rightbottom {
@@ -236,9 +251,6 @@ input:focus {
   background-color: red;
   height: 100%;
   width: 100%;
-  text-align: center;
-  color: white;
-  text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
 }
 
 #energy {
@@ -275,4 +287,13 @@ input:focus {
   user-select: none;
   color: black;
   font-size: 28px;
-}
+
+  #energytext {
+    left: 50%;
+    top: 37px;
+    transform: translateX(-50%);
+    position: absolute;
+    text-align: center;
+    color: white;
+    text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
+  }

@@ -13,44 +13,11 @@ const coll1 = new Datastore({
     filename: 'kolekcja.db',
     autoload: true
 });
-// const doc = {
-//     name: "Skeleton",
-//     cost: 4,
-//     hp: 50,
-//     attack: 10,
-//     movementSpeed: 50,
-//     attackSpeed: 1,
-//     attackRange: 4,
-//     sightRange: 50,
-//     defaultY: 15,
-//     startTime: 1000,
-//     scale: 0.4,
-//     model: 'mats/skeleton/tris.js',
-//     modelMap: "mats/skeleton/map.png",
-//     weapon: "mats/skeleton/weapon.js",
-//     weaponMap: "mats/skeleton/weapon.png"
-// };
-// const doc = {
-//     name: "Base2",
-//     hp: 3000,
-//     attack: 70,
-//     attackSpeed: 1,
-//     attackRange: 20,
-//     defaultY: 15,
-//     scale: 0.4,
-//     attackAnimation: "attack",
-//     runAnimation: "run",
-//     tauntAnimation: "taunt",
-//     deathAnimation: "crdeath",
-//     model: 'mats/base1/tris.js',
-//     modelMap: "mats/base1/map.png",
-//     weapon: "mats/base1/weapon.png",
-//     weaponMap: "mats/base1/weapon.png"
-// };
-// coll1.insert(doc, function (err, newDoc) {
-//     console.log("dodano dokument (obiekt):")
-//     console.log(newDoc)
-// });
+app.get('/history', (req, res) => {
+    coll1.find({}, (err, docs) => {
+        res.send(JSON.stringify({ docs }));
+    });
+})
 
 let game
 const players = []

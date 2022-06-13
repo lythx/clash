@@ -58,7 +58,7 @@ class Game {
     static render = () => {
         requestAnimationFrame(this.render);
         if (this.lastEnergyGain + this.energyGainInterval < Date.now()) {
-            if (this.energy < 9) {
+            if (this.energy < 10) {
                 this.lastEnergyGain = Date.now()
                 Ui.setEnergy(++this.energy)
             }
