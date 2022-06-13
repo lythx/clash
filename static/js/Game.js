@@ -186,7 +186,6 @@ class Game {
                 break
             }
             case 'endGame': {
-                console.log(data);
                 this.gaming = false
                 const model = this.models.find(a => a.name === 1)
                 Net.reset();
@@ -231,15 +230,22 @@ class Game {
                 return;
             //jeśli kliknięty klawisz to od 1 do 4
             if (e.key.match(/[1-4]/)) {
-                if (this.selected) { //usunięcie poprzedniego wyboru ze sceny 
+                //tu trzeba bedzie zmienić bo jak bedziemy mieć rotacje to e.key nie bedzie dzialal ale to pozniej
+                const Fighter = this.readyFighters[Number(e.key) - 1]
+                if (this.selected instanceof Fighter) {
+                    this.scene.remove(this.selected)
+                    this.selected = null
+                    Ui.removeSelection()
+                    return
+                }
+                else if (this.selected) { //usunięcie poprzedniego wyboru ze sceny 
                     this.scene.remove(this.selected)
                     this.selected = null
                 }
-                //tu trzeba bedzie zmienić bo jak bedziemy mieć rotacje to e.key nie bedzie dzialal ale to pozniej
-                const Fighter = this.readyFighters[Number(e.key) - 1]
                 this.selected = new Fighter({ name: `p${this.player}t${Date.now()}`, player: this.player, position: { x: 5000, z: 5000 }, rotation: 0 }) //ustawinie klasowej zmiennej na nowo utworzony model
                 this.scene.add(this.selected)
                 const intersects = this.raycaster.get(e, this.tiles.children) //raycaster na plansze
+                Ui.selectFighter(Number(e.key))
                 //jeśli kursor nie jest na planszy lub jest na terenie na którym nie mogą chodzić modele to model sie nie wyswietla
                 if (intersects.length === 0 || intersects[0].object.player === 'none') {
                     if (this.selected instanceof FightersGroup) { this.selected.setPosition({ x: 5000, z: 5000 }) }
@@ -308,6 +314,7 @@ class Game {
         window.onclick = (e) => {
             if (!this.selected) //jeśli żaden model nie jest wybrany nic sie nie dzieje
                 return
+            Ui.removeSelection()
             const intersects = this.raycaster.get(e, this.tiles.children) //raycaster na plansze
             //jeśli kursor nie jest na planszy lub jest na terenie na którym nie mogą chodzić modele to wybrany model sie resetuje
             if (intersects.length === 0 || intersects[0].object.player === 'none') {

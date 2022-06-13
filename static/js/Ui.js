@@ -66,7 +66,6 @@ class Ui {
         })
         for (const [i, e] of fighters.entries()) {
             const el = document.getElementById(`model${i + 1}`)
-            console.log(`model${i}`)
             el.style.backgroundImage = `url(/mats/ikony/${e}.jpg)`
         }
     }
@@ -91,10 +90,28 @@ class Ui {
      * @param {number} player 
      */
     static updateHpBar(hp, maxHp, player) {
-        console.log(hp, maxHp)
-        console.log(`${maxHp / hp}%`)
         const bar = document.getElementById(player === Game.player ? 'myhp' : 'enemyhp')
-        bar.style.width = `${hp / maxHp}%`
+        bar.style.width = `${(hp / maxHp) * 100}%`
+    }
+
+    /**
+     * Oznaczna fightera jako wybranego w pasku na dole
+     * @param {number} n 
+     */
+    static selectFighter(n) {
+        this.removeSelection()
+        const el = document.getElementById(`model${n}`)
+        el.style.border = `2px solid var(--orange)`
+    }
+
+    /**
+     * Likwiduje oznaczenie fightera
+     */
+    static removeSelection() {
+        for (let i = 1; i <= 4; i++) {
+            const el = document.getElementById(`model${i}`)
+            el.style.border = `1px solid black`
+        }
     }
 
 }
