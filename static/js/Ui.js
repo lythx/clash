@@ -71,10 +71,10 @@ class Ui {
     }
 
     static endGame = (win) => {
-        const cover = document.createElement('div')
-        cover.id = 'cover'
-        document.body.append(cover)
-        cover.innerHTML = 'Zwycięzca'
+        const coverEnd = document.createElement('div')
+        coverEnd.id = 'coverEnd'
+        document.body.append(coverEnd)
+        coverEnd.innerHTML = 'Zwycięzca'
         if (win) {
             this.status(`Gratulacje ${this.playerName}, zwycięstwo`)
         }
