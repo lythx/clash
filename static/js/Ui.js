@@ -140,7 +140,24 @@ class Ui {
         document.body.append(results)
         const history = await Net.getHistory()
         console.log(await Net.getHistory());
-        results.innerHTML = "Wyniki: " + history.docs[0].winner
+        results.innerHTML = "Wyniki"
+        const table = document.createElement('table')
+        const headers = ['Winner', 'Loser', 'HP', 'Time', 'Data']
+        for (const e of headers) {
+
+        }
+        for (const e of history.docs) {
+            const tr = document.createElement('tr')
+            for (const key in e) {
+                if (key === '_id')
+                    break
+                const td = document.createElement('td')
+                td.innerHTML = e[key]
+                tr.appendChild(td)
+            }
+            table.appendChild(tr)
+        }
+        results.appendChild(table)
         const exit = document.createElement('div')
         exit.id = 'exit'
         results.append(exit)

@@ -10,11 +10,15 @@ app.use(express.static('static'))
 app.use(express.json())
 
 const coll1 = new Datastore({
+    filename: 'kolekcja.db',
+    autoload: true
+});
+const coll2 = new Datastore({
     filename: 'gameHistory.db',
     autoload: true
 });
 app.get('/history', (req, res) => {
-    coll1.find({}, (err, docs) => {
+    coll2.find({}, (err, docs) => {
         res.send(JSON.stringify({ docs }));
     });
 })
