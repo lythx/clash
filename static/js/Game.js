@@ -17,6 +17,9 @@ class Game {
     static readyFighters = []
     static queuedFighters = []
     static gaming = true
+    static lastEnergyGain = 0
+    static energyGainInterval = 1000
+    static energy = 0
 
     /**
      * Generuje scene i plansze
@@ -54,6 +57,12 @@ class Game {
 
     static render = () => {
         requestAnimationFrame(this.render);
+        if (this.lastEnergyGain + this.energyGainInterval < Date.now()) {
+            if (this.energy < 9) {
+                this.lastEnergyGain = Date.now()
+                Ui.setEnergy(++this.energy)
+            }
+        }
         const date = Date.now()
         for (let i = 0; i < this.events.length; i++) {
             if (this.events[i].timestamp < date) {
@@ -314,7 +323,6 @@ class Game {
         window.onclick = (e) => {
             if (!this.selected) //jeśli żaden model nie jest wybrany nic sie nie dzieje
                 return
-            Ui.removeSelection()
             const intersects = this.raycaster.get(e, this.tiles.children) //raycaster na plansze
             //jeśli kursor nie jest na planszy lub jest na terenie na którym nie mogą chodzić modele to wybrany model sie resetuje
             if (intersects.length === 0 || intersects[0].object.player === 'none') {
@@ -322,7 +330,11 @@ class Game {
                 this.selected = null
             }
             //jeśli kursor jest na planszy i canPlace jest true stawiamy model (pozycja jest już dobrze ustalona przez window.onmouemove)
-            else if (this.selected.canPlace) {
+            else if (this.selected.canPlace && this.selected.cost <= this.energy) {
+                Ui.removeSelection()
+                this.lastEnergyGain = Date.now()
+                this.energy -= this.selected.cost
+                Ui.setEnergy(this.energy)
                 const pos = intersects[0].object.position
                 this.selected.setColor(0xffa500)
                 if (this.selected instanceof FightersGroup) {

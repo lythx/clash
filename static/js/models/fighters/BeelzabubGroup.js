@@ -9,9 +9,9 @@ class BeelzabubGroup extends FightersGroup {
      * @param {object} data 
      */
     constructor(data) {
-        super()
+        const obj = Model.materials.find(a => a.name === 'Skeleton')
+        super(obj.cost)
         this.name = data.name
-        const obj = Model.materials.find(a => a.name === 'Beelzabub')
         for (let i = 0; i < this.count; i++) {
             for (let j = 0; j < this.count; j++) {
                 const pos = {

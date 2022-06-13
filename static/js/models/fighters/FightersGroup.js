@@ -3,6 +3,15 @@
 class FightersGroup extends THREE.Object3D {
 
     canPlace
+    cost
+
+    /**
+     * @param {number} cost 
+     */
+    constructor(cost) {
+        super()
+        this.cost = cost
+    }
 
     /**
      * Używane podczas stawiania fighterów, przy false zmienia kolor modelu na czerwony, a true na zielony

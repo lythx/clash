@@ -116,4 +116,15 @@ class Ui {
         }
     }
 
+    /**
+     * Ustawia pasek energii
+     * @param {number} energy 
+     */
+    static setEnergy(energy) {
+        const el = document.getElementById(`energy`)
+        el.style.width = `${(energy / 10) * 100}%`
+        const bar = document.getElementById('energybar')
+        el.innerHTML = energy
+    }
+
 }
