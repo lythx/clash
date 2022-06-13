@@ -67,12 +67,11 @@ class Ui {
         const cover = document.createElement('div')
         cover.id = 'cover'
         document.body.append(cover)
+        cover.innerHTML = 'Zwycięzca'
         if (win) {
-            cover.innerHTML = 'Wygrana'
             this.status(`Gratulacje ${this.playerName}, zwycięstwo`)
         }
         else {
-            cover.innerHTML = 'Przegrana'
             this.status(`Niestety ${this.playerName}, porażka`)
         }
     }
