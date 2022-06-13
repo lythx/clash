@@ -21,6 +21,8 @@ window.onload = () => {
     }
     //listener przycisku reset
     document.getElementById('reset').onclick = () => Net.reset()
+    //listener przycisku wyniki
+    document.getElementById('wyniki').onclick = () => Ui.getResults()
 }
 
 /**

@@ -127,4 +127,21 @@ class Ui {
         el.innerHTML = energy
     }
 
+    static getResults() {
+        const results = document.createElement('div')
+        results.id = 'results'
+        document.body.append(results)
+        results.innerHTML = "Wyniki: "
+        const exit = document.createElement('div')
+        exit.id = 'exit'
+        results.append(exit)
+        exit.innerHTML = 'Powrót'
+        document.getElementById('exit').onclick = () => Ui.exitResults()
+    }
+
+    static exitResults() {
+        const results = document.getElementById('results')
+        results.remove()
+    }
+
 }
