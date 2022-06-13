@@ -33,6 +33,7 @@ class Net {
                     break
                 case 'gamedata':
                     Game.update(data.body)
+                    Ui.timer(data.body.time)
                     break
                 //wysyłane po zalogowaniu sie drugiego gracza do obu graczy
                 case 'start':

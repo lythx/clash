@@ -9,40 +9,6 @@ const modelData = require('./server/modelData')
 app.use(express.static('static'))
 app.use(express.json())
 
-class Timer {
-    moveTime
-    stop = true
-    startTimer = () => {
-        if (!this.stop)
-            return
-        this.stop = false
-        this.moveTime = 150
-        let lastDate = Date.now()
-        const render = () => {
-            if (this.stop)
-                return
-            if (this.moveTime === -1) {
-                return
-            }
-            setImmediate(render)
-            if (Date.now() - lastDate < 1000)
-                return
-            lastDate = Date.now()
-            this.moveTime--
-        }
-        setImmediate(render)
-    }
-
-    resetTimer = () => {
-        this.moveTime = 150
-        this.stop = true
-    }
-
-    getTime = () => {
-        return this.moveTime
-    }
-}
-
 const coll1 = new Datastore({
     filename: 'kolekcja.db',
     autoload: true
@@ -87,7 +53,6 @@ const coll1 = new Datastore({
 // });
 
 let game
-const timer = new Timer();
 const players = []
 let p1Socket
 
@@ -154,7 +119,10 @@ wss.on('connection', (socket) => {
                         name: data.body.name
                     }
                 }))
-                game = new Game(p1Socket, socket, 180, players[0], players[1])
+                game = new Game(p1Socket, socket, 180, players[0], players[1], new Datastore({
+                    filename: 'gameHistory.db',
+                    autoload: true
+                }))
                 //wysłanie do drugiego gracza rozpoczęcia gry (nie trzeba sendMessage() bo mamy tu socket 2 gracza)
                 socket.send(JSON.stringify({ event: 'start' }))
                 //wysłanie do pierwszego gracza rozpoczęcia gry
@@ -169,7 +137,6 @@ wss.on('connection', (socket) => {
             }
         }
         else if (data.event === 'reset') { //reset danych na serwerzee
-            timer.resetTimer()
             players.length = 0
             gameRunning = false
             if (p1Socket) {

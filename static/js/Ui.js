@@ -47,6 +47,8 @@ class Ui {
         const cover = document.getElementById('cover')
         cover.remove()
         this.status(`Witaj ${this.playerName}, gra rozpoczęta`)
+        const rightTop = document.getElementById('righttop')
+        rightTop.style.display = 'flex'
         const leftBottom = document.getElementById('leftbottom')
         leftBottom.style.display = "flex"
         const rightBottom = document.getElementById('rightbottom')

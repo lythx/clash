@@ -10,35 +10,40 @@ const Wolf = require('./fighters/Wolf.js')
 const Hunter = require('./fighters/Hunter.js')
 const Beelzabub = require('./fighters/Beelzabub.js')
 const Skeleton = require('./fighters/Skeleton.js')
+const Timer = require('./Timer.js')
 const CFG = require('./ServerConfig.js')
-const Datastore = require('nedb')
-const coll1 = new Datastore({
-    filename: 'gameHistory.db',
-    autoload: true
-});
 
 class Game {
 
     player1Socket
     player2Socket
     models = []
-    time
+    timer
     player1Name
     player2Name
     lastSendDataTimestamp = 0
     static modelTypes = { BillGates, Bazooka, Chicken, DarthVader, Bauul, Wolf, Hunter, Beelzabub, Skeleton }
     gaming = true
+    db
 
     /**
      * Rozpoczyna grę z podanym czasem rozgrywki
      * @param {WebSocket.socket} player1Socket 
      * @param {WebSocket.socket} player2Socket 
      * @param {number} time 
+     * @param {string} player1Name
+     * @param {string} player2Name
+     * @param {Nedb} db
      */
-    constructor(player1Socket, player2Socket, time, player1Name, player2Name) {
+    constructor(player1Socket, player2Socket, time, player1Name, player2Name, db) {
         this.player1Socket = player1Socket
         this.player2Socket = player2Socket
-        this.time = time
+        this.timer = new Timer(time)
+        this.timer.start()
+        this.timer.onEnd(() => {
+            this.handleTimerEnd()
+        })
+        this.db = db
         this.player1Name = player1Name
         this.player2Name = player2Name
         this.models.push(new Base(1))
@@ -60,7 +65,8 @@ class Game {
             const gameData = {
                 events: [], // Eventy mają swój własny timestamp, wszystkie są wsadzane tutaj
                 data: [], // Data, czyli pozycja i rotacja fighterów
-                timestamp: Date.now() + CFG.SERVER_DELAY // Timestamp do data
+                timestamp: Date.now() + CFG.SERVER_DELAY, // Timestamp do data
+                time: this.timer.time
             }
             const lgt = this.models.length
             for (let i = 0; i < lgt; i++) {
@@ -97,18 +103,38 @@ class Game {
      * @param {number} loser 
      */
     endGame(loser) {
+        const base1hp = this.models.find(a => a.name === 'Base1').hp
+        const base2hp = this.models.find(a => a.name === 'Base2').hp
         this.gaming = false
         const doc = {
             winner: loser === 1 ? this.player2Name : this.player1Name,
             loser: loser === 1 ? this.player1Name : this.player2Name,
+            hp: [base1hp, base2hp].sort((a, b) => b - a).map(a => {
+                if (a < 0) { return 0 }
+                else { return a }
+            }).join(':'),
+            time: this.timer.maxTime - this.timer.time,
             date: new Date()
         }
-        coll1.insert(doc, function (err, newDoc) {
+        this.db.insert(doc, function (err, newDoc) {
             console.log("koniec gry:")
             console.log(newDoc)
         });
     }
 
+    /**
+     * Kończy gre ze względu na brak czasu
+     */
+    handleTimerEnd() {
+        const base1 = this.models.find(a => a.name === 'Base1')
+        const base2 = this.models.find(a => a.name === 'Base2')
+        if (base1.hp >= base2.hp) {
+            base1.emitEvent('endGame', { loser: 2 }, Date.now() + CFG.SERVER_DELAY) // Wysłanie ewentu w przypadku śmierci
+        }
+        else {
+            base2.emitEvent('endGame', { loser: 1 }, Date.now() + CFG.SERVER_DELAY) // Wysłanie ewentu w przypadku śmierci
+        }
+    }
 }
 
 module.exports = Game
