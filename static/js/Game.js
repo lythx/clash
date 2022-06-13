@@ -50,7 +50,6 @@ class Game {
                 else { i-- }
             }
         }
-        Ui.updateFighterBar(this.readyFighters.map(a => a.name))
     }
 
     static render = () => {
@@ -89,6 +88,7 @@ class Game {
         this.scene.add(base2)
         this.models.push(base2)
         this.setupListeners()
+        Ui.updateFighterBar(this.readyFighters.map(a => a.name))
     }
 
     /**

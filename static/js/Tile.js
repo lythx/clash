@@ -94,4 +94,5 @@ class Tile extends THREE.Mesh {
                 this.color = 0x00cccc
         }
     }
+
 }

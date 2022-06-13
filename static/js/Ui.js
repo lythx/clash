@@ -47,12 +47,10 @@ class Ui {
         const cover = document.getElementById('cover')
         cover.remove()
         this.status(`Witaj ${this.playerName}, gra rozpoczęta`)
-        let bottom = document.getElementById('bottom')
-        bottom.style.display = "initial"
-        document.getElementById('model1').innerHTML = '1 - Billgats'
-        document.getElementById('model2').innerHTML = '2 - Bazooka'
-        document.getElementById('model3').innerHTML = '3 - Chicken'
-        document.getElementById('model4').innerHTML = '4 - DarthVader'
+        const leftBottom = document.getElementById('leftbottom')
+        leftBottom.style.display = "flex"
+        const rightBottom = document.getElementById('rightbottom')
+        rightBottom.style.display = "flex"
     }
 
     /**
@@ -60,7 +58,17 @@ class Ui {
      * @param {string[]} fighters 
      */
     static updateFighterBar = (fighters) => {
-        console.log(fighters)
+        fighters = fighters.map(a => {
+            if (a.endsWith('Group')) {
+                return a.substring(0, a.length - 5)
+            }
+            else { return a }
+        })
+        for (const [i, e] of fighters.entries()) {
+            const el = document.getElementById(`model${i + 1}`)
+            console.log(`model${i}`)
+            el.style.backgroundImage = `url(/mats/ikony/${e}.jpg)`
+        }
     }
 
     static endGame = (win) => {
@@ -74,6 +82,19 @@ class Ui {
         else {
             this.status(`Niestety ${this.playerName}, porażka`)
         }
+    }
+
+    /**
+     * Updateuje pasek hp na dole
+     * @param {number} hp 
+     * @param {number} maxHp 
+     * @param {number} player 
+     */
+    static updateHpBar(hp, maxHp, player) {
+        console.log(hp, maxHp)
+        console.log(`${maxHp / hp}%`)
+        const bar = document.getElementById(player === Game.player ? 'myhp' : 'enemyhp')
+        bar.style.width = `${hp / maxHp}%`
     }
 
 }
