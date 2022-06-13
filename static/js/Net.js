@@ -73,4 +73,9 @@ class Net {
         this.socket.send(JSON.stringify({ event: 'fighter', body: { player, name, className, x, z, rotation } }))
     }
 
+    static getHistory = async () => {
+        const data = await fetch('/history')
+        return await data.json()
+    }
+
 }

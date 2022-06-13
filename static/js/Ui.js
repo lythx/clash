@@ -134,11 +134,13 @@ class Ui {
         txt.innerHTML = energy
     }
 
-    static getResults() {
+    static async getResults() {
         const results = document.createElement('div')
         results.id = 'results'
         document.body.append(results)
-        results.innerHTML = "Wyniki: "
+        const history = await Net.getHistory()
+        console.log(await Net.getHistory());
+        results.innerHTML = "Wyniki: " + history.docs[0].winner
         const exit = document.createElement('div')
         exit.id = 'exit'
         results.append(exit)

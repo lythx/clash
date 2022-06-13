@@ -10,7 +10,7 @@ app.use(express.static('static'))
 app.use(express.json())
 
 const coll1 = new Datastore({
-    filename: 'kolekcja.db',
+    filename: 'gameHistory.db',
     autoload: true
 });
 app.get('/history', (req, res) => {
