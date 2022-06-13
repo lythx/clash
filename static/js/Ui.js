@@ -3,6 +3,7 @@
 class Ui {
 
     static playerName
+    static fighterCosts = []
 
     static loading = (() => {
         const l = document.createElement('div')
@@ -58,17 +59,23 @@ class Ui {
     /**
      * Renderuje pasek z fighterami dostępnymi do wyboru na dole
      * @param {string[]} fighters 
+     * @param {number[]} costs
      */
-    static updateFighterBar = (fighters) => {
+    static updateFighterBar = (fighters, costs) => {
         fighters = fighters.map(a => {
             if (a.endsWith('Group')) {
                 return a.substring(0, a.length - 5)
             }
             else { return a }
         })
+        if (this.fighterCosts.length === 0) {
+            this.fighterCosts = Model.materials.map(a => ({ name: a.name, cost: a.cost }))
+        }
         for (const [i, e] of fighters.entries()) {
             const el = document.getElementById(`model${i + 1}`)
             el.style.backgroundImage = `url(/mats/ikony/${e}.jpg)`
+            const txt = document.getElementById(`cost${i + 1}`)
+            txt.innerHTML = this.fighterCosts.find(a => a.name === e).cost
         }
     }
 
@@ -123,8 +130,8 @@ class Ui {
     static setEnergy(energy) {
         const el = document.getElementById(`energy`)
         el.style.width = `${(energy / 10) * 100}%`
-        const bar = document.getElementById('energybar')
-        el.innerHTML = energy
+        const txt = document.getElementById('energytext')
+        txt.innerHTML = energy
     }
 
 }
