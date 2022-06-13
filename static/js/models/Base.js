@@ -2,7 +2,6 @@
 
 class Base extends Model {
 
-    player
     attackRange = 4
     hp
     attack
