@@ -71,4 +71,5 @@ class Net {
     static newFighter(player, name, className, x, z, rotation) {
         this.socket.send(JSON.stringify({ event: 'fighter', body: { player, name, className, x, z, rotation } }))
     }
+
 }

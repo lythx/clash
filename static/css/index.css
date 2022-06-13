@@ -1,8 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
 
 :root {
-  --green: rgb(15, 226, 8);
+  --orange: rgb(222, 94, 15);
   --darkgreen: #005816;
+  --darkbg: rgba(0, 0, 0, 0.3);
 }
 
 * {
@@ -32,26 +33,45 @@ input:focus {
 }
 
 #cover>p {
-  color: var(--green);
+  color: var(--orange);
   font-size: 60px;
   text-align: center;
   font-weight: 200;
 }
 
-#top {
+#lefttop {
   z-index: 43232;
   position: absolute;
   height: 80px;
-  width: 100%;
-  border-bottom: 1px solid var(--green);
+  width: 400px;
+  border-bottom: 1px solid var(--orange);
+  border-right: 1px solid var(--orange);
   display: flex;
-  background-color: var(--darkgreen);
+  background-color: var(--darkbg);
   align-items: center;
-  justify-content: space-between;
-  padding-left: 50px;
-  padding-right: 50px;
-  color: var(--green);
+  justify-content: center;
+  padding-left: 10px;
+  padding-right: 10px;
+  color: var(--orange);
   font-size: 25px;
+}
+
+#righttop {
+  z-index: 43232;
+  position: absolute;
+  height: 80px;
+  width: 150px;
+  border-bottom: 1px solid var(--orange);
+  border-left: 1px solid var(--orange);
+  display: flex;
+  background-color: var(--darkbg);
+  align-items: center;
+  justify-content: center;
+  padding-left: 10px;
+  padding-right: 10px;
+  color: var(--orange);
+  font-size: 25px;
+  right: 0px;
 }
 
 #righttop {
@@ -59,19 +79,19 @@ input:focus {
 }
 
 #loginwrap {
+  background-color: var(--darkbg);
   display: flex;
   flex-flow: column wrap;
   align-items: center;
   justify-content: space-evenly;
-  border: 2px solid var(--green);
+  border: 2px solid var(--orange);
   padding: 10px 70px 20px 70px;
-  border-radius: 30px;
 }
 
 #loginwrap>* {
   margin: 10px;
   text-align: center;
-  color: var(--green);
+  color: var(--orange);
 }
 
 #loginwrap>h1 {
@@ -82,7 +102,7 @@ input:focus {
   width: 250px;
   height: 45px;
   background-color: transparent;
-  border: 1px solid var(--green);
+  border: 1px solid var(--orange);
   border-radius: 30px;
   color: azure;
   font-size: 30px;
@@ -91,10 +111,10 @@ input:focus {
 #login {
   width: 250px;
   height: 45px;
-  border: 1px solid var(--green);
+  border: 1px solid var(--orange);
   border-radius: 40px;
   display: flex;
-  background-color: var(--green);
+  background-color: var(--orange);
   justify-content: center;
   align-items: center;
   font-weight: bold;
@@ -106,10 +126,10 @@ input:focus {
 #reset {
   width: 250px;
   height: 45px;
-  border: 1px solid var(--green);
+  border: 1px solid var(--orange);
   border-radius: 40px;
   display: flex;
-  background-color: var(--green);
+  background-color: var(--orange);
   justify-content: center;
   align-items: center;
   font-weight: bold;
@@ -118,45 +138,71 @@ input:focus {
   font-size: 28px;
 }
 
-#bottom {
+#leftbottom {
+  z-index: 43232;
   position: absolute;
+  height: 200px;
+  width: 610px;
+  border-top: 1px solid var(--orange);
+  border-right: 1px solid var(--orange);
+  background-color: var(--darkbg);
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  color: var(--orange);
+  font-size: 25px;
   bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 150px;
-  background-color: white;
   display: none;
-
 }
 
-#model1 {
-  margin: 20px;
-  width: 100px;
-  height: 110px;
+.model {
+  margin: 5px;
+  width: 140px;
+  height: 170px;
   border: 1px solid black;
   float: left;
 }
 
-#model2 {
-  margin: 20px;
-  width: 100px;
-  height: 110px;
-  border: 1px solid black;
-  float: left;
+#rightbottom {
+  z-index: 43232;
+  position: absolute;
+  height: 160px;
+  width: 400px;
+  border-top: 1px solid var(--orange);
+  border-left: 1px solid var(--orange);
+  background-color: var(--darkbg);
+  flex-flow: column wrap;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  padding-top: 0;
+  color: var(--orange);
+  font-size: 25px;
+  bottom: 0;
+  right: 0;
+  display: none;
 }
 
-#model3 {
-  margin: 20px;
-  width: 100px;
-  height: 110px;
-  border: 1px solid black;
-  float: left;
+.hpbar {
+  width: 390px;
+  height: 34px;
+  margin: 3px 0 3px 0;
+  border: 2px solid black;
+  border-radius: 10px;
 }
 
-#model4 {
-  margin: 20px;
-  width: 100px;
-  height: 110px;
-  border: 1px solid black;
-  float: left;
+.hpspan {
+  width: 100%;
+}
+
+#myhp {
+  background-color: rgb(18, 241, 21);
+  height: 100%;
+  width: 100%;
+}
+
+#enemyhp {
+  background-color: red;
+  height: 100%;
+  width: 100%;
 }

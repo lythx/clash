@@ -124,6 +124,7 @@ class Base extends Model {
      */
     async handleGetAttacked(dmg) {
         this.hp -= dmg
+        Ui.updateHpBar(this.hp, this.maxHp, this.player)
         this.setColor(0xff0000) // Ustawienie koloru na czerwony
         if (this.hp <= 0) { return } // Jeśli umarł to pozostaje czerwony
         await new Promise((resolve) => setTimeout(resolve, 500)) // Jeśli nie to po pol sekundy znowu normalny
