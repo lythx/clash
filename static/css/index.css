@@ -192,14 +192,6 @@ input:focus {
   border-radius: 10px;
 }
 
-#model4 {
-  margin: 20px;
-  width: 100px;
-  height: 110px;
-  border: 1px solid black;
-  float: left;
-}
-
 #coverEnd {
   position: absolute;
   width: 100vw;
