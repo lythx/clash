@@ -138,6 +138,21 @@ input:focus {
   font-size: 28px;
 }
 
+#wyniki {
+  width: 250px;
+  height: 45px;
+  border: 1px solid var(--orange);
+  border-radius: 40px;
+  display: flex;
+  background-color: var(--orange);
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  user-select: none;
+  color: black;
+  font-size: 28px;
+}
+
 #leftbottom {
   z-index: 43232;
   position: absolute;
@@ -242,6 +257,36 @@ input:focus {
   background-color: yellow;
   height: 100%;
   width: 100%;
+}
+
+#results {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.85);
+  left: 0;
+  top: 0;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 60px;
+  color: orange;
+}
+
+#exit {
+  width: 250px;
+  height: 45px;
+  border: 1px solid var(--orange);
+  border-radius: 40px;
+  display: flex;
+  background-color: var(--orange);
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  user-select: none;
+  color: black;
+  font-size: 28px;
 }
 
 #energytext {
