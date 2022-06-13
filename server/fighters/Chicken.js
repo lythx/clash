@@ -6,6 +6,8 @@ const CFG = require('../ServerConfig.js')
 
 class Chicken extends Fighter {
 
+    attackRadius = 50
+
     /**
      * @param {string} name 
      * @param {number} player 
@@ -19,11 +21,23 @@ class Chicken extends Fighter {
             data.attackRange, data.sightRange, data.startTime)
     }
 
-    attackEnemy(target) {
+    attackEnemy(target, targets) {
         this.movementTween?.stop() // Nie może sie ruszać podczas atakowania
-        target.handleGetAttacked(this.attack) // Odpalenie funkcji na "bycie atakowanym" u przeciwnika
-        // Wysłanie ewentu z celami ataku (tutaj zawsze jeden cel i taka sama siła ataku, ale w przypadku obszarowego jest inaczej)
-        this.emitEvent('fighterAttack', { name: this.name, targets: [{ name: target.name, dmg: this.attack }] }, Date.now() + CFG.SERVER_DELAY)
+        const impact = target.position // Pozycja w którą strzelił
+        const hits = [] // Array z trafionymi przeciwnikami
+        for (const t of targets) {
+            // Wzór na sprawdzenie zasięgu sqrt((x2-x1)^2 + (y2-y1)^2) < r (zasięg jest okręgiem)
+            const distance = Math.sqrt((t.position.x - impact.x) * (t.position.x - impact.x) + (t.position.z - impact.z) * (t.position.z - impact.z))
+            if (distance < this.attackRadius) {
+                // dmg obliczane na podstawie dystansu od wybuchu
+                hits.push({ target: t, dmg: this.attack * ((this.attackRadius - distance) / this.attackRadius) })
+            }
+        }
+        // Wysłanie ewentu ze wszystkimi trafionymi przeciwnikami i ich obrażeniami
+        this.emitEvent('fighterAttack', { name: this.name, targets: [...hits.map(a => ({ name: a.target.name, dmg: a.dmg }))] }, Date.now() + CFG.SERVER_DELAY)
+        for (const e of hits) { // Atak w obliczeniach po stronie serwera
+            e.target.handleGetAttacked(e.dmg)
+        }
         this.handleGetAttacked(10000000)
     }
 
